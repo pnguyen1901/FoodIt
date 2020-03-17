@@ -9,7 +9,7 @@
  *
  * @format
  */
-
+import 'react-native-gesture-handler';
 import React from 'react';
 import {
   ImageProps,
@@ -29,6 +29,8 @@ import {
   mapping,
   dark as theme,
 } from '@eva-design/eva';
+import { NavigationContainer } from '@react-navigation/native';
+import { AppNavigator } from './navigations/BottomNavigation';
 
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
@@ -39,25 +41,14 @@ const HeartIcon = (style: ImageStyle): React.ReactElement<ImageProps> => (
 );
 
 const App = (): React.ReactFragment => (
-  <>
-    <IconRegistry icons={EvaIconsPack}/>
+    <>
+      <IconRegistry icons={EvaIconsPack}/>
+      <IconRegistry icons={EvaIconsPack}/>
     <ApplicationProvider mapping={mapping} theme={theme}>
-      <Layout style={styles.container}>
-        <Text style={styles.text} category='h1'>
-          Welcome to UI Kitten 😻
-        </Text>
-        <Text style={styles.text} category='s1'>
-          Start with editing App.js to configure your App
-        </Text>
-        <Text style={styles.text} appearance='hint'>
-          For example, try changing theme to Dark by simply changing an import
-        </Text>
-        <Button style={styles.likeButton} icon={HeartIcon}>
-          LIKE
-        </Button>
-      </Layout>
+      <AppNavigator/>
     </ApplicationProvider>
-  </>
+    </>    
+
 );
 
 const styles = StyleSheet.create({
