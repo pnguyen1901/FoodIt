@@ -2,11 +2,13 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, BottomNavigationTab} from '@ui-kitten/components';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { HomeScreen } from '../screens/home.component';
 import { DetailsScreen } from '../screens/details.component';
+import { createStackNavigator } from '@react-navigation/stack';
+import { ItemScreen } from '../screens/item.component';
 
 const BottomTab = createBottomTabNavigator();
+const RootStack = createStackNavigator();
 
 const BottomTabBar = ({ navigation, state }) => {
     const onSelect = (index) => {
@@ -14,12 +16,10 @@ const BottomTabBar = ({ navigation, state }) => {
     }
 
     return (
-        <SafeAreaView>
             <BottomNavigation selectedIndex={state.index} onSelect={onSelect}>
                 <BottomNavigationTab title='Scan'/>
                 <BottomNavigationTab title='List'/>
             </BottomNavigation>
-        </SafeAreaView>
     )
 }
 
@@ -32,8 +32,12 @@ const TabNavigator = () => {
     )
 }
 
+
 export const AppNavigator = () => (
     <NavigationContainer>
-        <TabNavigator/>
+        <RootStack.Navigator mode="modal" headerMode="none">
+            <RootStack.Screen name="main" component={TabNavigator}/>
+            <RootStack.Screen name="item-screen" component={ItemScreen}/>
+        </RootStack.Navigator>
     </NavigationContainer>
 )
