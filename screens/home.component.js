@@ -35,13 +35,12 @@ const [loggedIn, setLoggedIn] = useState(false);
       .auth().onAuthStateChanged(user => {
         setUser(user);
         setLoggedIn(true);
-        console.log(user);
       })
   })
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <TopNavigation title='MyApp' alignment='center'/>
+      <TopNavigation title='FoodIt' alignment='center'/>
       <Divider/>
       <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Input 
@@ -53,7 +52,7 @@ const [loggedIn, setLoggedIn] = useState(false);
           value={password}
           onChangeText={setPassword} />
         { loggedIn 
-        ? <Text>Welcome {user.email}</Text>
+        ? <Text>Welcome, {user.email}</Text>
         : <Text>Please log in</Text> }
         <Button onPress={() => handleLogin()}>Login</Button>
       </Layout>

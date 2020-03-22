@@ -10,29 +10,64 @@ import { Divider,
         ListItem } from '@ui-kitten/components';
 
 import { firebase } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { StyleSheet } from 'react-native'; 
 
 const BackIcon = (style) => (
   <Icon {...style} name='arrow-back' />
 );
 
-const data = new Array(4).fill({
-  title: 'Title for Item',
-  description: 'Description for item'
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  taskLayout: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  buttonLayout: {
+    flex: 1
+  },
+  button: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    position: "absolute",
+    bottom: 10,
+    right: 10
+  }
 })
+
+const PlusIcon = (style) => (
+  <Icon {...style} name='plus-outline'/>
+);
 
 export const DetailsScreen = ({ navigation }) => {
   const [user, setUser] = useState('');
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     firebase
       .auth()
       .onAuthStateChanged(user => {
         setUser(user);
-      })
+      });
+    
+    
+
+    firestore()
+    .collection('food_items').where('ownerId', '==', firebase.auth().currentUser.uid)
+    .get()
+    .then((querySnapshot) => {
+      const documents = querySnapshot.docs.map(doc => doc.data());
+      setData(documents);
+    });
+
   });
 
+
   const renderItemAccessory = (style) => (
-    <Button onPress={() => navigation.navigate('item-screen')}  style={style}>EDIT</Button>
+    <Button style={style}>Edit</Button>
   );
   
   const renderItemIcon = (style) => (
@@ -41,23 +76,27 @@ export const DetailsScreen = ({ navigation }) => {
 
   const renderItem = ({ item, index }) => (
     <ListItem
-      title={`${item.title} ${index + 1}`}
-      description={`${item.description} ${index + 1}`}
+      title={`${item.brand} ${item.category}`}
+      description={`Expired by: ${new Date(item.expiration_date.seconds*1000).toLocaleDateString()}`}
       icon={renderItemIcon}
       accessory={renderItemAccessory}
     />
   )
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <TopNavigation title='MyApp' alignment='center'/>
+    <SafeAreaView style={styles.container}>
+      <TopNavigation title='FoodIt' alignment='center'/>
       <Divider/>
-      <Layout style={{flex:1 ,justifyContent: 'center'}}>
+      <Layout style={styles.taskLayout}>
         <List 
           data={data}
           renderItem={renderItem}
         />
-        <Text>{user.email}</Text>
+      </Layout>
+      <Layout style={styles.buttonLayout}>
+        <Button 
+          onPress={() => navigation.navigate('item-screen')}
+          style={styles.button} icon={PlusIcon}/>
       </Layout>
     </SafeAreaView>
   );
