@@ -19,7 +19,8 @@ const BackIcon = (style) => (
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#222B45'
   },
   taskLayout: {
     flex: 1,
@@ -35,6 +36,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 10
+  },
+  navigationTitle: {
+    fontSize: 20
   }
 })
 
@@ -85,7 +89,7 @@ export const DetailsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNavigation title='FoodIt' alignment='center'/>
+      <TopNavigation title='Items' alignment='center' titleStyle={styles.navigationTitle}/>
       <Divider/>
       <Layout style={styles.taskLayout}>
         <List 
@@ -95,7 +99,7 @@ export const DetailsScreen = ({ navigation }) => {
       </Layout>
       <Layout style={styles.buttonLayout}>
         <Button 
-          onPress={() => navigation.navigate('item-screen')}
+          onPress={() => navigation.navigate('camera-screen')}
           style={styles.button} icon={PlusIcon}/>
       </Layout>
     </SafeAreaView>

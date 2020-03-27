@@ -31,6 +31,8 @@ import {
 } from '@eva-design/eva';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppNavigator } from './navigations/BottomNavigation';
+import { Provider } from 'react-redux';
+import { configureStore } from './store';
 
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
@@ -40,14 +42,16 @@ const HeartIcon = (style: ImageStyle): React.ReactElement<ImageProps> => (
   <Icon {...style} name='heart'/>
 );
 
+const store = configureStore();
+
 const App = (): React.ReactFragment => (
-    <>
+    <Provider store={store}>
       <IconRegistry icons={EvaIconsPack}/>
       <IconRegistry icons={EvaIconsPack}/>
     <ApplicationProvider mapping={mapping} theme={theme}>
       <AppNavigator/>
     </ApplicationProvider>
-    </>    
+    </Provider>    
 
 );
 
