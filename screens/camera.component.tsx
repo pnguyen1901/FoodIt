@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { StyleSheet,
          Text,
          SafeAreaView,
@@ -7,10 +8,11 @@ import { StyleSheet,
         } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { RNCamera } from 'react-native-camera';
-import { NavigationContainer } from '@react-navigation/native';
+import { createItem } from '../store/actions';
 
 export const CameraScreen = ({ navigation }) => {
 
+    const dispatch = useDispatch();
     const [ratio, setRatio] = useState('16:9');
     const [type, setType] = useState('back');
     const [flash, setFlash] = useState('off');
@@ -20,71 +22,74 @@ export const CameraScreen = ({ navigation }) => {
     const [canDetectText, setCanDetectText] = useState(false);
     const [textBlocks, setTextBlocks] = useState([]);
 
-    takePicture = async function() {
+    const takePicture = async function() {
         if (camera) {
           const data = await camera.takePictureAsync();
           console.warn('takePicture ', data);
         }
       };
     
-    textRecognized = object => {
+    const  textRecognized = object => {
     const { textBlocks } = object;
         setTextBlocks(textBlocks);
     };
 
-    toggleFocus = () => {
+    const toggleFocus = () => {
         setAutoFocus(
           autoFocus === 'on' ? 'off' : 'on',
         );
       };
     
-    zoomOut = () => {
+    const zoomOut = () => {
         setZoom(
             zoom - 0.1 < 0 ? 0 : zoom - 0.1,
         );
     }
 
-    zoomIn = () => {
+    const zoomIn = () => {
         setZoom(
             zoom + 0.1 > 1 ? 1 : zoom + 0.1,
         );
     }
 
-    setFocusDepth = (depth) => {
+    const setFocusDepth = (depth) => {
         setDepth(
             depth,
         );
     }
 
-    renderTextBlocks = () => (
+    const renderTextBlocks = () => (
         <View style={styles.facesContainer} pointerEvents="none">
           {textBlocks.map(renderTextBlock)}
-
-          {/* {console.log(textBlocks)} */}
         </View>
       );
 
-    renderTextBlock = ({ bounds, value }) => {
-        value.includes('EXP') ? navigation.navigate('add-item-screen') : null
-    }
-
-    // renderTextBlock = ({ bounds, value }) => (
-    // <React.Fragment key={value + bounds.origin.x}>
-    //     <Text style={[styles.textBlock, { left: bounds.origin.x, top: bounds.origin.y }]}>
-    //     {value}
-    //     </Text>
-    //     <View
-    //     style={[
-    //         styles.text,
-    //         {
-    //         ...bounds.size,
-    //         left: bounds.origin.x,
-    //         top: bounds.origin.y,
-    //         },
-    //     ]}
-    //     />
-    // </React.Fragment>
-    // );
+    const renderTextBlock = ({ bounds, value }) => {
+        // Open the add new item modal and prepopulate the expiration date when the camera recognizes a valid expiration date. 
+        if(value.includes('EXP')) {
+            const regex = /EXP.(.*)/;
+            const datevalue = regex.exec(value)[1].trim();
+            dispatch(createItem(datevalue));
+            navigation.navigate('add-item-screen'); 
+        }
+        // Display blocks of text on the camera screen
+        return (
+            <React.Fragment key={value + bounds.origin.x}>
+                <Text style={[styles.textBlock, { left: bounds.origin.x, top: bounds.origin.y }]}>
+                {value}
+                </Text>
+                <View
+                style={[
+                    styles.text,
+                    {
+                    ...bounds.size,
+                    left: bounds.origin.x,
+                    top: bounds.origin.y,
+                    },
+                ]}
+                />
+            </React.Fragment>
+    )};
     
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>

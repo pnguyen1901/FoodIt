@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ItemScreen } from '../screens/item.component';
 import { Icon } from '@ui-kitten/components';
 import { CameraScreen } from '../screens/camera.component';
+import SignInScreen from '../screens/sign-in';
 
 const BottomTab = createBottomTabNavigator();
 const RootStack = createStackNavigator();
@@ -33,7 +34,7 @@ const BottomTabBar = ({ navigation, state }) => {
     return (
         <Layout style={{paddingBottom: 30}}>
             <BottomNavigation selectedIndex={state.index} onSelect={onSelect}>
-                <BottomNavigationTab title='Scan' icon={HomeIcon}/>
+                {/* <BottomNavigationTab title='Scan' icon={HomeIcon}/> */}
                 <BottomNavigationTab title='Items' icon={ListIcon}/>
                 <BottomNavigationTab title='Settings' icon={SettingIcon}/>
             </BottomNavigation>
@@ -44,7 +45,7 @@ const BottomTabBar = ({ navigation, state }) => {
 const TabNavigator = () => {
     return (
     <BottomTab.Navigator tabBar={props => <BottomTabBar {...props}/>}>
-        <BottomTab.Screen name='Scan' component={HomeScreen}/>
+        {/* <BottomTab.Screen name='Scan' component={HomeScreen}/> */}
         <BottomTab.Screen name='Items' component={DetailsScreen}/>
         <BottomTab.Screen name='Settings' component={SettingScreen}/>
     </BottomTab.Navigator>
@@ -55,6 +56,7 @@ const TabNavigator = () => {
 export const AppNavigator = () => (
     <NavigationContainer>
         <RootStack.Navigator mode="modal" headerMode="none">
+            <RootStack.Screen name="sign-in" component={SignInScreen}/>
             <RootStack.Screen name="main" component={TabNavigator}/>
             <RootStack.Screen name="add-item-screen" component={ItemScreen}/>
             <RootStack.Screen name="camera-screen" component={CameraScreen}/>

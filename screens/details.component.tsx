@@ -99,7 +99,8 @@ export const DetailsScreen = ({ navigation }) => {
       </Layout>
       <Layout style={styles.buttonLayout}>
         <Button 
-          onPress={() => navigation.navigate('camera-screen')}
+          // onPress={() => navigation.navigate('camera-screen')}
+          onPress={() => navigation.navigate('add-item-screen')}
           style={styles.button} icon={PlusIcon}/>
       </Layout>
     </SafeAreaView>

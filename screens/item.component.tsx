@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native';
+import { useSelector } from 'react-redux';
+import { SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Divider,
         Icon,
         TopNavigation,
@@ -13,16 +14,24 @@ import { Divider,
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { StyleSheet } from 'react-native';
+require('datejs');
+import RNCalendarEvents from 'react-native-calendar-events/index.ios';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#101426'
+    },
+    topNavigation: {
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10
     },
     layout: {
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         flexDirection: 'column',
         padding: 20,
+        marginBottom: -40
     },
     inputLayout: {
         flex: 1,
@@ -32,8 +41,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     input: {
-        marginLeft: 20,
-        width: 250 
+        // marginLeft: 20,
+        marginTop: 20,
+        marginBottom: 20,
     }
 
 })
@@ -52,6 +62,7 @@ export function ItemScreen ({navigation}) {
     const [brand, setBrand] = useState('');
     const [category, setCategory] = useState('');
     const [expirationDate, setExpirationDate] = useState(new Date());
+    // const expirationDate = useSelector(state => state.itemReducer.expiration_date);
 
     const navigateBack = () => {
         navigation.goBack();
@@ -73,6 +84,16 @@ export function ItemScreen ({navigation}) {
             })
             .then((docRef) => {
                 console.log("Document written with ID:", docRef.id);
+                RNCalendarEvents.saveEvent(category, {
+                    calendarId: '123',
+                    startDate: '2020-04-12T02:42:55.457Z',
+                    endDate: '2020-04-12T10:42:55.457Z',
+                    title: category + brand,
+                    alarms: [{
+                        date: '2020-04-05T10:42:55.457Z'
+                    }]
+                }).then(status => console.log(status))
+                .catch(err => console.log(err));
                 navigation.goBack();
             })
             .catch((error) => {
@@ -86,12 +107,13 @@ export function ItemScreen ({navigation}) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TopNavigation title='Add an item' alignment='center' leftControl={BackAction()} rightControls={SaveAction()}/>
+            <TopNavigation style={styles.topNavigation} title='Add an item' alignment='center' leftControl={BackAction()} rightControls={SaveAction()}/>
             <Divider />
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <Layout style={styles.layout}>
-                <Layout style={styles.inputLayout}>
+                {/* <Layout style={styles.inputLayout}> */}
                     <Text
-                        category='p1'>
+                        category='h6'>
                         Brand
                     </Text>
                     <Input
@@ -99,10 +121,10 @@ export function ItemScreen ({navigation}) {
                     placeholder='Select the brand of the item'
                     value={brand}
                     onChangeText={setBrand}/>
-                </Layout>
-                <Layout style={styles.inputLayout}>
+                {/* </Layout> */}
+                {/* <Layout style={styles.inputLayout}> */}
                     <Text
-                        category='p1'>
+                        category='h6'>
                         Category
                     </Text>
                     <Input
@@ -110,21 +132,23 @@ export function ItemScreen ({navigation}) {
                         placeholder='Category'
                         value={category}
                         onChangeText={setCategory}/>                
-                </Layout>
-                <Layout style={styles.inputLayout}>
+                {/* </Layout> */}
+                {/* <Layout style={styles.inputLayout}> */}
                 <Text
-                    category='p1'>
+                    category='h6'>
                     Expiration Date
                 </Text>
                 <Datepicker
                     style={styles.input} 
+                    // date={Date.parse(expirationDate)}
                     date={expirationDate}
                     onSelect={setExpirationDate}/>
-                </Layout>
-                <Layout style={{flex: 6}}>
+                {/* </Layout> */}
+                <Layout style={{flex: 1}}>
 
                 </Layout>
             </Layout>
+            </TouchableWithoutFeedback>
         </SafeAreaView>
     )
 }

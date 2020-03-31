@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 
 export const HomeScreen = ({ navigation }) => {
 
-const [user, setUser] = useState();
+const [user, setUser] = useState(null);
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [loggedIn, setLoggedIn] = useState(false);
@@ -20,14 +20,14 @@ const [loggedIn, setLoggedIn] = useState(false);
     navigation.navigate('Details');
   };
 
-  register = () => {
+  const register = () => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .catch(e => console.log(e))
   }
 
-  handleLogin = () => {
+  const handleLogin = () => {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)

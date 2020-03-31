@@ -1,8 +1,8 @@
 import * as types from './types';
 
-export function createItem (props) {
+export function createItem (expiration_date) {
     return {
         type: types.CREATE_ITEM,
-        props
+        expiration_date
     }
 }

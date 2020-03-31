@@ -8,7 +8,7 @@ export const itemReducer = (state = initialState, action) => {
         case types.CREATE_ITEM:
             return {
                 ...state,
-                expiration_date: action.props.expiration_date
+                expiration_date: action.expiration_date
             }
 
         default:
