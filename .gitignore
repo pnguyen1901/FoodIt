@@ -62,3 +62,10 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+
+# Ignore secret json file
+foodit-e5ede-231116db6ea6.json
+
+# env file
+*.env

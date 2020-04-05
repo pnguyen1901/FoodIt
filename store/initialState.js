@@ -1,5 +1,8 @@
 export default {
-    brand: '',
-    category: '',
-    expiration_date: ''
+    itemReducer: {
+        brand: '',
+        category: '',
+        expiration_date: ''
+    }
+
 }

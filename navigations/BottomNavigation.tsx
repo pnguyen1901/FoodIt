@@ -2,19 +2,28 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, BottomNavigationTab, Layout} from '@ui-kitten/components';
-import { HomeScreen } from '../screens/home.component';
-import { DetailsScreen } from '../screens/details.component';
-import { SettingScreen } from '../screens/settings.component';
+import { Items } from '../screens/items.component';
+import { Setting } from '../screens/settings.component';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ItemScreen } from '../screens/item.component';
+import { AddItem } from '../screens/additem.component';
 import { Icon } from '@ui-kitten/components';
-import { CameraScreen } from '../screens/camera.component';
-import SignInScreen from '../screens/sign-in';
+import { Camera } from '../screens/camera.component';
+import SignIn from '../screens/sign-in';
+
+// create an object type with mappings for route name to the params of the route
+export type RootStackParamList = {
+    Items: undefined,
+    Settings: undefined,
+    AddItem: undefined,
+    Camera: undefined,
+    SignIn: undefined,
+    Main: undefined
+}
 
 const BottomTab = createBottomTabNavigator();
-const RootStack = createStackNavigator();
+const RootStack = createStackNavigator<RootStackParamList>();
 
-const ListIcon = (style) => (
+const ListIcon = (style: React.CSSProperties) => (
     <Icon {...style} name='calendar-outline'/>
 )
 
@@ -27,7 +36,7 @@ const SettingIcon = (style) => (
 )
 
 const BottomTabBar = ({ navigation, state }) => {
-    const onSelect = (index) => {
+    const onSelect = (index: number) => {
         navigation.navigate(state.routeNames[index]);
     }
 
@@ -46,8 +55,8 @@ const TabNavigator = () => {
     return (
     <BottomTab.Navigator tabBar={props => <BottomTabBar {...props}/>}>
         {/* <BottomTab.Screen name='Scan' component={HomeScreen}/> */}
-        <BottomTab.Screen name='Items' component={DetailsScreen}/>
-        <BottomTab.Screen name='Settings' component={SettingScreen}/>
+        <BottomTab.Screen name='Items' component={Items}/>
+        <BottomTab.Screen name='Settings' component={Setting}/>
     </BottomTab.Navigator>
     )
 }
@@ -56,10 +65,10 @@ const TabNavigator = () => {
 export const AppNavigator = () => (
     <NavigationContainer>
         <RootStack.Navigator mode="modal" headerMode="none">
-            <RootStack.Screen name="sign-in" component={SignInScreen}/>
-            <RootStack.Screen name="main" component={TabNavigator}/>
-            <RootStack.Screen name="add-item-screen" component={ItemScreen}/>
-            <RootStack.Screen name="camera-screen" component={CameraScreen}/>
+            <RootStack.Screen name="SignIn" component={SignIn}/>
+            <RootStack.Screen name="Main" component={TabNavigator}/>
+            <RootStack.Screen name="AddItem" component={AddItem}/>
+            <RootStack.Screen name="Camera" component={Camera}/>
         </RootStack.Navigator>
     </NavigationContainer>
 )

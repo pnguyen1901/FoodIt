@@ -47,7 +47,7 @@ export default ({ navigation }): React.ReactElement => {
   useEffect(() => {
     firebase
       .auth().onAuthStateChanged((user) => {
-        user ? navigation.navigate('main') : null 
+        user ? navigation.navigate('Main') : null 
       })
   })
 

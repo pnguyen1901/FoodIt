@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export const HomeScreen = ({ navigation }) => {
+export const Home = ({ navigation }) => {
 
 const [user, setUser] = useState(null);
 const [email, setEmail] = useState('');

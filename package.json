@@ -28,6 +28,7 @@
     "acorn": "^7.1.1",
     "datejs": "^1.0.0-rc3",
     "eslint": "^5.16.0",
+    "nodejs-mobile-react-native": "^0.5.0",
     "react": "^16.13.0",
     "react-native": "^0.62.0",
     "react-native-calendar-events": "^1.7.3",

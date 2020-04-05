@@ -16,6 +16,17 @@ import firestore from '@react-native-firebase/firestore';
 import { StyleSheet } from 'react-native';
 require('datejs');
 import RNCalendarEvents from 'react-native-calendar-events/index.ios';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigations/BottomNavigation';
+
+type AddItemNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    'AddItem'
+>;
+
+type AddItemProps = {
+    navigation: AddItemNavigationProp
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -48,23 +59,22 @@ const styles = StyleSheet.create({
 
 })
 
-const BackIcon = (style) => (
+const BackIcon = (style) : React.ReactElement => (
     <Icon {...style} name='arrow-back'/>
 )
 
-const SaveIcon = (style) => (
+const SaveIcon = (style) : React.ReactElement => (
     <Icon {...style} name='save-outline'/>
 )
 
 
-export function ItemScreen ({navigation}) {
+export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
 
     const [brand, setBrand] = useState('');
     const [category, setCategory] = useState('');
-    const [expirationDate, setExpirationDate] = useState(new Date());
-    // const expirationDate = useSelector(state => state.itemReducer.expiration_date);
+    const expiration_date = useSelector(state => state.itemReducer.expiration_date);
 
-    const navigateBack = () => {
+    const navigateBack = (): void => {
         navigation.goBack();
     };
 
@@ -140,9 +150,9 @@ export function ItemScreen ({navigation}) {
                 </Text>
                 <Datepicker
                     style={styles.input} 
-                    // date={Date.parse(expirationDate)}
-                    date={expirationDate}
-                    onSelect={setExpirationDate}/>
+                    date={Date.parse(expiration_date)}
+                    // date={expirationDate}
+                    onSelect={''}/>
                 {/* </Layout> */}
                 <Layout style={{flex: 1}}>
 

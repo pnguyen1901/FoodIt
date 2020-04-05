@@ -5,12 +5,27 @@ import { StyleSheet,
          SafeAreaView,
          View,
          TouchableOpacity,
+         Alert,
         } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { RNCamera } from 'react-native-camera';
 import { createItem } from '../store/actions';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigations/BottomNavigation';
+import nodejs from 'nodejs-mobile-react-native';
+import vision from '@react-native-firebase/ml-vision';
 
-export const CameraScreen = ({ navigation }) => {
+type CameraScreenNavigationProp = StackNavigationProp<
+        RootStackParamList,
+        'Camera'
+>;
+
+type CameraProps = {
+    navigation: CameraScreenNavigationProp,
+}
+
+
+export const Camera: React.FC<CameraProps> = ({ navigation }) => {
 
     const dispatch = useDispatch();
     const [ratio, setRatio] = useState('16:9');
@@ -22,56 +37,81 @@ export const CameraScreen = ({ navigation }) => {
     const [canDetectText, setCanDetectText] = useState(false);
     const [textBlocks, setTextBlocks] = useState([]);
 
+    useEffect(() => {
+        nodejs.channel.addListener('message', 
+            (msg) => {
+                if (msg.includes('Error:')) {
+                    Alert.alert(msg); 
+                } else {
+                    console.log(msg);
+                    dispatch(createItem(msg));
+                    navigation.navigate('AddItem'); 
+                }
+
+            },
+            this
+        )
+    })
+
+
+    async function processDocument (localPath: string) {
+        const processed = await vision().textRecognizerProcessImage(localPath);
+        console.log(localPath);
+        return processed;
+    }
+
     const takePicture = async function() {
         if (camera) {
           const data = await camera.takePictureAsync();
-          console.warn('takePicture ', data);
+          console.log('takePicture ', data);
+        //   nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
+          processDocument(data.uri.replace(/^file:\/\//g, ''))
+            .then((result) => {
+                console.log(result);
+            }).catch(err => console.log(err));
         }
       };
     
-    const  textRecognized = object => {
+    const  textRecognized = (object: {textBlocks: []}): void => {
     const { textBlocks } = object;
         setTextBlocks(textBlocks);
     };
 
-    const toggleFocus = () => {
+    const toggleFocus = (): void => {
         setAutoFocus(
           autoFocus === 'on' ? 'off' : 'on',
         );
       };
     
-    const zoomOut = () => {
+    const zoomOut = (): void => {
         setZoom(
             zoom - 0.1 < 0 ? 0 : zoom - 0.1,
         );
     }
 
-    const zoomIn = () => {
+    const zoomIn = (): void => {
         setZoom(
             zoom + 0.1 > 1 ? 1 : zoom + 0.1,
         );
     }
 
-    const setFocusDepth = (depth) => {
-        setDepth(
-            depth,
-        );
-    }
 
-    const renderTextBlocks = () => (
+    const renderTextBlocks = (): React.ReactElement => (
         <View style={styles.facesContainer} pointerEvents="none">
           {textBlocks.map(renderTextBlock)}
         </View>
       );
 
     const renderTextBlock = ({ bounds, value }) => {
+
+        nodejs.channel.send(value);
         // Open the add new item modal and prepopulate the expiration date when the camera recognizes a valid expiration date. 
-        if(value.includes('EXP')) {
-            const regex = /EXP.(.*)/;
-            const datevalue = regex.exec(value)[1].trim();
-            dispatch(createItem(datevalue));
-            navigation.navigate('add-item-screen'); 
-        }
+        // if(value.includes('EXP')) {
+        //     const regex = /EXP.(.*)/;
+        //     const datevalue = regex.exec(value)[1].trim();
+        //     dispatch(createItem(datevalue));
+        //     navigation.navigate('AddItem'); 
+        // }
         // Display blocks of text on the camera screen
         return (
             <React.Fragment key={value + bounds.origin.x}>

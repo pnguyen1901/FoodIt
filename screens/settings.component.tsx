@@ -20,12 +20,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
     }
 })
-export const SettingScreen = ({ navigation }) => {
+export const Setting = ({ navigation }) => {
 
     const [theme, setTheme] = useState('dark');
-    const [checked, setChecked] = useState(false);
+    const [isChecked, setChecked] = useState<boolean>(false);
 
-    const onCheckedChange = (isChecked) => {
+    const onCheckedChange = (isChecked: boolean): void => {
         setChecked(isChecked);
     }
 
@@ -37,7 +37,7 @@ export const SettingScreen = ({ navigation }) => {
                 <Layout style={{flex:1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', padding: 20, alignItems: 'center'}}>
                     <Text>Theme: </Text>
                     <Toggle 
-                        checked={checked}
+                        checked={isChecked}
                         onChange={onCheckedChange}
                     />
                 </Layout>
