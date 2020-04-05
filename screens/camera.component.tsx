@@ -56,18 +56,18 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
 
     async function processDocument (localPath: string) {
         const processed = await vision().textRecognizerProcessImage(localPath);
-        console.log(localPath);
-        return processed;
+
+        return processed.text;
     }
 
     const takePicture = async function() {
         if (camera) {
-          const data = await camera.takePictureAsync();
+          const data = await camera.takePictureAsync({fixOrientation: true, forceUpOrientation: true});
           console.log('takePicture ', data);
         //   nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
           processDocument(data.uri.replace(/^file:\/\//g, ''))
             .then((result) => {
-                console.log(result);
+                nodejs.channel.send(result);
             }).catch(err => console.log(err));
         }
       };

@@ -26,6 +26,7 @@
 		DA65328524316E7600302064 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65328424316E7600302064 /* CoreFoundation.framework */; };
 		DA65328724316E8100302064 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65328624316E8000302064 /* EventKit.framework */; };
 		DA65328924316EF900302064 /* libreact-native-calendar-events.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65328824316EF900302064 /* libreact-native-calendar-events.a */; };
+		DA8373F324398FCD00723A30 /* libRNFBMLVision.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8373F224398FCD00723A30 /* libRNFBMLVision.a */; };
 		FFDD7DD615F9863D3E5CE676 /* libPods-FoodIt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20BCD09A41598A320B2461E5 /* libPods-FoodIt.a */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,7 @@
 		DA65328424316E7600302064 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		DA65328624316E8000302064 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		DA65328824316EF900302064 /* libreact-native-calendar-events.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-calendar-events.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA8373F224398FCD00723A30 /* libRNFBMLVision.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFBMLVision.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -94,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA8373F324398FCD00723A30 /* libRNFBMLVision.a in Frameworks */,
 				DA65328924316EF900302064 /* libreact-native-calendar-events.a in Frameworks */,
 				DA65328724316E8100302064 /* EventKit.framework in Frameworks */,
 				DA65328524316E7600302064 /* CoreFoundation.framework in Frameworks */,
@@ -170,6 +173,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DA8373F224398FCD00723A30 /* libRNFBMLVision.a */,
 				DA65328824316EF900302064 /* libreact-native-calendar-events.a */,
 				DA65328624316E8000302064 /* EventKit.framework */,
 				DA65328424316E7600302064 /* CoreFoundation.framework */,

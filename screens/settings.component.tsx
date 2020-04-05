@@ -31,7 +31,7 @@ export const Setting = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TopNavigation title='Settings' alignment='center' titleStyle={styles.navigationTitle}/>
+            <TopNavigation title='SETTINGS' alignment='center' titleStyle={styles.navigationTitle}/>
             <Divider/>
             <Layout style={styles.settingLayout}>
                 <Layout style={{flex:1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', padding: 20, alignItems: 'center'}}>

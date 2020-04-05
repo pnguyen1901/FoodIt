@@ -1,5 +1,11 @@
 import React, { useEffect, useState} from 'react';
-import { SafeAreaView, ImageStyle } from 'react-native';
+import { SafeAreaView, 
+        ImageStyle,
+        Animated,
+        Image,
+        StyleSheet,
+        TouchableHighlight,
+        TouchableOpacity } from 'react-native';
 import { Divider, 
         Icon, 
         Layout, 
@@ -12,10 +18,10 @@ import { Divider,
 
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack'; 
 import { RootStackParamList } from '../navigations/BottomNavigation';
 import nodejs from 'nodejs-mobile-react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 type ItemsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -64,7 +70,11 @@ const styles = StyleSheet.create({
   },
   plusIcon: {
     fontSize: 20
-  }
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
 })
 
 const PlusIcon = () : React.ReactElement => (
@@ -88,43 +98,90 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
     .collection('food_items').where('ownerId', '==', firebase.auth().currentUser.uid)
     .get()
     .then((querySnapshot) => {
-      const documents = querySnapshot.docs.map(doc => doc.data());
+      const documents = querySnapshot.docs.map(doc => {
+        const document = doc.data();
+        document.id = doc.id;
+        return document;
+      });
       setData(documents);
     });
 
   });
 
+  const deleteItem = (documentId: string): void => {
+    console.log(documentId);
+    firestore()
+      .collection('food_items')
+      .doc(documentId)
+      .delete()
+      .then(() => {
+        console.log('Item deleted');
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
 
+  const TrashIcon = (style: ImageStyle): IconElement => (
+    <Icon {...style} name='trash-2'/>
+  )
 
-  const renderItemAccessory = (style: React.CSSProperties): React.ReactElement => (
-    <Button style={style}>Edit</Button>
-  );
+  const renderItemAccessory = (props): React.ReactElement => {
+    
+    const { style, item } = props;
+    
+    return (
+      <Button 
+      style={style} 
+      icon={TrashIcon} 
+      status='danger' 
+      size='small' 
+      appearance='outline'
+      onPress={() => deleteItem(item.id)}></Button>
+    )
+  };
   
-  const renderItemIcon = (style: ImageStyle): IconElement => (
-    <Icon {...style} name='person'/>
+  const PriceTagIcon = (style: ImageStyle): IconElement => (
+    <Icon {...style} name='pricetags-outline'/>
   );
 
   type renderItemProps = {
     item: {
       brand: string,
       category: string,
-      expiration_date: Date
+      expiration_date: Date,
+      id: string
     },
     index: number
   }
 
-  const renderItem = ({ item, index }: renderItemProps): React.ReactElement => (
+  const renderItem = ({ item, index }: renderItemProps): React.ReactElement => {
+  
+  const id = item.id;
+  
+  return (
     <ListItem
       title={`${item.brand} ${item.category}`}
       description={`Expired by: ${new Date(item.expiration_date.seconds*1000).toLocaleDateString()}`}
-      icon={renderItemIcon}
-      accessory={renderItemAccessory}
+      icon={PriceTagIcon}
+      accessory={() => {
+        
+        return (
+          <Button 
+          icon={TrashIcon} 
+          status='danger' 
+          size='small' 
+          appearance='outline'
+          onPress={() => deleteItem(id)}></Button>
+        )
+      }}
+      titleStyle={styles.title}
     />
-  )
+  )}
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNavigation title='Items' alignment='center' titleStyle={styles.navigationTitle}/>
+      <TopNavigation title='ITEMS' alignment='center' titleStyle={styles.navigationTitle}/>
       <Divider/>
       <Layout style={styles.taskLayout}>
         <List 
