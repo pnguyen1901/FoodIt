@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { SafeAreaView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { Divider,
         Icon,
         TopNavigation,
         Layout,
         Text,
-        Button,
         Input, 
         Datepicker,
-        TopNavigationAction} from '@ui-kitten/components';
+        TopNavigationAction,
+        Select,
+        Button} from '@ui-kitten/components';
 
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -18,6 +19,10 @@ require('datejs');
 import RNCalendarEvents from 'react-native-calendar-events/index.ios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigations/BottomNavigation';
+import { setAlert, setBrand, setCategory, setEXP, setTime, hideTimePicker, showTimePicker, resetForm } from '../store/actions';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { start } from 'repl';
+
 
 type AddItemNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -53,8 +58,8 @@ const styles = StyleSheet.create({
     },
     input: {
         // marginLeft: 20,
-        marginTop: 20,
-        marginBottom: 20,
+        marginTop: 10,
+        marginBottom: 30,
     }
 
 })
@@ -67,12 +72,23 @@ const SaveIcon = (style) : React.ReactElement => (
     <Icon {...style} name='save-outline'/>
 )
 
+const AlertOptions = [
+    { text: '2 days before', value: 2 }, 
+    { text: '3 days before', value: 3 },
+    { text: '1 week before', value: 7 }
+]
+
 
 export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
 
-    const [brand, setBrand] = useState('');
-    const [category, setCategory] = useState('');
-    const expiration_date = useSelector(state => state.itemReducer.expiration_date);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const { expiration_date, 
+            alert,
+            brand,
+            category,
+            isTimePickerVisible,
+            time } = useSelector( state => state.itemReducer );
+    const dispatch = useDispatch();
 
     const navigateBack = (): void => {
         navigation.goBack();
@@ -82,6 +98,25 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
         <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
     );
 
+    const saveEventCalendar = (expiration_date: string, alert: number): void => {
+        const endDate = expiration_date;
+        const alarm = expiration_date;
+        console.log(expiration_date.toString());
+        RNCalendarEvents.saveEvent(category, {
+            startDate: expiration_date.toISOString(),
+            endDate: endDate.addHours(1).toISOString(),
+            title: category + brand,
+            alarms: [{
+                date: alarm.addHours(10).add(-alert).day().toISOString()
+            }]
+        }).then((status: string) => { 
+            console.log(status)
+            dispatch(resetForm());
+        })
+        .catch((err: string) => console.log(err));
+        navigation.goBack();
+    }
+
     const ownerId = firebase.auth().currentUser.uid;
 
     const saveItem = () => {
@@ -89,22 +124,27 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
             .add({
                 brand: brand,
                 category: category,
-                expiration_date: expirationDate,
+                expiration_date: expiration_date,
                 ownerId: ownerId
             })
             .then((docRef) => {
                 console.log("Document written with ID:", docRef.id);
-                RNCalendarEvents.saveEvent(category, {
-                    calendarId: '123',
-                    startDate: '2020-04-12T02:42:55.457Z',
-                    endDate: '2020-04-12T10:42:55.457Z',
-                    title: category + brand,
-                    alarms: [{
-                        date: '2020-04-05T10:42:55.457Z'
-                    }]
-                }).then(status => console.log(status))
-                .catch(err => console.log(err));
-                navigation.goBack();
+                RNCalendarEvents.authorizationStatus()
+                    .then((status: string) => {
+                        if (status === 'authorized') {
+                            saveEventCalendar(expiration_date, alert);
+                        } else {
+                            RNCalendarEvents.authorizeEventStore()
+                                .then((status: string) => {
+                                    saveEventCalendar();
+                                })
+                                .catch((err: string) => {
+                                    Alert.alert(err);
+                                })
+                        }
+                }).catch((err: string) => {
+                    Alert.alert(err);
+                })
             })
             .catch((error) => {
                 console.log("Error adding document:", error);
@@ -130,7 +170,7 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
                     style={styles.input} 
                     placeholder='Select the brand of the item'
                     value={brand}
-                    onChangeText={setBrand}/>
+                    onChangeText={(e) => dispatch(setBrand(e))}/>
                 {/* </Layout> */}
                 {/* <Layout style={styles.inputLayout}> */}
                     <Text
@@ -141,7 +181,7 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
                         style={styles.input} 
                         placeholder='Category'
                         value={category}
-                        onChangeText={setCategory}/>                
+                        onChangeText={(e) => dispatch(setCategory(e))}/>                
                 {/* </Layout> */}
                 {/* <Layout style={styles.inputLayout}> */}
                 <Text
@@ -150,10 +190,30 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
                 </Text>
                 <Datepicker
                     style={styles.input} 
-                    date={Date.parse(expiration_date)}
+                    date={expiration_date}
                     // date={expirationDate}
-                    onSelect={''}/>
+                    onSelect={(e) => dispatch(setEXP(e))}/>
                 {/* </Layout> */}
+                <Text
+                    category='h6'>
+                    Alert
+                </Text>
+                <Select
+                    style={styles.input}
+                    data={AlertOptions}
+                    selectedOption={selectedOption}
+                    onSelect={(e) => {
+                        setSelectedOption(e);
+                        dispatch(setAlert(e.value));
+                    }}
+                />
+                <Input onFocus={() => dispatch(showTimePicker())}>{time.toLocaleString()}</Input>
+                <DateTimePickerModal
+                    isVisible={isTimePickerVisible}
+                    mode="datetime"
+                    onConfirm={(date) => dispatch(setTime(date))}
+                    onCancel={() => dispatch(hideTimePicker())}
+                />
                 <Layout style={{flex: 1}}>
 
                 </Layout>

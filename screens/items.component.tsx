@@ -163,7 +163,7 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
     <ListItem
       title={`${item.brand} ${item.category}`}
       description={`Expired by: ${new Date(item.expiration_date.seconds*1000).toLocaleDateString()}`}
-      icon={PriceTagIcon}
+      // icon={PriceTagIcon}
       accessory={() => {
         
         return (
@@ -190,7 +190,7 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
         />
         <Button
           status='info' 
-          onPress={() => navigation.navigate('Camera')}
+          onPress={() => navigation.navigate('AddItem')}
           // onPress={() => nodejs.channel.send('EXP: 04/01/2020')}
           style={styles.button} icon={PlusIcon}/>
       </Layout>

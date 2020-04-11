@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet,
          Text,
          SafeAreaView,
          View,
          TouchableOpacity,
          Alert,
+         Dimensions,
+         Image
         } from 'react-native';
-import Slider from '@react-native-community/slider';
+import ImageEditor from "@react-native-community/image-editor";
+import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
-import { createItem } from '../store/actions';
+import { createItem, loading, loadingDone } from '../store/actions';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigations/BottomNavigation';
 import nodejs from 'nodejs-mobile-react-native';
@@ -28,6 +31,7 @@ type CameraProps = {
 export const Camera: React.FC<CameraProps> = ({ navigation }) => {
 
     const dispatch = useDispatch();
+    const isLoading = useSelector(state => state.itemReducer.isLoading);
     const [ratio, setRatio] = useState('16:9');
     const [type, setType] = useState('back');
     const [flash, setFlash] = useState('off');
@@ -36,20 +40,24 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
     const [depth, setDepth] = useState(0);
     const [canDetectText, setCanDetectText] = useState(false);
     const [textBlocks, setTextBlocks] = useState([]);
+    let { width } = Dimensions.get('window');
+    const maskLength = (width * 90)/100;
 
     useEffect(() => {
         nodejs.channel.addListener('message', 
             (msg) => {
-                if (msg.includes('Error:')) {
-                    Alert.alert(msg); 
+                if (msg === null) {
+                    dispatch(loadingDone());
+                    setTimeout(() => {
+                      Alert.alert('Please try again!');  
+                    }, 100);
                 } else {
                     console.log(msg);
+                    dispatch(loadingDone());
                     dispatch(createItem(msg));
                     navigation.navigate('AddItem'); 
                 }
-
             },
-            this
         )
     })
 
@@ -64,11 +72,26 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
         if (camera) {
           const data = await camera.takePictureAsync({fixOrientation: true, forceUpOrientation: true});
           console.log('takePicture ', data);
-        //   nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
-          processDocument(data.uri.replace(/^file:\/\//g, ''))
-            .then((result) => {
-                nodejs.channel.send(result);
-            }).catch(err => console.log(err));
+          dispatch(loading());
+          nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
+
+        //   ImageEditor.cropImage(
+        //       data.uri,
+        //       {
+        //         offset:{},
+        //         size: {} 
+        //       }).then((url:string) => {
+        //         nodejs.channel.send(url.replace(/^file:\/\//g,''));
+        //       })
+        //       .catch((err:string) => {
+        //           console.log(err);
+        //       })
+
+          
+        //   processDocument(data.uri.replace(/^file:\/\//g, ''))
+        //     .then((result) => {
+        //         nodejs.channel.send(result);
+        //     }).catch(err => console.log(err));
         }
       };
     
@@ -133,6 +156,9 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
     
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
+            <View style={{height: 200, width:400}}>
+
+            </View>
             <RNCamera
             ref={ref => {
             camera = ref;
@@ -150,69 +176,36 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
             onTextRecognized={canDetectText ? textRecognized : null}
             captureAudio={false}
         >
+            <View style={styles.overlay} />
+                <View style={styles.snapText}>
+                    <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
+                        PLACE IMAGE INSIDE THE FRAME
+                    </Text>
+                </View>
+                <View style={[styles.contentRow, { height: 200 }]}>
+                    <View style={styles.overlay} />
+                    <View
+                        style={[
+                        styles.content,
+                        { width: maskLength, height: 200 }
+                        ]}
+                    />
+                    <View style={styles.overlay} />
+                </View>
             <View
             style={{
-                flex: 0.5,
-            }}
-            >
-            <View
-                style={{
+                flex: 1,
                 backgroundColor: 'transparent',
                 flexDirection: 'row',
-                justifyContent: 'space-around',
-                }}
-            >
-                <TouchableOpacity onPress={() => setCanDetectText(!canDetectText)} style={styles.flipButton}>
-                <Text style={styles.flipText}>
-                    {!canDetectText ? 'Detect Text' : 'Detecting Text'}
-                </Text>
-                </TouchableOpacity>
-            </View>
-            </View>
-            <View
-            style={{
-                flex: 0.4,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-                alignSelf: 'flex-end',
+                alignSelf: 'center',
             }}
             >
-            {/* <Slider
-                style={{ width: 150, marginTop: 15, alignSelf: 'flex-end' }}
-                onValueChange={() => setFocusDepth()}
-                step={0.1}
-                disabled={autoFocus === 'on'}
-            /> */}
-            </View>
-            {zoom !== 0 && (
-            <Text style={[styles.flipText, styles.zoomText]}>Zoom: {zoom}</Text>
-            )}
-            <View
-            style={{
-                flex: 0.1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-                alignSelf: 'flex-end',
-            }}
-            >
-            <TouchableOpacity
-                style={[styles.flipButton, { flex: 0.1, alignSelf: 'flex-end' }]}
-                onPress={() => zoomIn()}
-            >
-                <Text style={styles.flipText}> + </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[styles.flipButton, { flex: 0.1, alignSelf: 'flex-end' }]}
-                onPress={() => zoomOut()}
-            >
-                <Text style={styles.flipText}> - </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[styles.flipButton, { flex: 0.25, alignSelf: 'flex-end' }]}
-                onPress={() => toggleFocus()}
-            >
-                <Text style={styles.flipText}> AF : {autoFocus} </Text>
-            </TouchableOpacity>
+            {/* { isLoading ? <Spinner size='giant'/> : null } */}
+            <Spinner
+            visible={isLoading}
+            textContent={'Loading...'}
+            textStyle={styles.spinnerTextStyle}
+            />
             <TouchableOpacity
                 style={[styles.flipButton, styles.picButton, { flex: 0.3, alignSelf: 'flex-end' }]}
                 onPress={() => takePicture()}
@@ -220,6 +213,7 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
                 <Text style={styles.flipText}> SNAP </Text>
             </TouchableOpacity>
             </View>
+            <View style={styles.overlay} />
             {!!canDetectText && renderTextBlocks()}
         </RNCamera>
       </SafeAreaView>
@@ -234,20 +228,27 @@ const styles = StyleSheet.create({
     },
     flipButton: {
       flex: 0.3,
-      height: 40,
+      height: 60,
+      width: 60,
       marginHorizontal: 2,
-      marginBottom: 10,
+      marginBottom: 50,
       marginTop: 10,
-      borderRadius: 8,
+      borderRadius: 30,
       borderColor: 'white',
       borderWidth: 1,
-      padding: 5,
       alignItems: 'center',
       justifyContent: 'center',
     },
     flipText: {
-      color: 'white',
+      color: 'black',
       fontSize: 15,
+    },
+    snapText: {
+        alignItems: "center",
+        fontSize: 15
+    },
+    spinnerTextStyle: {
+        color: '#FFF'
     },
     zoomText: {
       position: 'absolute',
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
         top: 0,
     },
     picButton: {
-      backgroundColor: 'darkseagreen',
+      backgroundColor: 'white',
     },
     text: {
       padding: 10,
@@ -278,5 +279,16 @@ const styles = StyleSheet.create({
       position: 'absolute',
       textAlign: 'center',
       backgroundColor: 'transparent',
+    },
+    overlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)"
+    },
+    content: {
+        borderWidth: 3,
+        borderColor: "#00FF00"
+    },
+    contentRow: {
+        flexDirection: "row"
     },
   });

@@ -1,8 +1,9 @@
 export default {
-    itemReducer: {
-        brand: '',
-        category: '',
-        expiration_date: ''
-    }
-
+    brand: '',
+    category: '',
+    expiration_date: '',
+    alert: 0,
+    isLoading: false,
+    isTimePickerVisible: false,
+    time: new Date()
 }

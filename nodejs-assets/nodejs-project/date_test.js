@@ -1,4 +1,9 @@
-// require('datejs');
+require('datejs');
+
+const expiration_date = Date.parse('FEB/13/2021');
+
+const alert = expiration_date.add(-1).day().toISOString();
+console.log(alert);
 
 // // const strings = ['32323 EXP: 06/20 ',
 // //                 'Best By N30 JUL 20',
@@ -14,31 +19,31 @@
 // date_strings.forEach((date_string) => {
 //     console.log(date_string + ':  ', Date.parse(date_string) + '\n');
 // })
-async function quickstart () {
-const language = require('@google-cloud/language');
+// async function quickstart () {
+// const language = require('@google-cloud/language');
 
-const client = new language.LanguageServiceClient();
+// const client = new language.LanguageServiceClient();
 
-const text = `hey In 04/20/2020, EXP
-`
-const document = {
-    content: text,
-    type: 'PLAIN_TEXT'
-}
+// const text = `hey In 04/20/2020, EXP
+// `
+// const document = {
+//     content: text,
+//     type: 'PLAIN_TEXT'
+// }
 
-const [result] = await client.analyzeEntities({document});
+// const [result] = await client.analyzeEntities({document});
 
-const entities = result.entities;
-const date = entities.filter((entity) => {
-    return entity.type == 'DATE'
-}).map((entity) =>  {
-    return entity.name
-})
+// const entities = result.entities;
+// const date = entities.filter((entity) => {
+//     return entity.type == 'DATE'
+// }).map((entity) =>  {
+//     return entity.name
+// })
 
-    return date;
+//     return date;
 
-}
+// }
 
-quickstart().then(response => {
-    console.log(response[0]);
-}).catch(err => console.log(err));
+// quickstart().then(response => {
+//     console.log(response[0]);
+// }).catch(err => console.log(err));

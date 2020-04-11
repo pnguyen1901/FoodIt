@@ -51,20 +51,20 @@ async function dateExtract (text) {
 
 // Echo every message received from react-native.
 rn_bridge.channel.on('message', (msg) => {
-    // textDetection(msg).then(detectedText => {
-    //     dateExtract(detectedText[0].description).then(response => {
-    //       rn_bridge.channel.send(response[0]);
-    //     }
-    //   ).catch(err => {
-    //     rn_bridge.channel.send(`${err}`);
-    //   })
-    // }).catch(err => {
-    //   rn_bridge.channel.send(`${err}`);
-    // })
-    dateExtract(msg).then(response => {
-      rn_bridge.channel.send(response[0]);
-    }).catch(err => console.log(err));
-  // rn_bridge.channel.send(`hey ${msg}`);
+    textDetection(msg).then(detectedText => {
+        dateExtract(detectedText[0].description).then(response => {
+          rn_bridge.channel.send(response[0]);
+        }
+      ).catch(err => {
+        rn_bridge.channel.send(`${err}`);
+      })
+    }).catch(err => {
+      rn_bridge.channel.send(`${err}`);
+    })
+    // dateExtract(msg).then(response => {
+    //   console.log(response);
+    //   rn_bridge.channel.send(response[0]);
+    // }).catch(err => console.log(err));
 });
 
 // Inform react-native node is initialized.
