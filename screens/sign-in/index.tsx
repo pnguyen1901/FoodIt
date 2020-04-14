@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { StyleSheet, View, Alert } from 'react-native';
 import { Button, Input, Text } from '@ui-kitten/components';
 import { ImageOverlay } from './extra/image-overlay.component';
 import {
@@ -12,17 +13,33 @@ import {
 } from './extra/icons';
 import { KeyboardAvoidingView } from './extra/3rd-party';
 import { firebase } from '@react-native-firebase/auth';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../navigations/BottomNavigation';
+import { setLoggedIn } from '../../store/actions';
+import { LoginManager, 
+          AccessToken,
+          GraphRequest,
+          GraphRequestManager } from 'react-native-fbsdk';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-export default ({ navigation }): React.ReactElement => {
+type SignInNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'SignIn'
+>
+
+type SignInProps = {
+  navigation: SignInNavigationProp
+}
+
+
+export default ({ navigation }: SignInProps): React.ReactElement => {
 
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
-  const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
-
-  const onSignInButtonPress = (): void => {
-    navigation && navigation.goBack();
-  };
+  const loggedIn = useSelector(state => state.itemReducer.loggedIn);
+  const dispatch = useDispatch();
 
   const onSignUpButtonPress = (): void => {
     navigation && navigation.navigate('SignUp4');
@@ -36,12 +53,54 @@ export default ({ navigation }): React.ReactElement => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleLogin = () => {
+  async function createNewUser(result: object) {
+
+    const docRef = await firestore().collection('users').add({
+      user_id: result.id,
+      user_name: result.name,
+      user_email: result.email
+    });
+
+    if(docRef.id) {
+      console.log("Document written with ID: " + docRef.id);
+    }
+
+  }
+
+
+  async function onFacebookButtonPress() {
+    // Attempt login with permissions
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+  
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+  
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+  
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+  
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(facebookCredential);
+  }
+
+  const onSignInButtonPress = () => {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => setLoggedIn(true))
-      .catch(e => console.log(e))
+      .then(() => {
+        dispatch(setLoggedIn(true));
+        navigation.navigate('Items');
+      })
+      .catch(e => {
+        Alert.alert(e);
+      })
   }
 
   useEffect(() => {
@@ -121,6 +180,32 @@ export default ({ navigation }): React.ReactElement => {
               status='control'
               size='giant'
               icon={FacebookIcon}
+              onPress={() => 
+                onFacebookButtonPress()
+                  .then(() => {
+                    //Create response callback.
+                  _responseInfoCallback = (error: Object, result: Object) => {
+                    if (error) {
+                      console.log('Error fetching data: ' + error.toString());
+                    } else {
+                      createNewUser(result).catch((error) => {
+                        console.log('Error creating new user: ' + error.toString());
+                      })
+                    }
+                  }
+
+                  // Create a graph request asking for user information with a callback to handle the response.
+                  const infoRequest = new GraphRequest(
+                    '/me?fields=id,name,email',
+                    null,
+                    this._responseInfoCallback,
+                  );
+                  // Start the graph request.
+                  new GraphRequestManager().addRequest(infoRequest).start();
+                  }).catch((error) => {
+                    console.log(error);
+                  })
+              }
             />
             <Button
               appearance='ghost'

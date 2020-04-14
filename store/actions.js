@@ -71,3 +71,10 @@ export function resetForm () {
         type: types.RESET_FORM
     }
 }
+
+export function setLoggedIn (value) {
+    return {
+        type: types.SET_LOGGED_IN,
+        value
+    }
+}

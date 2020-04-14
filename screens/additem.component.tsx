@@ -125,7 +125,7 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
                 brand: brand,
                 category: category,
                 expiration_date: expiration_date,
-                ownerId: ownerId
+                ownerId: [ownerId]
             })
             .then((docRef) => {
                 console.log("Document written with ID:", docRef.id);
@@ -157,7 +157,12 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TopNavigation style={styles.topNavigation} title='ADD NEW ITEM' alignment='center' leftControl={BackAction()} rightControls={SaveAction()}/>
+            <TopNavigation 
+                style={styles.topNavigation} 
+                title='ADD NEW ITEM' 
+                alignment='center' 
+                leftControl={BackAction()} 
+                rightControls={SaveAction()}/>
             <Divider />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <Layout style={styles.layout}>

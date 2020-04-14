@@ -69,6 +69,12 @@ export const itemReducer = (state = initialState, action) => {
         case types.RESET_FORM:
             return initialState
 
+        case types.SET_LOGGED_IN:
+            return {
+                ...state,
+                loggedIn: action.value
+            }
+
         default:
             return state
     }

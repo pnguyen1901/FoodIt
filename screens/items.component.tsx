@@ -1,27 +1,25 @@
 import React, { useEffect, useState} from 'react';
 import { SafeAreaView, 
         ImageStyle,
-        Animated,
-        Image,
         StyleSheet,
-        TouchableHighlight,
-        TouchableOpacity } from 'react-native';
+        Alert} from 'react-native';
 import { Divider, 
         Icon, 
         Layout, 
         Text, 
-        TopNavigation, 
+        TopNavigation,
+        TopNavigationAction, 
         Button,
         List,
         ListItem, 
-        IconElement} from '@ui-kitten/components';
-
+        IconElement,
+        OverflowMenu} from '@ui-kitten/components';
+import { useDispatch } from 'react-redux';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { StackNavigationProp } from '@react-navigation/stack'; 
 import { RootStackParamList } from '../navigations/BottomNavigation';
-import nodejs from 'nodejs-mobile-react-native';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { setLoggedIn } from '../store/actions';
 
 type ItemsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
     flex: 6,
     justifyContent: 'center'
   },
-  button: {
+  addButton: {
     height: 60,
     width: 60,
     borderRadius: 30,
@@ -68,8 +66,8 @@ const styles = StyleSheet.create({
   navigationTitle: {
     fontSize: 20
   },
-  plusIcon: {
-    fontSize: 20
+  topNavIcon: {
+
   },
   title: {
     fontSize: 16,
@@ -81,37 +79,97 @@ const PlusIcon = () : React.ReactElement => (
   <Icon style={{ height: 25, width: 25}} name='plus-outline'/>
 );
 
+const MenuIcon = (style) : React.ReactElement => (
+  <Icon {...style} name='more-horizontal'/>
+);
+
+const UserIcon = (style) : React.ReactElement => (
+  <Icon {...style} name='person' />
+);
+
+const LogoutIcon = (style) => (
+  <Icon {...style} name='log-out'/>
+);
+
+const ShareIcon = (style) => (
+  <Icon {...style} name='share'/>
+)
+
 export const Items: React.FC<ItemProps> = ({ navigation }) => {
   const [user, setUser] = useState();
   const [data, setData] = useState([]);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const dispatch = useDispatch();
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  }
+
+  const menuData = [
+    {
+      title: 'Account',
+      icon: UserIcon
+    },
+    {
+      title: 'Sign Out',
+      icon: LogoutIcon
+    }
+  ]
+
+  let foodItemsRef = firestore().collection('food_items');
 
   useEffect(() => {
-    firebase
-      .auth()
-      .onAuthStateChanged(user => {
-        setUser(user);
-      });
-    
-    
+    const unsubscribe = firebase.auth()
+              .onAuthStateChanged((user) => {
+                if (user) {
+                  foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid).orderBy('expiration_date', "asc")
+                  .get()
+                  .then((querySnapshot) => {
+                    const documents = querySnapshot.docs.map(doc => {
+                      const document = doc.data();
+                      document.id = doc.id;
+                      return document;
+                    });
+                    setData(documents);
+                  }).catch(err => {
+                    console.log(err);
+                })
+              }
+          })
+          return () => unsubscribe()
+      })
 
-    firestore()
-    .collection('food_items').where('ownerId', '==', firebase.auth().currentUser.uid)
-    .get()
-    .then((querySnapshot) => {
-      const documents = querySnapshot.docs.map(doc => {
-        const document = doc.data();
-        document.id = doc.id;
-        return document;
-      });
-      setData(documents);
-    });
+  const SignOut = () : void => {
+    firebase.auth().signOut().then(() => {
+      dispatch(setLoggedIn(false));
+      navigation.navigate('SignIn');
+    }).catch((err) => {
+      Alert.alert(err);
+    })
+  }
 
-  });
+  const shareItem = (user_id: string) => {
+    foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(doc => {
+          foodItemsRef.doc(doc.id).update({
+            ownerId: firebase.firestore.FieldValue.arrayUnion(user_id)
+          }).then(res => {
+            console.log()
+          }).catch(err => {
+            Alert.alert(err);
+          })
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
   const deleteItem = (documentId: string): void => {
     console.log(documentId);
-    firestore()
-      .collection('food_items')
+    foodItemsRef
       .doc(documentId)
       .delete()
       .then(() => {
@@ -121,6 +179,32 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
         console.log(err);
       })
   }
+
+  const onMenuItemSelect = (index: number, e) => {
+
+    if (menuData[index]['title'] === 'Sign Out') {
+      SignOut();
+    }
+
+    setMenuVisible(false);
+  }
+
+  const renderRightActions = () => (
+    <>
+      <OverflowMenu
+        visible={menuVisible}
+        data={menuData}
+        onBackdropPress={toggleMenu}
+        onSelect={onMenuItemSelect}
+        >
+        <TopNavigationAction 
+          icon={MenuIcon}
+          onPress={toggleMenu}
+        />
+      </OverflowMenu>
+    </>
+  )
+
 
   const TrashIcon = (style: ImageStyle): IconElement => (
     <Icon {...style} name='trash-2'/>
@@ -141,9 +225,6 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
     )
   };
   
-  const PriceTagIcon = (style: ImageStyle): IconElement => (
-    <Icon {...style} name='pricetags-outline'/>
-  );
 
   type renderItemProps = {
     item: {
@@ -181,7 +262,12 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNavigation title='ITEMS' alignment='center' titleStyle={styles.navigationTitle}/>
+      <TopNavigation 
+        title='ITEMS' 
+        alignment='center' 
+        titleStyle={styles.navigationTitle}
+        rightControls={renderRightActions()}
+        />
       <Divider/>
       <Layout style={styles.taskLayout}>
         <List 
@@ -192,7 +278,12 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
           status='info' 
           onPress={() => navigation.navigate('AddItem')}
           // onPress={() => nodejs.channel.send('EXP: 04/01/2020')}
-          style={styles.button} icon={PlusIcon}/>
+          style={styles.addButton} icon={PlusIcon}/>
+        {/* <Button
+          status='info' 
+          onPress={() => shareItem('m4MjlNjHMbMj6xOdgVjq8lf80l62')}
+          // onPress={() => nodejs.channel.send('EXP: 04/01/2020')}
+          style={styles.button} icon={ShareIcon}/> */}
       </Layout>
     </SafeAreaView>
   );

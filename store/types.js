@@ -9,3 +9,4 @@ export const SET_TIME = 'SET_TIME';
 export const HIDE_TIME_PICKER = 'HIDE_TIME_PICKER';
 export const SHOW_TIME_PICKER = 'SHOW_TIME_PICKER';
 export const RESET_FORM = 'RESET_FORM';
+export const SET_LOGGED_IN = 'SET_LOGGED_IN';

@@ -5,5 +5,6 @@ export default {
     alert: 0,
     isLoading: false,
     isTimePickerVisible: false,
-    time: new Date()
+    time: new Date(),
+    loggedIn: false
 }
