@@ -96,7 +96,7 @@ const ShareIcon = (style) => (
 )
 
 export const Items: React.FC<ItemProps> = ({ navigation }) => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [data, setData] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
   const dispatch = useDispatch();
@@ -121,6 +121,7 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = firebase.auth()
               .onAuthStateChanged((user) => {
+                setUser(user);
                 if (user) {
                   foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid).orderBy('expiration_date', "asc")
                   .get()
@@ -136,12 +137,12 @@ export const Items: React.FC<ItemProps> = ({ navigation }) => {
                 })
               }
           })
-          return () => unsubscribe()
-      })
+    unsubscribe();
+    }, [user])
 
   const SignOut = () : void => {
     firebase.auth().signOut().then(() => {
-      dispatch(setLoggedIn(false));
+      // dispatch(setLoggedIn(false));
       navigation.navigate('SignIn');
     }).catch((err) => {
       Alert.alert(err);

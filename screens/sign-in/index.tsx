@@ -55,16 +55,24 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
 
   async function createNewUser(result: object) {
 
-    const docRef = await firestore().collection('users').add({
-      user_id: result.id,
-      user_name: result.name,
-      user_email: result.email
-    });
+    const user_id = firebase.auth().currentUser.uid;
 
-    if(docRef.id) {
-      console.log("Document written with ID: " + docRef.id);
+    const doc = await firestore().collection('users')
+      .where('user_id', '==', user_id).get();
+      
+    if (doc.empty) {
+      const docRef = await firestore().collection('users').add({
+        user_id: user_id,
+        user_name: result.name,
+        user_email: result.email
+      });
+
+      if(docRef.id) {
+        console.log("Document written with ID: " + docRef.id);
+      }      
+    } else {
+        console.log('User already existed.');
     }
-
   }
 
 
@@ -193,10 +201,9 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
                       })
                     }
                   }
-
                   // Create a graph request asking for user information with a callback to handle the response.
                   const infoRequest = new GraphRequest(
-                    '/me?fields=id,name,email',
+                    '/me?fields=name,email',
                     null,
                     this._responseInfoCallback,
                   );
