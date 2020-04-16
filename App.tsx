@@ -49,7 +49,7 @@ const App = (): React.ReactFragment => {
         <Provider store={store}>
           <IconRegistry icons={EvaIconsPack}/>
           <IconRegistry icons={EvaIconsPack}/>
-        <ApplicationProvider mapping={mapping} theme={dark}>
+        <ApplicationProvider mapping={mapping} theme={light}>
           <AppNavigator/>
         </ApplicationProvider>
         </Provider>    

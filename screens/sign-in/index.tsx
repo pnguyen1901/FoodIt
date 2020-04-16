@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Button, Input, Text } from '@ui-kitten/components';
+import { Button, Input, Text, Layout, Avatar } from '@ui-kitten/components';
 import { ImageOverlay } from './extra/image-overlay.component';
 import {
   EyeIcon,
@@ -20,6 +20,11 @@ import { LoginManager,
           AccessToken,
           GraphRequest,
           GraphRequestManager } from 'react-native-fbsdk';
+import {
+          GoogleSignin,
+          GoogleSigninButton,
+          statusCodes,
+          } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
@@ -32,6 +37,8 @@ type SignInProps = {
   navigation: SignInNavigationProp
 }
 
+//Set up Google sign in usage with for default options: you get user email and basic profile info.
+GoogleSignin.configure();
 
 export default ({ navigation }: SignInProps): React.ReactElement => {
 
@@ -75,6 +82,17 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
     }
   }
 
+  async function onGoogleButtonPress() {
+
+    // Get the users ID token
+    const { idToken, user } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
 
   async function onFacebookButtonPress() {
     // Attempt login with permissions
@@ -120,25 +138,29 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
 
   return (
     <KeyboardAvoidingView>
-      <ImageOverlay
+      <Layout
         style={styles.container}
-        source={require('./assets/image-background.jpg')}>
+        >
         <View style={styles.headerContainer}>
-          <Text
+          {/* <Text
             category='h1'
-            status='control'>
+            status='primary'>
             Hello
-          </Text>
+          </Text> */}
+          <Avatar 
+            style={styles.avatar} 
+            shape='rounded'
+            size='giant' 
+            source={require('./assets/Icon-1024.png')}/>
           <Text
             style={styles.signInLabel}
             category='s1'
-            status='control'>
+            status='primary'>
             Sign in to your account
           </Text>
         </View>
         <View style={styles.formContainer}>
           <Input
-            status='control'
             placeholder='Email'
             icon={PersonIcon}
             value={email}
@@ -146,7 +168,7 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
           />
           <Input
             style={styles.passwordInput}
-            status='control'
+            status='basic'
             placeholder='Password'
             icon={passwordVisible ? EyeIcon : EyeOffIcon}
             value={password}
@@ -166,27 +188,28 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
         </View>
         <Button
           style={styles.signInButton}
-          size='giant'
+          size='large'
           onPress={onSignInButtonPress}>
           SIGN IN
         </Button>
         <View style={styles.socialAuthContainer}>
           <Text
             style={styles.socialAuthHintText}
-            status='control'>
+            status='primary'>
             Or Sign In using Social Media
           </Text>
           <View style={styles.socialAuthButtonsContainer}>
             <Button
-              appearance='ghost'
-              status='control'
-              size='giant'
+              style={styles.GoogleButton}
+              size='medium'
               icon={GoogleIcon}
-            />
+              onPress={() => {
+                onGoogleButtonPress()
+              }}
+            >SIGN IN WITH GOOGLE</Button>
             <Button
-              appearance='ghost'
-              status='control'
-              size='giant'
+              style={styles.FaceBookButton}
+              size='medium'
               icon={FacebookIcon}
               onPress={() => 
                 onFacebookButtonPress()
@@ -213,23 +236,23 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
                     console.log(error);
                   })
               }
-            />
-            <Button
-              appearance='ghost'
-              status='control'
+            >SIGN IN WITH FACEBOOK</Button>
+            {/* <Button
+              appearance='outline'
+              status='primary'
               size='giant'
               icon={TwitterIcon}
-            />
+            /> */}
           </View>
         </View>
         <Button
           style={styles.signUpButton}
           appearance='ghost'
-          status='control'
+          status='primary'
           onPress={onSignUpButtonPress}>
           Don't have an account? Sign Up
         </Button>
-      </ImageOverlay>
+      </Layout>
     </KeyboardAvoidingView>
   );
 };
@@ -237,14 +260,21 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff'
+  },
+  avatar: {
+    height: 80,
+    width: 80,
+    marginTop: 20,
+    marginBottom: 10
   },
   headerContainer: {
+    flex: 1,
     minHeight: 216,
     justifyContent: 'center',
     alignItems: 'center',
   },
   formContainer: {
-    flex: 1,
     paddingHorizontal: 16,
   },
   signInLabel: {
@@ -267,11 +297,29 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   socialAuthContainer: {
+    flex: 1,
     marginTop: 32,
   },
   socialAuthButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    marginHorizontal: 16,
+  },
+  GoogleButton: {
+    margin: 8,
+    backgroundColor: '#DB4437',
+    borderRadius: 10,
+    borderColor: '#fff',
+    color: '#fff'
+  },
+  FaceBookButton: {
+    margin: 8,
+    backgroundColor: '#3b5998',
+    borderRadius: 10,
+    borderColor: '#fff',
+  },
+  AppleButton: {
+    margin: 8,
   },
   socialAuthHintText: {
     alignSelf: 'center',
