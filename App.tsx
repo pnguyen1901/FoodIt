@@ -9,69 +9,53 @@
  *
  * @format
  */
-
-import React from 'react';
-import {
-  ImageProps,
-  ImageStyle,
-  StyleSheet,
-} from 'react-native';
+import 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
 import {
   ApplicationProvider,
-  Button,
-  Icon,
   IconRegistry,
-  Layout,
-  Text,
 } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import {
   mapping,
-  dark as theme,
+  dark,
+  light
 } from '@eva-design/eva';
-
+import { AppNavigator } from './navigations/BottomNavigation';
+import { Provider } from 'react-redux';
+import { configureStore } from './store';
+import nodejs from 'nodejs-mobile-react-native';
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
  * https://akveo.github.io/eva-icons
  */
-const HeartIcon = (style: ImageStyle): React.ReactElement<ImageProps> => (
-  <Icon {...style} name='heart'/>
-);
 
-const App = (): React.ReactFragment => (
-  <>
-    <IconRegistry icons={EvaIconsPack}/>
-    <ApplicationProvider mapping={mapping} theme={theme}>
-      <Layout style={styles.container}>
-        <Text style={styles.text} category='h1'>
-          Welcome to UI Kitten 😻
-        </Text>
-        <Text style={styles.text} category='s1'>
-          Start with editing App.js to configure your App
-        </Text>
-        <Text style={styles.text} appearance='hint'>
-          For example, try changing theme to Dark by simply changing an import
-        </Text>
-        <Button style={styles.likeButton} icon={HeartIcon}>
-          LIKE
-        </Button>
-      </Layout>
-    </ApplicationProvider>
-  </>
-);
+const store = configureStore();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    textAlign: 'center',
-  },
-  likeButton: {
-    marginVertical: 16,
-  },
-});
+const App = (): React.ReactFragment => {
+
+  useEffect(() => {
+    nodejs.start('main.js');
+    // nodejs.channel.addListener(
+    //   'message',
+    //   (msg) => {
+    //     console.log('From node: ' + msg);
+    //   },
+    //   this 
+    // );
+  }); 
+
+    return (
+        <Provider store={store}>
+          <IconRegistry icons={EvaIconsPack}/>
+          <IconRegistry icons={EvaIconsPack}/>
+        <ApplicationProvider mapping={mapping} theme={light}>
+          <AppNavigator/>
+        </ApplicationProvider>
+        </Provider>    
+
+  )
+};
+
 
 export default App;
