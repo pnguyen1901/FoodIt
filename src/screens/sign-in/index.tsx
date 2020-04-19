@@ -9,7 +9,7 @@ import {
   FacebookIcon,
   GoogleIcon,
   PersonIcon,
-  TwitterIcon,
+  AppleIcon
 } from './extra/icons';
 import { KeyboardAvoidingView } from './extra/3rd-party';
 import { firebase } from '@react-native-firebase/auth';
@@ -25,8 +25,14 @@ import {
           GoogleSigninButton,
           statusCodes,
           } from '@react-native-community/google-signin';
+import appleAuth, {
+            AppleAuthRequestScope,
+            AppleAuthRequestOperation,
+            AppleButton
+          } from '@invertase/react-native-apple-authentication';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { create } from 'react-test-renderer';
 
 type SignInNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -60,7 +66,7 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
     setPasswordVisible(!passwordVisible);
   };
 
-  async function createNewUser(result: object) {
+  async function createNewUser(user: object, signInMethod: string) {
 
     const user_id = firebase.auth().currentUser.uid;
 
@@ -68,10 +74,16 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
       .where('user_id', '==', user_id).get();
       
     if (doc.empty) {
+
       const docRef = await firestore().collection('users').add({
-        user_id: user_id,
-        user_name: result.name,
-        user_email: result.email
+        user_id : user_id,
+        // getting user name from response object is slightly different between Facebook, Google and Apple.
+        user_name : signInMethod === 'Facebook' 
+                      ? user.name 
+                      : ( signInMethod === 'Google' 
+                          ? user.familyName + ' ' + user.givenName 
+                          : user.fullName),
+        user_email : user.email
       });
 
       if(docRef.id) {
@@ -80,6 +92,32 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
     } else {
         console.log('User already existed.');
     }
+  }
+
+  async function onAppleButtonPress() {
+    // Start the sign-in request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: AppleAuthRequestOperation.LOGIN,
+      requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+    });
+  
+    // Ensure Apple returned a user identityToken
+    if (!appleAuthRequestResponse.identityToken) {
+      throw 'Apple Sign-In failed - no identify token returned';
+    }
+  
+    // Create a Firebase credential from the response
+    const { identityToken, nonce } = appleAuthRequestResponse;
+    const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+  
+    // Sign the user in with the credential
+    return auth().signInWithCredential(appleCredential)
+              .then(() => {
+                createNewUser(appleAuthRequestResponse, 'Apple');
+              })
+              .catch(err => {
+                console.log(err);
+              });
   }
 
   async function onGoogleButtonPress() {
@@ -91,7 +129,13 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
     // Sign-in the user with the credential
-    return auth().signInWithCredential(googleCredential);
+    return auth().signInWithCredential(googleCredential)
+                .then(() =>  {
+                  createNewUser(user, 'Google');
+                })
+                .catch(err => {
+                  console.log(err);
+                }) 
   }
 
   async function onFacebookButtonPress() {
@@ -180,7 +224,7 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
             <Button
               style={styles.forgotPasswordButton}
               appearance='ghost'
-              status='control'
+              status='primary'
               onPress={onForgotPasswordButtonPress}>
               Forgot your password?
             </Button>
@@ -206,7 +250,7 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
               onPress={() => {
                 onGoogleButtonPress()
               }}
-            >SIGN IN WITH GOOGLE</Button>
+            >Sign in With Google</Button>
             <Button
               style={styles.FaceBookButton}
               size='medium'
@@ -219,7 +263,7 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
                     if (error) {
                       console.log('Error fetching data: ' + error.toString());
                     } else {
-                      createNewUser(result).catch((error) => {
+                      createNewUser(result, 'Facebook').catch((error) => {
                         console.log('Error creating new user: ' + error.toString());
                       })
                     }
@@ -236,13 +280,14 @@ export default ({ navigation }: SignInProps): React.ReactElement => {
                     console.log(error);
                   })
               }
-            >SIGN IN WITH FACEBOOK</Button>
-            {/* <Button
-              appearance='outline'
-              status='primary'
-              size='giant'
-              icon={TwitterIcon}
-            /> */}
+            >Sign in With Facebook</Button>
+            <Button
+              style={styles.AppleButton}
+              size='medium'
+              onPress={() => onAppleButtonPress()}
+            >
+              Sign in With Apple
+            </Button>
           </View>
         </View>
         <Button
@@ -306,20 +351,25 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   GoogleButton: {
-    margin: 8,
+    marginBottom: 8,
+    marginHorizontal: 8,
     backgroundColor: '#DB4437',
     borderRadius: 10,
-    borderColor: '#fff',
-    color: '#fff'
+    borderColor: '#fff'
   },
   FaceBookButton: {
-    margin: 8,
+    marginBottom: 8,
+    marginHorizontal: 8,
     backgroundColor: '#3b5998',
     borderRadius: 10,
     borderColor: '#fff',
   },
   AppleButton: {
-    margin: 8,
+    marginBottom: 8,
+    marginHorizontal: 8,
+    backgroundColor: '#000000',
+    borderRadius: 10,
+    borderColor: '#fff'
   },
   socialAuthHintText: {
     alignSelf: 'center',

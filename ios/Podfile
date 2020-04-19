@@ -42,6 +42,9 @@ target 'FoodIt' do
   # add pods for any other desired Firebase products
   # https://firebase.google.com/docs/ios/setup#available-pods	
 
+  pod 'ReactNativeNavigation', :path => '../node_modules/react-native-navigation'
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'FoodItTests' do
     inherit! :search_paths
     # Pods for testing

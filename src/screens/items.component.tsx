@@ -40,7 +40,7 @@ const BackIcon = (style: ImageStyle): IconElement => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222B45'
+    backgroundColor: '#FFFFFF' //dark mode: '#222B45'
   },
   taskLayout: {
     flex: 6,

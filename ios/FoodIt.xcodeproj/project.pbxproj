@@ -23,6 +23,7 @@
 		DA2F0BE42421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
 		DA2F0BE52421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
 		DA2F0BE62421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
+		DA475784244BE1DC00AC5838 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA475783244BE1DC00AC5838 /* libReactNativeNavigation.a */; };
 		DA65328524316E7600302064 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65328424316E7600302064 /* CoreFoundation.framework */; };
 		DA65328724316E8100302064 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65328624316E8000302064 /* EventKit.framework */; };
 		DA65328924316EF900302064 /* libreact-native-calendar-events.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65328824316EF900302064 /* libreact-native-calendar-events.a */; };
@@ -75,6 +76,8 @@
 		851B87F4BCCF42BCA0156FC1 /* Pods-FoodIt.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FoodIt.debug.xcconfig"; path = "Target Support Files/Pods-FoodIt/Pods-FoodIt.debug.xcconfig"; sourceTree = "<group>"; };
 		DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DA2F0BE72427E49D00CDD95C /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
+		DA47578224494FB500AC5838 /* FoodIt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = FoodIt.entitlements; path = FoodIt/FoodIt.entitlements; sourceTree = "<group>"; };
+		DA475783244BE1DC00AC5838 /* libReactNativeNavigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReactNativeNavigation.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA65328424316E7600302064 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		DA65328624316E8000302064 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		DA65328824316EF900302064 /* libreact-native-calendar-events.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-calendar-events.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA475784244BE1DC00AC5838 /* libReactNativeNavigation.a in Frameworks */,
 				DA8373F324398FCD00723A30 /* libRNFBMLVision.a in Frameworks */,
 				DA65328924316EF900302064 /* libreact-native-calendar-events.a in Frameworks */,
 				DA65328724316E8100302064 /* EventKit.framework in Frameworks */,
@@ -143,6 +147,7 @@
 		13B07FAE1A68108700A75B9A /* FoodIt */ = {
 			isa = PBXGroup;
 			children = (
+				DA47578224494FB500AC5838 /* FoodIt.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -173,6 +178,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DA475783244BE1DC00AC5838 /* libReactNativeNavigation.a */,
 				DA8373F224398FCD00723A30 /* libRNFBMLVision.a */,
 				DA65328824316EF900302064 /* libreact-native-calendar-events.a */,
 				DA65328624316E8000302064 /* EventKit.framework */,
@@ -512,6 +518,22 @@
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMLVisionTextModel/GoogleMVTextDetectorResources.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -519,6 +541,22 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMVTextDetectorResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -771,6 +809,7 @@
 			baseConfigurationReference = 851B87F4BCCF42BCA0156FC1 /* Pods-FoodIt.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FoodIt/FoodIt.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = Z8NJR94GM6;
@@ -792,6 +831,7 @@
 			baseConfigurationReference = 5C67CB651293810B511B2178 /* Pods-FoodIt.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FoodIt/FoodIt.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z8NJR94GM6;
 				INFOPLIST_FILE = FoodIt/Info.plist;

@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SafeAreaView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
-import { Divider,
+import { SafeAreaView, 
+        TouchableWithoutFeedback,
+        Keyboard,
+        Alert,
+        Dimensions,
+        Platform
+} from 'react-native';
+import {
         Icon,
-        TopNavigation,
         Layout,
         Text,
         Input, 
@@ -17,26 +22,15 @@ import firestore from '@react-native-firebase/firestore';
 import { StyleSheet } from 'react-native';
 require('datejs');
 import RNCalendarEvents from 'react-native-calendar-events/index.ios';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigations/BottomNavigation';
 import { setAlert, setBrand, setCategory, setEXP, setTime, hideTimePicker, showTimePicker, resetForm } from '../store/actions';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { start } from 'repl';
-
-
-type AddItemNavigationProp = StackNavigationProp<
-    RootStackParamList,
-    'AddItem'
->;
-
-type AddItemProps = {
-    navigation: AddItemNavigationProp
-}
+import { useNavigationButtonPress } from 'react-native-navigation-hooks';
+import { Navigation } from 'react-native-navigation';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#101426'
+        // backgroundColor: '#EDF1F7' //dark mode'#101426'
     },
     topNavigation: {
         borderTopLeftRadius: 10,
@@ -79,7 +73,9 @@ const AlertOptions = [
 ]
 
 
-export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
+const addItem: addItemComponentType = ({
+    componentId,
+}): JSX.Element => {
 
     const [selectedOption, setSelectedOption] = useState(null);
     const { expiration_date, 
@@ -89,9 +85,39 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
             isTimePickerVisible,
             time } = useSelector( state => state.itemReducer );
     const dispatch = useDispatch();
+    const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+
+    useEffect(() => {
+        Dimensions.addEventListener('change', () => {
+            getStatusBarHeight();
+        });
+
+        getStatusBarHeight();
+
+        // equivalent to componentWillUnmount
+        // return () => {};
+    }, [componentId]);
+
+    useEffect(() => {
+        const listener = Navigation.events().registerNavigationButtonPressedListener(
+          () => {
+            // do things
+          }
+        );
+        return () => listener.remove();
+      }, []);
+
+    const getStatusBarHeight = async () => {
+        const navConstants = await Navigation.constants();
+
+        // for more info - https://stackoverflow.com/a/48759750
+        if (Platform.OS === 'ios') {
+            setKeyboardVerticalOffset(navConstants.statusBarHeight + navConstants.topBarHeight);
+        }
+    };
 
     const navigateBack = (): void => {
-        navigation.goBack();
+        
     };
 
     const BackAction = () => (
@@ -114,7 +140,7 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
             dispatch(resetForm());
         })
         .catch((err: string) => console.log(err));
-        navigation.goBack();
+        
     }
 
     const ownerId = firebase.auth().currentUser.uid;
@@ -157,13 +183,6 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TopNavigation 
-                style={styles.topNavigation} 
-                title='ADD NEW ITEM' 
-                alignment='center' 
-                leftControl={BackAction()} 
-                rightControls={SaveAction()}/>
-            <Divider />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <Layout style={styles.layout}>
                 {/* <Layout style={styles.inputLayout}> */}
@@ -227,3 +246,5 @@ export const AddItem: React.FC<AddItemProps> = ({navigation}) => {
         </SafeAreaView>
     )
 }
+
+export default addItem;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageStyle } from 'react-native';
+import { ImageStyle, Image } from 'react-native';
 import { Icon, IconElement } from '@ui-kitten/components';
 
 export const EyeIcon = (style: ImageStyle): IconElement => (
@@ -25,3 +25,7 @@ export const PersonIcon = (style: ImageStyle): IconElement => (
 export const TwitterIcon = (style: ImageStyle): IconElement => (
   <Icon {...style} name='twitter'/>
 );
+
+export const AppleIcon = (style: ImageStyle) => (
+  <Image style={style} source={require('../assets/apple-logo.png')}/>
+)

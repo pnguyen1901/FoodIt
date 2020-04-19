@@ -6,5 +6,6 @@ export default {
     isLoading: false,
     isTimePickerVisible: false,
     time: new Date(),
-    loggedIn: false
+    loggedIn: false,
+    theme: 'light'
 }
