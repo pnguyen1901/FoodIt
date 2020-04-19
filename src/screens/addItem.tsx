@@ -116,13 +116,15 @@ const addItem: addItemComponentType = ({
         }
     };
 
-    const navigateBack = (): void => {
-        
-    };
+    useNavigationButtonPress(({ buttonId }) => {
+        if (buttonId === 'cancel_add_item_button_id') {
+            Navigation.dismissAllModals();
+        }
 
-    const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
-    );
+        if (buttonId === 'save_item_button_id') {
+            saveItem();
+        }
+    })
 
     const saveEventCalendar = (expiration_date: string, alert: number): void => {
         const endDate = expiration_date;
@@ -246,5 +248,19 @@ const addItem: addItemComponentType = ({
         </SafeAreaView>
     )
 }
+
+// addItem.options = () => ({
+//     topBar: {
+//           title: {
+//             text: 'New Item'
+//           },
+//           leftButtons: [
+//             {
+//               id: 'cancel_add_item_button_id',
+//               text: 'Cancel'
+//             }
+//           ]
+//         },
+// })
 
 export default addItem;

@@ -6,7 +6,11 @@ import { Divider,
          Text,
          TopNavigation } from '@ui-kitten/components';
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet,
+        Dimensions,
+        Platform,
+} from 'react-native';
+import { Navigation } from 'react-native-navigation';
 
 const styles = StyleSheet.create({
     container: {
@@ -20,7 +24,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
     }
 })
-export const Setting = ({ navigation }) => {
+
+const Settings: SettingsComponentType = ({
+    componentId,
+}): JSX.Element => {
 
     const [theme, setTheme] = useState('dark');
     const [isChecked, setChecked] = useState<boolean>(false);
@@ -31,8 +38,6 @@ export const Setting = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TopNavigation title='SETTINGS' alignment='center' titleStyle={styles.navigationTitle}/>
-            <Divider/>
             <Layout style={styles.settingLayout}>
                 <Layout style={{flex:1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', padding: 20, alignItems: 'center'}}>
                     <Text>Theme: </Text>
@@ -45,3 +50,17 @@ export const Setting = ({ navigation }) => {
         </SafeAreaView>
     )
 }
+
+Settings.options = () => ({
+    topBar: {
+        visible: true,
+        title: {
+            text: 'Settings'
+        },
+        largeTitle: {
+            visible: true
+        }
+    }
+})
+
+export default Settings;

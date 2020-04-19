@@ -15,3 +15,6 @@ type ItemComponentType = NavigationComponent<ItemComponentProps>;
 
 interface addItemComponentProps { }
 type addItemComponentType = NavigationComponent<addItemComponentProps>;
+
+interface SettingsComponentProps { }
+type SettingsComponentType = NavigationComponent<SettingsComponentProps>;

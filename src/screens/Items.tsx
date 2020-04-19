@@ -118,9 +118,11 @@ const Items: ItemComponentType = ({
         // return () => {};
     }, [componentId]);
 
-    useNavigationButtonPress((_) => {
-        Alert.alert('This is just a simple button');
-    }, componentId, 'hi_button_id');
+    useNavigationButtonPress(({ buttonId, componentId }) => {
+        if (buttonId === 'add_button_id') {
+          showAddItem();
+        }
+    }, componentId);
 
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();
@@ -172,12 +174,25 @@ const Items: ItemComponentType = ({
                 {
                   component: {
                     name: 'addItem',
+                    id: 'addItem',
                     options: {
                       topBar: {
                         title: {
-                          text: 'Add New Item'
-                        }
-                      }
+                          text: 'New Item'
+                        },
+                        leftButtons: [
+                          {
+                            id: 'cancel_add_item_button_id',
+                            text: 'Cancel'
+                          }
+                        ],
+                        rightButtons: [
+                          {
+                            id: 'save_item_button_id',
+                            text: 'Add'
+                          }
+                        ]
+                      },
                     }
                   }
                 }
@@ -285,11 +300,6 @@ const Items: ItemComponentType = ({
                     data={data}
                     renderItem={renderItem}
                 />
-                <Button
-                    status='info' 
-                    onPress={() => showAddItem()}
-                    // onPress={() => nodejs.channel.send('EXP: 04/01/2020')}
-                    style={styles.addButton} icon={PlusIcon}/>
                 {/* <Button
                     status='info' 
                     onPress={() => shareItem('m4MjlNjHMbMj6xOdgVjq8lf80l62')}
@@ -307,9 +317,12 @@ Items.options = () => ({
         title: {
             text: 'Items',
         },
+        largeTitle: {
+          visible: true
+        },
         rightButtons: [{
-            id: 'hi_button_id',
-            text: 'Hi',
+            id: 'add_button_id',
+            systemItem: 'add'
         }],
     },
 });
