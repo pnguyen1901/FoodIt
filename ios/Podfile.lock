@@ -544,6 +544,8 @@ PODS:
     - React-cxxreact (= 0.62.0)
     - React-jsi (= 0.62.0)
   - React-jsinspector (0.62.0)
+  - react-native-blur (0.8.0):
+    - React
   - react-native-calendar-events (1.7.3):
     - React
   - react-native-camera/RCT (3.21.0):
@@ -573,6 +575,8 @@ PODS:
   - react-native-image-editor (2.3.0):
     - React
     - React-RCTImage
+  - react-native-netinfo (5.7.1):
+    - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-slider (2.0.9):
@@ -640,6 +644,8 @@ PODS:
     - React
     - React-RCTImage
     - React-RCTText
+  - ReactNativeUiLib (2.0.2):
+    - React
   - RNAppleAuthentication (0.2.0):
     - React
   - RNCAsyncStorage (1.9.0):
@@ -673,12 +679,12 @@ PODS:
     - Firebase/MLVisionTextModel (~> 6.13.0)
     - React
     - RNFBApp
-  - RNGestureHandler (1.6.0):
+  - RNGestureHandler (1.6.1):
     - React
   - RNGoogleSignin (4.0.0):
     - GoogleSignIn (~> 5.0.0)
     - React
-  - RNReanimated (1.7.0):
+  - RNReanimated (1.8.0):
     - React
   - RNScreens (2.3.0):
     - React
@@ -710,10 +716,12 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-calendar-events (from `../node_modules/react-native-calendar-events`)
   - react-native-camera/TextDetector (from `../node_modules/react-native-camera`)
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -728,6 +736,7 @@ DEPENDENCIES:
   - ReactCommon/callinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
+  - ReactNativeUiLib (from `../node_modules/react-native-ui-lib/lib`)
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
@@ -814,6 +823,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
   react-native-calendar-events:
     :path: "../node_modules/react-native-calendar-events"
   react-native-camera:
@@ -822,6 +833,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fbsdk"
   react-native-image-editor:
     :path: "../node_modules/@react-native-community/image-editor"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
@@ -848,6 +861,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeNavigation:
     :path: "../node_modules/react-native-navigation"
+  ReactNativeUiLib:
+    :path: "../node_modules/react-native-ui-lib/lib"
   RNAppleAuthentication:
     :path: "../node_modules/@invertase/react-native-apple-authentication"
   RNCAsyncStorage:
@@ -932,10 +947,12 @@ SPEC CHECKSUMS:
   React-jsi: bc8166d6833cdcb0848c80710b26ce63fad2c099
   React-jsiexecutor: 8bf0b2707f05865113415088c398a7f98c0cf546
   React-jsinspector: 8e5913c4c6c54f0d3f9c9fc630c465a89cded65d
+  react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
   react-native-camera: a9749fa0c1162cdb2f56b93a5d97a72ebd56694f
   react-native-fbsdk: c35d42169e64aaf66f01713c1e18d0674f7f6519
   react-native-image-editor: bd67912f38a8e7a895bf6eb8f445acdcefd8fd0c
+  react-native-netinfo: 38aefddbacc614a14b412ba653b355db49508e50
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   react-native-slider: b34d943dc60deb96d952ba6b6b249aa8091e86da
   React-RCTActionSheet: 674afbc8b9c76e0a83520e0a51da29a70802c03f
@@ -949,6 +966,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 0630aeb11e22f87c180ca9c0c3a0a0aba780cc62
   ReactCommon: d22162ab8f1358c53dfcd0f9c4d82d38facdbc48
   ReactNativeNavigation: 667586f6924fbd09512e2933fe70497db914b758
+  ReactNativeUiLib: 9883f80a22b855d4a866ceee433d1e24b1014a2a
   RNAppleAuthentication: e875711ddda0361c2b7fca28fb6c64cdd94f7968
   RNCAsyncStorage: b16697280b08bab4b5f2f67f752d93d13a52e9ed
   RNCMaskedView: 90dd32f5b786bd562e876e1421ea77c700cbf71e
@@ -958,9 +976,9 @@ SPEC CHECKSUMS:
   RNFBDatabase: 1201eb94eff3ab457d3e898fb5c347ddc67e00db
   RNFBFirestore: 04c1eb90463c208ee072988d463c74bec09d08c1
   RNFBMLVision: 3c98257fa0eb332b52eaf1966bd20aa2d9082efc
-  RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
+  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNGoogleSignin: 068788c1e83e5e05ef0bad090ba67fd8f963a2a3
-  RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
+  RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: 03bf608b92ac0acf323f47d8f5b63a8f829340c8
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4

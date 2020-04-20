@@ -9,28 +9,30 @@ import {
     ImageStyle,
     StyleSheet
 } from 'react-native';
-import { Divider, 
-    Icon, 
-    Layout, 
-    Text, 
-    Button,
-    List,
-    ListItem, 
-    IconElement
-} from '@ui-kitten/components';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 import { useSelector, useDispatch } from 'react-redux';
+import {AnimatableManager, 
+    ThemeManager, 
+    Colors, 
+    BorderRadiuses, 
+    ListItem, 
+    Text,
+    Drawer,
+    View
+} from 'react-native-ui-lib';
+import * as Animatable from 'react-native-animatable';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 
-const BackIcon = (style: ImageStyle): IconElement => (
-    <Icon {...style} name='arrow-back' />
-  );
-  
-  
-  const styles = StyleSheet.create({
+const ITEMS = {
+  delete: {icon: require('../assets/icons/delete.png'), text: 'Delete', background: Colors.red30}
+}
+
+
+const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#FFFFFF' //dark mode: '#222B45'
@@ -39,56 +41,18 @@ const BackIcon = (style: ImageStyle): IconElement => (
       flex: 6,
       justifyContent: 'center'
     },
-    addButton: {
-      height: 60,
-      width: 60,
-      borderRadius: 30,
-      position: "absolute",
-      bottom: 10,
-      right: 10,
-      zIndex: 2,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.23,
-      shadowRadius: 2.62,
-      elevation: 4,
+    image: {
+      width: 54,
+      height: 54,
+      borderRadius: BorderRadiuses.br20,
+      marginHorizontal: 14,
     },
-    navigationTitle: {
-      fontSize: 20
-    },
-    topNavIcon: {
-  
-    },
-    title: {
-      fontSize: 16,
-      fontWeight: 'bold'
+    border: {
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderColor: ThemeManager.dividerColor,
     },
   })
   
-  const PlusIcon = () : React.ReactElement => (
-    <Icon style={{ height: 25, width: 25}} name='plus-outline'/>
-  );
-  
-  const MenuIcon = (style) : React.ReactElement => (
-    <Icon {...style} name='more-horizontal'/>
-  );
-  
-  const UserIcon = (style) : React.ReactElement => (
-    <Icon {...style} name='person' />
-  );
-  
-  const LogoutIcon = (style) => (
-    <Icon {...style} name='log-out'/>
-  );
-  
-  const ShareIcon = (style) => (
-    <Icon {...style} name='share'/>
-  )
-
-
 
 const Items: ItemComponentType = ({
     componentId,
@@ -96,6 +60,7 @@ const Items: ItemComponentType = ({
     const [user, setUser] = useState(null);
     const [data, setData] = useState([]);
     const [menuVisible, setMenuVisible] = useState(false);
+    const [showRightItems, setShowRightItems] = useState(true);
     const dispatch = useDispatch();
   
     const toggleMenu = () => {
@@ -233,59 +198,88 @@ const Items: ItemComponentType = ({
         })
     }
       
-    const TrashIcon = (style: ImageStyle): IconElement => (
-      <Icon {...style} name='trash-2'/>
-    )
+    // const TrashIcon = (style: ImageStyle): IconElement => (
+    //   <Icon {...style} name='trash-2'/>
+    // )
   
-    const renderItemAccessory = (props): React.ReactElement => {
+    // const renderItemAccessory = (props): React.ReactElement => {
       
-      const { style, item } = props;
+    //   const { style, item } = props;
       
-      return (
-        <Button 
-        style={style} 
-        icon={TrashIcon} 
-        status='danger' 
-        size='small' 
-        appearance='outline'
-        onPress={() => deleteItem(item.id)}></Button>
-      )
-    };
+    //   return (
+    //     <Button 
+    //     style={style} 
+    //     icon={TrashIcon} 
+    //     status='danger' 
+    //     size='small' 
+    //     appearance='outline'
+    //     onPress={() => deleteItem(item.id)}></Button>
+    //   )
+    // };
     
   
-    type renderItemProps = {
-      item: {
-        brand: string,
-        category: string,
-        expiration_date: Date,
-        id: string
-      },
-      index: number
-    }
+    // type renderItemProps = {
+    //   item: {
+    //     brand: string,
+    //     category: string,
+    //     expiration_date: Date,
+    //     id: string
+    //   },
+    //   index: number
+    // }
   
-    const renderItem = ({ item, index }: renderItemProps): React.ReactElement => {
+    // const renderItem = ({ item, index }: renderItemProps): React.ReactElement => {
     
-    const id = item.id;
+    // const id = item.id;
     
-    return (
-      <ListItem
-        title={`${item.brand} ${item.category}`}
-        description={`Expired by: ${new Date(item.expiration_date.seconds*1000).toLocaleDateString()}`}
-        // icon={PriceTagIcon}
-        accessory={() => {
+    // return (
+    //   <ListItem
+    //     title={`${item.brand} ${item.category}`}
+    //     description={`Expired by: ${new Date(item.expiration_date.seconds*1000).toLocaleDateString()}`}
+    //     // icon={PriceTagIcon}
+    //     accessory={() => {
           
-          return (
-            <Button 
-            icon={TrashIcon} 
-            status='danger' 
-            size='small' 
-            appearance='outline'
-            onPress={() => deleteItem(id)}></Button>
-          )
-        }}
-        titleStyle={styles.title}
-      />
-    )}
+    //       return (
+    //         <Button 
+    //         icon={TrashIcon} 
+    //         status='danger' 
+    //         size='small' 
+    //         appearance='outline'
+    //         onPress={() => deleteItem(id)}></Button>
+    //       )
+    //     }}
+    //     titleStyle={styles.title}
+    //   />
+    // )}
+
+    const keyExtractor = item => item.id;
+
+    const drawerProps = {
+      bounciness: 5,
+      itemsIconSize: 20
+    };
+
+    if (showRightItems) {
+      drawerProps.rightItems = [ITEMS.delete];
+    }
+
+
+    const renderRow = (row: object, id: number) => {
+  
+      return (
+        <Drawer key={id} {...drawerProps}>
+          <View bg-grey80 paddingH-20 paddingV-10 row centerV style={{borderBottomWidth: 1, borderColor: Colors.grey60}}>
+            <View marginL-20>
+              <Text text65>{row.brand + ' ' + row.category}</Text>
+              <Text text80 marginT-2>
+                Expired by: {new Date(row.expiration_date.seconds*1000).toLocaleDateString()}
+              </Text>
+            </View>
+          </View> 
+        </Drawer>  
+      );
+    }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -295,17 +289,16 @@ const Items: ItemComponentType = ({
                 enabled
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
-                <Layout style={styles.taskLayout}>
-                <List 
-                    data={data}
-                    renderItem={renderItem}
+                <FlatList
+                  data={data}
+                  renderItem={({item, index}) => renderRow(item, index)}
+                  keyExtractor={keyExtractor}
                 />
                 {/* <Button
                     status='info' 
                     onPress={() => shareItem('m4MjlNjHMbMj6xOdgVjq8lf80l62')}
                     // onPress={() => nodejs.channel.send('EXP: 04/01/2020')}
                     style={styles.button} icon={ShareIcon}/> */}
-                </Layout>
             </KeyboardAvoidingView>
       </SafeAreaView>
     );
@@ -324,6 +317,8 @@ Items.options = () => ({
             id: 'add_button_id',
             systemItem: 'add'
         }],
+        searchBar: true,
+        searchBarHiddenWhenScrolling: false,
     },
 });
 
