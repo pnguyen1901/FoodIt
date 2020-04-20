@@ -78,3 +78,10 @@ export function setLoggedIn (value) {
         value
     }
 }
+
+export function setDeleteItem (id) {
+    return {
+        type: types.SET_DELETE_ITEM,
+        id
+    }
+}

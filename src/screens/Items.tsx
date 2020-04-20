@@ -25,11 +25,7 @@ import {AnimatableManager,
 } from 'react-native-ui-lib';
 import * as Animatable from 'react-native-animatable';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
-
-
-const ITEMS = {
-  delete: {icon: require('../assets/icons/delete.png'), text: 'Delete', background: Colors.red30}
-}
+import { setDeleteItem } from '../store/actions';
 
 
 const styles = StyleSheet.create({
@@ -62,6 +58,7 @@ const Items: ItemComponentType = ({
     const [menuVisible, setMenuVisible] = useState(false);
     const [showRightItems, setShowRightItems] = useState(true);
     const dispatch = useDispatch();
+    const deleteItem = useSelector(state => state.itemReducer.deleteItem);
   
     const toggleMenu = () => {
       setMenuVisible(!menuVisible);
@@ -185,7 +182,7 @@ const Items: ItemComponentType = ({
         })
     }
   
-    const deleteItem = (documentId: string): void => {
+    const handleDeleteItem = (documentId: string): void => {
       console.log(documentId);
       foodItemsRef
         .doc(documentId)
@@ -197,60 +194,14 @@ const Items: ItemComponentType = ({
           console.log(err);
         })
     }
-      
-    // const TrashIcon = (style: ImageStyle): IconElement => (
-    //   <Icon {...style} name='trash-2'/>
-    // )
-  
-    // const renderItemAccessory = (props): React.ReactElement => {
-      
-    //   const { style, item } = props;
-      
-    //   return (
-    //     <Button 
-    //     style={style} 
-    //     icon={TrashIcon} 
-    //     status='danger' 
-    //     size='small' 
-    //     appearance='outline'
-    //     onPress={() => deleteItem(item.id)}></Button>
-    //   )
-    // };
     
-  
-    // type renderItemProps = {
-    //   item: {
-    //     brand: string,
-    //     category: string,
-    //     expiration_date: Date,
-    //     id: string
-    //   },
-    //   index: number
-    // }
-  
-    // const renderItem = ({ item, index }: renderItemProps): React.ReactElement => {
-    
-    // const id = item.id;
-    
-    // return (
-    //   <ListItem
-    //     title={`${item.brand} ${item.category}`}
-    //     description={`Expired by: ${new Date(item.expiration_date.seconds*1000).toLocaleDateString()}`}
-    //     // icon={PriceTagIcon}
-    //     accessory={() => {
-          
-    //       return (
-    //         <Button 
-    //         icon={TrashIcon} 
-    //         status='danger' 
-    //         size='small' 
-    //         appearance='outline'
-    //         onPress={() => deleteItem(id)}></Button>
-    //       )
-    //     }}
-    //     titleStyle={styles.title}
-    //   />
-    // )}
+    const ITEMS = {
+      delete: {icon: require('../assets/icons/delete.png'), 
+              text: 'Delete', 
+              background: Colors.red30,
+              onPress: () => handleDeleteItem(deleteItem)
+            }
+    }
 
     const keyExtractor = item => item.id;
 
@@ -267,7 +218,9 @@ const Items: ItemComponentType = ({
     const renderRow = (row: object, id: number) => {
   
       return (
-        <Drawer key={id} {...drawerProps}>
+        <Drawer key={id}
+        {...drawerProps} 
+        onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}>
           <View bg-grey80 paddingH-20 paddingV-10 row centerV style={{borderBottomWidth: 1, borderColor: Colors.grey60}}>
             <View marginL-20>
               <Text text65>{row.brand + ' ' + row.category}</Text>

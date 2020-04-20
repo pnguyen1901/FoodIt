@@ -7,5 +7,6 @@ export default {
     isTimePickerVisible: false,
     time: new Date(),
     loggedIn: false,
-    theme: 'light'
+    theme: 'light',
+    deleteItem: ''
 }
