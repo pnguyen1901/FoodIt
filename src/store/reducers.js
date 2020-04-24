@@ -81,6 +81,12 @@ export const itemReducer = (state = initialState, action) => {
                 deleteItem: action.id
             }
 
+        case types.REMOVE_DELETE_ITEM:
+            return {
+                ...state,
+                deleteItem: ''
+            }
+
         default:
             return state
     }

@@ -11,3 +11,4 @@ export const SHOW_TIME_PICKER = 'SHOW_TIME_PICKER';
 export const RESET_FORM = 'RESET_FORM';
 export const SET_LOGGED_IN = 'SET_LOGGED_IN';
 export const SET_DELETE_ITEM = 'SET_DELETE_ITEM';
+export const REMOVE_DELETE_ITEM = 'REMOVE_DELETE_ITEM';

@@ -85,3 +85,9 @@ export function setDeleteItem (id) {
         id
     }
 }
+
+export function removeDeleteItem () {
+    return {
+        type: types.REMOVE_DELETE_ITEM,
+    }
+}

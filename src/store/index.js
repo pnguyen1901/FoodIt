@@ -45,30 +45,31 @@ const persistConfig = {
     key: 'rootKeyPersist',
     storage: AsyncStorage,
 };
-const persistedReducer = persistReducer(persistConfig, reducer);
+// const persistedReducer = persistReducer(persistConfig, reducer);
 
 // const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-    persistedReducer,
+    // persistedReducer,
+    reducer,
     composeWithDevTools(
         applyMiddleware(
             thunk,
             )
     ),
 );
-const persistor = persistStore(store);
+// const persistor = persistStore(store);
 
 // sagaMiddleware.run(saga);
 
 export const withReduxProvider = (C: React.FC) => (props: any) => (
     <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        {/* <PersistGate loading={null} persistor={persistor}> */}
             <IconRegistry icons={EvaIconsPack}/>
             <IconRegistry icons={EvaIconsPack}/>
             <ApplicationProvider mapping={mapping} theme={light}>
                 <C {...props}/>
                 </ApplicationProvider>
-        </PersistGate>
+        {/* </PersistGate> */}
     </Provider>
 );

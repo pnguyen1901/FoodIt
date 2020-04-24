@@ -6,7 +6,7 @@ import {
     Dimensions,
     Platform,
     Alert,
-    ImageStyle,
+    Image,
     StyleSheet
 } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
@@ -25,7 +25,7 @@ import {AnimatableManager,
 } from 'react-native-ui-lib';
 import * as Animatable from 'react-native-animatable';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
-import { setDeleteItem } from '../store/actions';
+import { setDeleteItem, removeDeleteItem } from '../store/actions';
 
 
 const styles = StyleSheet.create({
@@ -37,11 +37,14 @@ const styles = StyleSheet.create({
       flex: 6,
       justifyContent: 'center'
     },
-    image: {
-      width: 54,
-      height: 54,
-      borderRadius: BorderRadiuses.br20,
-      marginHorizontal: 14,
+    right: {
+      flexDirection: 'row',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'flex-end'
+    },
+    more: {
+      opacity: 0.65
     },
     border: {
       borderBottomWidth: StyleSheet.hairlineWidth,
@@ -118,7 +121,7 @@ const Items: ItemComponentType = ({
                 }
             })
       unsubscribe();
-      }, [user])
+      }, [user, data])
   
     const SignOut = () : void => {
       firebase.auth().signOut().then(() => {
@@ -220,13 +223,17 @@ const Items: ItemComponentType = ({
       return (
         <Drawer key={id}
         {...drawerProps} 
-        onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}>
+        onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}
+        onSwipeableClose={() => dispatch(removeDeleteItem())}>
           <View bg-grey80 paddingH-20 paddingV-10 row centerV style={{borderBottomWidth: 1, borderColor: Colors.grey60}}>
             <View marginL-20>
               <Text text65>{row.brand + ' ' + row.category}</Text>
               <Text text80 marginT-2>
                 Expired by: {new Date(row.expiration_date.seconds*1000).toLocaleDateString()}
               </Text>
+            </View>
+            <View style={styles.right}>
+              <Image source={require('../assets/icons/16/cell-chevron.png')} style={styles.more}/>
             </View>
           </View> 
         </Drawer>  

@@ -140,6 +140,7 @@ const addItem: addItemComponentType = ({
         }).then((status: string) => { 
             console.log(status)
             dispatch(resetForm());
+            Navigation.dismissAllModals();
         })
         .catch((err: string) => console.log(err));
         
@@ -178,10 +179,6 @@ const addItem: addItemComponentType = ({
                 console.log("Error adding document:", error);
             })
     };
-
-    const SaveAction = () => (
-        <TopNavigationAction icon={SaveIcon} onPress={saveItem}/>
-    );
 
     return (
         <SafeAreaView style={styles.container}>
