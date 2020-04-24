@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import { StyleSheet,
 } from 'react-native';
@@ -11,7 +12,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e5e5ea'
     },
     settingLayout: {
         flex: 1
@@ -42,7 +42,7 @@ const Settings: SettingsComponentType = ({
     componentId,
 }): JSX.Element => {
 
-    const [theme, setTheme] = useState('dark');
+    const theme = useSelector(state => state.itemReducer.theme);
     const [isChecked, setChecked] = useState<boolean>(false);
 
     const onCheckedChange = (isChecked: boolean): void => {
@@ -52,7 +52,8 @@ const Settings: SettingsComponentType = ({
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, 
+                            theme === 'light' ? { backgroundColor: '#e5e5ea' } : { backgroundColor: '#000000' }]}>
             <CellGroup footer={true}>
                 <Cell
                     left={<CellIcon
