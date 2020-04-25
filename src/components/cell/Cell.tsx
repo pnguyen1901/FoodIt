@@ -7,6 +7,7 @@ import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Imag
 // import UI from 'stores/UI';
 import styles from './CellStyles';
 import { useSelector } from 'react-redux';
+import { Colors } from 'react-native-ui-lib';
 
 interface Props {
   id?: any;

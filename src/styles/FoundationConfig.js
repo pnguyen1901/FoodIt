@@ -1,9 +1,6 @@
-import  { Colors } from 'react-native-ui-lib';
-import { StyleSheet } from 'react-native';
-
+import { Colors, Typography, Spacings } from 'react-native-ui-lib';
 
 Colors.loadColors({
-
     primaryDefaultColor: '#007aff',
     primaryLightColor: '#3396ff',
     primaryDarkColor: '#0063cc',
@@ -30,7 +27,7 @@ Colors.loadColors({
     lightTabbarFg: '#A1A1A1',
     lightTintFg: 'white',
       
-    darkEditorBackground : '#222222',
+    darkEditorBackground : '#000000',
     darkEditorForeground : '#ffffff',
     darkEditorIndentGuideBackground : '#444444',
     darkStatusBarBackground : '#ff2d55',

@@ -1,16 +1,7 @@
 import thunk from 'redux-thunk';
 import { rootReducer } from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import {
-    ApplicationProvider,
-    IconRegistry,
-  } from '@ui-kitten/components';
-import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import {
-    mapping,
-    dark,
-    light
-  } from '@eva-design/eva';
+import { ThemeContext, themes } from '../components/Theme/Theme';
 // If RN app is not connecting to Redux Dev server try this
 // On real device: Shake device & Click "Debug Remote JS".
 // On Simulator: Try: Cmd or control + D on the Simulator & Click "Debug Remote JS".
@@ -65,11 +56,9 @@ const store = createStore(
 export const withReduxProvider = (C: React.FC) => (props: any) => (
     <Provider store={store}>
         {/* <PersistGate loading={null} persistor={persistor}> */}
-            <IconRegistry icons={EvaIconsPack}/>
-            <IconRegistry icons={EvaIconsPack}/>
-            <ApplicationProvider mapping={mapping} theme={light}>
-                <C {...props}/>
-                </ApplicationProvider>
+        <ThemeContext.Provider value={themes}>
+            <C {...props}/>            
+        </ThemeContext.Provider>
         {/* </PersistGate> */}
     </Provider>
 );

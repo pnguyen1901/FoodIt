@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
 
     ios:  {
-        backgroundColor: '#ffffff',
+        backgroundColor: Colors.lightEditorBackground,
     },
 
     android: {

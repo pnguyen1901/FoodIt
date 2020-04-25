@@ -544,6 +544,8 @@ PODS:
     - React-cxxreact (= 0.62.0)
     - React-jsi (= 0.62.0)
   - React-jsinspector (0.62.0)
+  - react-native-appearance (0.3.3):
+    - React
   - react-native-blur (0.8.0):
     - React
   - react-native-calendar-events (1.7.3):
@@ -716,6 +718,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-appearance (from `../node_modules/react-native-appearance`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-calendar-events (from `../node_modules/react-native-calendar-events`)
   - react-native-camera/TextDetector (from `../node_modules/react-native-camera`)
@@ -823,6 +826,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-appearance:
+    :path: "../node_modules/react-native-appearance"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-calendar-events:
@@ -947,6 +952,7 @@ SPEC CHECKSUMS:
   React-jsi: bc8166d6833cdcb0848c80710b26ce63fad2c099
   React-jsiexecutor: 8bf0b2707f05865113415088c398a7f98c0cf546
   React-jsinspector: 8e5913c4c6c54f0d3f9c9fc630c465a89cded65d
+  react-native-appearance: ff12122b6456efc29b3a22a3731eb54f7c291e69
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
   react-native-camera: a9749fa0c1162cdb2f56b93a5d97a72ebd56694f

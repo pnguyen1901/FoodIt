@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import { StyleSheet,
@@ -8,6 +8,8 @@ import Cell from '../components/cell/Cell';
 import CellGroup from '../components/cell/CellGroup';
 import CellIcon from '../components/cell/CellIcon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useColorScheme } from 'react-native-appearance';
+import { ThemeContext } from '../components/Theme/Theme';
 
 const styles = StyleSheet.create({
     container: {
@@ -42,18 +44,19 @@ const Settings: SettingsComponentType = ({
     componentId,
 }): JSX.Element => {
 
-    const theme = useSelector(state => state.itemReducer.theme);
+    const colorScheme = useColorScheme();
+    // const theme = useSelector(state => state.itemReducer.theme);
     const [isChecked, setChecked] = useState<boolean>(false);
 
     const onCheckedChange = (isChecked: boolean): void => {
         setChecked(isChecked);
     }
 
-
+    const theme = useContext(ThemeContext);
 
     return (
         <SafeAreaView style={[styles.container, 
-                            theme === 'light' ? { backgroundColor: '#e5e5ea' } : { backgroundColor: '#000000' }]}>
+                            colorScheme === 'light' ? { backgroundColor: theme.SystemBackgroundColor } : { backgroundColor: theme.SystemBackgroundColor }]}>
             <CellGroup footer={true}>
                 <Cell
                     left={<CellIcon
