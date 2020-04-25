@@ -56,7 +56,7 @@ const Settings: SettingsComponentType = ({
 
     return (
         <SafeAreaView style={[styles.container, 
-                            colorScheme === 'light' ? { backgroundColor: theme.SystemBackgroundColor } : { backgroundColor: theme.SystemBackgroundColor }]}>
+                            { backgroundColor: theme.SystemBackgroundColor }]}>
             <CellGroup footer={true}>
                 <Cell
                     left={<CellIcon
