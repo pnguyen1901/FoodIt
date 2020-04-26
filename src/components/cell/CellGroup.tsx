@@ -14,7 +14,7 @@ interface Props {
 
 export default function CellGroup (props) {
 
-  const theme = useSelector(state => state.itemReducer.theme);
+  const { theme } = props;
 
   const renderHeader = () => {
     const { header } = props;
@@ -70,7 +70,7 @@ export default function CellGroup (props) {
     return (
       <View>
         {renderHeader()}
-        <View style={[styles.itemsIOS, theme === 'light' ? null : {borderBottomColor: '#545458', borderTopColor: '#545458'}]}>
+        <View style={[styles.itemsIOS, {borderBottomColor: theme.OpaqueSeparatorColor, borderTopColor: theme.OpaqueSeparatorColor}]}>
           {React.Children.map(children, renderItem)}
         </View>
         {renderFooter()}

@@ -2,6 +2,7 @@ import thunk from 'redux-thunk';
 import { rootReducer } from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { ThemeContext, themes } from '../components/Theme/Theme';
+import { AppearanceProvider } from 'react-native-appearance';
 // If RN app is not connecting to Redux Dev server try this
 // On real device: Shake device & Click "Debug Remote JS".
 // On Simulator: Try: Cmd or control + D on the Simulator & Click "Debug Remote JS".
@@ -56,9 +57,11 @@ const store = createStore(
 export const withReduxProvider = (C: React.FC) => (props: any) => (
     <Provider store={store}>
         {/* <PersistGate loading={null} persistor={persistor}> */}
-        <ThemeContext.Provider value={themes}>
-            <C {...props}/>            
-        </ThemeContext.Provider>
+        <AppearanceProvider>
+            {/* <ThemeContext.Provider> */}
+                <C {...props}/>            
+            {/* </ThemeContext.Provider>             */}
+        </AppearanceProvider>
         {/* </PersistGate> */}
     </Provider>
 );

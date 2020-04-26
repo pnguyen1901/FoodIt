@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image } from 'react-native';
 // import { theme } from 'styles';
 // import { observer, Observer } from 'mobx-react';
@@ -6,8 +6,10 @@ import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Imag
 // import { autobind } from 'core-decorators';
 // import UI from 'stores/UI';
 import styles from './CellStyles';
+import { ThemeContext } from '../Theme/Theme';
 import { useSelector } from 'react-redux';
-import { Colors } from 'react-native-ui-lib';
+import { useColorScheme } from 'react-native-appearance';
+import { themes } from '../../components/Theme/Theme';
 
 interface Props {
   id?: any;
@@ -38,10 +40,11 @@ interface Props {
 
 // @observer
 export default function Cell (props) {
-
+    
+    const colorScheme = useColorScheme();
+    const theme = themes[colorScheme];
     const [isUnderlay, setUnderlay] = useState(false);
-    const theme = useSelector(state => state.itemReducer.theme);
-
+    // const theme = useSelector(state => state.itemReducer.theme);
 //   @autobind
 //   onShowUnderlay() {
 //     this.isUnderlay = true;
@@ -78,7 +81,7 @@ export default function Cell (props) {
 
         return (
         <View >
-            <Text style={[styles.titleText, theme === 'light' ? null : {color: '#FFFFFF'},
+            <Text style={[styles.titleText, {color: theme.LabelColor},
             userProfile ? {fontSize: 24 } : null ]} numberOfLines={numberOfLines}>{String(title)}</Text>
         </View>
         );
@@ -95,7 +98,7 @@ export default function Cell (props) {
 
         return (
         <View >
-            <Text style={[styles.subtitleText, theme === 'light' ? null : {color: '#EBEBF5'},
+            <Text style={[styles.subtitleText, {color: theme.LabelColor},
                 userProfile ? {fontSize: 15}: null ]}>{String(subtitle)}</Text>
         </View>
         );
@@ -163,14 +166,14 @@ export default function Cell (props) {
             style={[
             styles.host,
             styles.ios,
-            theme === 'light' ? null : {backgroundColor: '#1C1C1E'},
+            {backgroundColor: theme.SecondarySystemBackgroundColor},
             //{ paddingHorizontal },
             isUnderlay && styles.underlay,
             ]}
         >
             {renderLeft()}
             <View style={styles.content}>
-            {!isUnderlay && border && <View style={[styles.border, theme === 'light' ? null : {backgroundColor: '#545458'}]} />}
+            {!isUnderlay && border && <View style={[styles.border, {backgroundColor: theme.OpaqueSeparatorColor}]} />}
             <View style={styles.center}>
                 {renderTitle()}
                 {renderSubtitle()}
@@ -180,11 +183,10 @@ export default function Cell (props) {
                 {/* <Observer render={renderValue} /> */}
                 {selected && <Image source={require('../../assets/icons/16/cell-check.png')} style={styles.selected} />}
                 {more && <Image source={require('../../assets/icons/16/cell-chevron.png')} 
-                    style={[styles.more, theme === 'light' ? null : {tintColor: 'rgba(255, 255, 255, .5)'}]} />}
+                    style={[styles.more, {tintColor: theme.OpaqueSeparatorColor}]} />}
             </View>
             </View>
         </View>
         </TouchableHighlight>
 );
 }
-

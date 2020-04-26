@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import { StyleSheet,
@@ -9,7 +9,7 @@ import CellGroup from '../components/cell/CellGroup';
 import CellIcon from '../components/cell/CellIcon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useColorScheme } from 'react-native-appearance';
-import { ThemeContext } from '../components/Theme/Theme';
+import { themes } from '../components/Theme/Theme';
 
 const styles = StyleSheet.create({
     container: {
@@ -44,20 +44,21 @@ const Settings: SettingsComponentType = ({
     componentId,
 }): JSX.Element => {
 
-    const colorScheme = useColorScheme();
     // const theme = useSelector(state => state.itemReducer.theme);
     const [isChecked, setChecked] = useState<boolean>(false);
-
     const onCheckedChange = (isChecked: boolean): void => {
         setChecked(isChecked);
     }
-
-    const theme = useContext(ThemeContext);
+    const colorScheme = useColorScheme();
+    const theme = themes[colorScheme];
+    // const subscription = Appearance.addChangeListener(({colorScheme}) => {
+    //     console.log(colorScheme);
+    // })
 
     return (
         <SafeAreaView style={[styles.container, 
                             { backgroundColor: theme.SystemBackgroundColor }]}>
-            <CellGroup footer={true}>
+            <CellGroup footer={true} theme={theme}>
                 <Cell
                     left={<CellIcon
                     source={require('../assets/icons/32/user.png')}
@@ -72,7 +73,7 @@ const Settings: SettingsComponentType = ({
                     more={true}
                 />
             </CellGroup>
-            <CellGroup header={true} footer={true}>
+            <CellGroup header={true} footer={true}  theme={theme}>
                 <Cell
                     left={<CellIcon
                     source={require('../assets/icons/32/settings.png')}
@@ -104,7 +105,7 @@ const Settings: SettingsComponentType = ({
                     more={true}
                 />
             </CellGroup>
-            <CellGroup header={true}>
+            <CellGroup header={true} theme={theme}>
                 <Cell
                     title="About"
                     left={<CellIcon
