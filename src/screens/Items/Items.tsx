@@ -23,9 +23,10 @@ import {AnimatableManager,
     Drawer,
     View
 } from 'react-native-ui-lib';
-import * as Animatable from 'react-native-animatable';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
-import { setDeleteItem, removeDeleteItem } from '../store/actions';
+import { setDeleteItem, removeDeleteItem } from '../../store/actions';
+import { themes } from '../../components/Theme/Theme';
+import { useColorScheme } from 'react-native-appearance';
 
 
 const styles = StyleSheet.create({
@@ -62,7 +63,9 @@ const Items: ItemComponentType = ({
     const [showRightItems, setShowRightItems] = useState(true);
     const dispatch = useDispatch();
     const deleteItem = useSelector(state => state.itemReducer.deleteItem);
-  
+    const colorScheme = useColorScheme();
+    const theme = themes[colorScheme];
+
     const toggleMenu = () => {
       setMenuVisible(!menuVisible);
     }
@@ -199,7 +202,7 @@ const Items: ItemComponentType = ({
     }
     
     const ITEMS = {
-      delete: {icon: require('../assets/icons/delete.png'), 
+      delete: {icon: require('../../assets/icons/delete.png'), 
               text: 'Delete', 
               background: Colors.red30,
               onPress: () => handleDeleteItem(deleteItem)
@@ -225,15 +228,21 @@ const Items: ItemComponentType = ({
         {...drawerProps} 
         onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}
         onSwipeableClose={() => dispatch(removeDeleteItem())}>
-          <View bg-grey80 paddingH-20 paddingV-10 row centerV style={{borderBottomWidth: 1, borderColor: Colors.grey60}}>
-            <View marginL-20>
-              <Text text65>{row.brand + ' ' + row.category}</Text>
-              <Text text80 marginT-2>
+          <View 
+            paddingH-20 
+            paddingV-10 
+            row centerV 
+            style={{borderBottomWidth: 1, 
+              borderColor: theme.OpaqueSeparatorColor, 
+              backgroundColor: theme.SystemBackgroundColor}}>
+            <View marginL-20 >
+              <Text text65 style={{color: theme.LabelColor}}>{row.brand + ' ' + row.category}</Text>
+              <Text text80 marginT-2 style={{color: theme.LabelColor}}>
                 Expired by: {new Date(row.expiration_date.seconds*1000).toLocaleDateString()}
               </Text>
             </View>
             <View style={styles.right}>
-              <Image source={require('../assets/icons/16/cell-chevron.png')} style={styles.more}/>
+              <Image source={require('../../assets/icons/16/cell-chevron.png')} style={styles.more}/>
             </View>
           </View> 
         </Drawer>  
@@ -242,7 +251,7 @@ const Items: ItemComponentType = ({
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {backgroundColor: theme.SystemBackgroundColor}]}>
             <KeyboardAvoidingView
                 style={{flex: 1}}
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}

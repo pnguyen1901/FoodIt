@@ -18,3 +18,6 @@ type addItemComponentType = NavigationComponent<addItemComponentProps>;
 
 interface SettingsComponentProps { }
 type SettingsComponentType = NavigationComponent<SettingsComponentProps>;
+
+interface AccountComponentProps { }
+type AccountComponentType = NavigationComponent<AccountComponentProps>;

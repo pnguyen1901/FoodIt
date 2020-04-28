@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
 
         headerText: {
         fontSize: 13,
-        color: '#000000',
         // TODO: tune opacity
         opacity: 0.75,
         letterSpacing: -0.05,

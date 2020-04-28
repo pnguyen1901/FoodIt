@@ -10,6 +10,7 @@ import { ThemeContext } from '../Theme/Theme';
 import { useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
+import { TextInput } from 'react-native-gesture-handler';
 
 interface Props {
   id?: any;
@@ -144,7 +145,9 @@ export default function Cell (props) {
         }
     }
 
-        const { bordered = true, index, more, selected, disabled, onPress, onPressIn, onLongPress, testID } = props;
+        const { bordered = true, index, more, 
+            selected, disabled, onPress, onPressIn, 
+            onLongPress, testID, textInput, placeholder, value } = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
@@ -177,6 +180,7 @@ export default function Cell (props) {
             <View style={styles.center}>
                 {renderTitle()}
                 {renderSubtitle()}
+                {textInput && <TextInput placeholder={placeholder} clearButtonMode='while-editing' value={value}/>}
             </View>
             <View style={styles.right}>
                 {renderRight()}

@@ -5,27 +5,22 @@ import { SafeAreaView,
         Keyboard,
         Alert,
         Dimensions,
-        Platform
+        Platform,
+        StyleSheet
 } from 'react-native';
-import {
-        Icon,
-        Layout,
-        Text,
-        Input, 
-        Datepicker,
-        TopNavigationAction,
-        Select,
-        Button} from '@ui-kitten/components';
-
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { StyleSheet } from 'react-native';
 require('datejs');
 import RNCalendarEvents from 'react-native-calendar-events/index.ios';
-import { setAlert, setBrand, setCategory, setEXP, setTime, hideTimePicker, showTimePicker, resetForm } from '../store/actions';
+import { setAlert, setBrand, setCategory, setEXP, setTime, hideTimePicker, showTimePicker, resetForm } from '../../store/actions';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 import { Navigation } from 'react-native-navigation';
+import Cell from '../../components/cell/Cell';
+import CellGroup from '../../components/cell/CellGroup';
+import { useColorScheme } from 'react-native-appearance';
+import { themes } from '../../components/Theme/Theme';
+
 
 const styles = StyleSheet.create({
     container: {
@@ -86,6 +81,8 @@ const addItem: addItemComponentType = ({
             time } = useSelector( state => state.itemReducer );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+    const colorScheme = useColorScheme();
+    const theme = themes[colorScheme];
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
@@ -181,66 +178,22 @@ const addItem: addItemComponentType = ({
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {backgroundColor: theme.SystemBackgroundColor}]}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <Layout style={styles.layout}>
-                {/* <Layout style={styles.inputLayout}> */}
-                    <Text
-                        category='h6'>
-                        Brand
-                    </Text>
-                    <Input
-                    style={styles.input} 
-                    placeholder='Select the brand of the item'
-                    value={brand}
-                    onChangeText={(e) => dispatch(setBrand(e))}/>
-                {/* </Layout> */}
-                {/* <Layout style={styles.inputLayout}> */}
-                    <Text
-                        category='h6'>
-                        Category
-                    </Text>
-                    <Input
-                        style={styles.input} 
-                        placeholder='Category'
-                        value={category}
-                        onChangeText={(e) => dispatch(setCategory(e))}/>                
-                {/* </Layout> */}
-                {/* <Layout style={styles.inputLayout}> */}
-                <Text
-                    category='h6'>
-                    Expiration Date
-                </Text>
-                <Datepicker
-                    style={styles.input} 
-                    date={expiration_date}
-                    // date={expirationDate}
-                    onSelect={(e) => dispatch(setEXP(e))}/>
-                {/* </Layout> */}
-                <Text
-                    category='h6'>
-                    Alert
-                </Text>
-                <Select
-                    style={styles.input}
-                    data={AlertOptions}
-                    selectedOption={selectedOption}
-                    onSelect={(e) => {
-                        setSelectedOption(e);
-                        dispatch(setAlert(e.value));
-                    }}
-                />
-                <Input onFocus={() => dispatch(showTimePicker())}>{time.toLocaleString()}</Input>
-                <DateTimePickerModal
-                    isVisible={isTimePickerVisible}
-                    mode="datetime"
-                    onConfirm={(date) => dispatch(setTime(date))}
-                    onCancel={() => dispatch(hideTimePicker())}
-                />
-                <Layout style={{flex: 1}}>
-
-                </Layout>
-            </Layout>
+                <CellGroup header={true} footer={true} theme={theme}>
+                    <Cell 
+                        textInput={true}
+                        placeholder={'Brand'}
+                    />
+                    <Cell 
+                        textInput={true}
+                        placeholder={'Category'}
+                    />
+                    <Cell 
+                        textInput={true}
+                        placeholder={'Expiration Date'}
+                    />
+                </CellGroup> 
             </TouchableWithoutFeedback>
         </SafeAreaView>
     )
@@ -259,5 +212,6 @@ const addItem: addItemComponentType = ({
 //           ]
 //         },
 // })
+
 
 export default addItem;

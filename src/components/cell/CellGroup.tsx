@@ -32,8 +32,8 @@ export default function CellGroup (props) {
     const paddingLeft = 16 //Math.max(0, UI.layout.inset) + 16;
 
     return (
-      <View style={[styles.header, styles.itemsIOS, { paddingLeft }]}>
-        <Text style={[styles.headerText]}>{String(header).toUpperCase()}</Text>
+      <View style={[styles.header, { paddingLeft }]}>
+        <Text style={[styles.headerText, {color: theme.SecondaryLabelColor}]}>{String(header).toUpperCase()}</Text>
       </View>
     );
   }
@@ -51,7 +51,7 @@ export default function CellGroup (props) {
     if (!footer) return null;
 
     if (typeof footer === 'boolean' && footer === true) {
-      return <View style={[styles.footer, styles.footer]} />;
+      return <View style={styles.footer} />;
     }
 
     if (typeof footer === 'object' && React.isValidElement(footer)) {

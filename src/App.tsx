@@ -20,10 +20,14 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { ITEMS } from './screens';
 import { ADDITEM } from './screens';
 import { SETTINGS } from './screens';
+import { ACCOUNT } from './screens';
 
-import ItemsScreen from './screens/Items';
-import addItem from './screens/addItem';
-import SettingsScreen from './screens/Settings';
+import ItemsScreen from './screens/Items/Items';
+import addItem from './screens/AddItem/AddItem';
+import SettingsScreen from './screens/Settings/Settings';
+import AccountScreen from './screens/Account/Account';
+import { useColorScheme } from 'react-native-appearance';
+import { themes } from './components/Theme/Theme';
 
 // const store = configureStore();
 
@@ -31,6 +35,7 @@ const Screens = new Map<string, React.FC<any>>();
 
 Screens.set(ITEMS, ItemsScreen);
 Screens.set(SETTINGS, SettingsScreen);
+Screens.set(ACCOUNT, AccountScreen);
 // Screens.set(ADDITEM, AddItemScreen);
 // Register screens
 Screens.forEach((C, key) => {
@@ -45,6 +50,9 @@ Navigation.registerComponent('addItem', () => gestureHandlerRootHOC(withReduxPro
 
 const App = (): React.ReactFragment => {
 
+    // const colorScheme = useColorScheme();
+    // const theme = themes[colorScheme];
+
   // useEffect(() => {
   //   nodejs.start('main.js');
   //   // nodejs.channel.addListener(
@@ -55,17 +63,6 @@ const App = (): React.ReactFragment => {
   //   //   this 
   //   // );
   // }); 
-
-    // return (
-    //     <Provider store={store}>
-    //       <IconRegistry icons={EvaIconsPack}/>
-    //       <IconRegistry icons={EvaIconsPack}/>
-    //     <ApplicationProvider mapping={mapping} theme={light}>
-    //       <AppNavigator/>
-    //     </ApplicationProvider>
-    //     </Provider>    
-
-  // )
         Promise.all([
         FontAwesome5.getImageSource('list-ul', 25),
         FontAwesome5.getImageSource('react', 25),
@@ -76,6 +73,7 @@ const App = (): React.ReactFragment => {
                     options: {
                         bottomTabs: {
                             titleDisplayMode: 'alwaysShow',
+                            backgroundColor: '#1c1c1e'
                         },
                     },
                     children: [{
