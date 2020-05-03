@@ -135,7 +135,7 @@ const Item: ItemComponentType = ({
                             <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
                             
                             {
-                            expiration_date.hasOwnProperty("seconds") 
+                            expiration_date.hasOwnProperty("_seconds") === true
                             ? new Date(expiration_date.seconds*1000).toLocaleDateString()
                             : expiration_date.toLocaleDateString()}
                             </Text>}
