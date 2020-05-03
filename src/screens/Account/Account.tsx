@@ -8,6 +8,7 @@ import {
     StyleSheet, 
     Platform, 
     Dimensions,
+    Text
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
@@ -15,8 +16,16 @@ import { Navigation } from 'react-native-navigation';
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    doneButton: {
+        color: '#A1A1A1',
+        fontWeight: 'bold'
     }
 })
+
+const DoneButton = () => (
+    <Text style={styles.doneButton}>Done</Text>
+)
 
 const Account: AccountComponentType = ({
     componentId
@@ -77,7 +86,11 @@ Account.options = () => ({
         visible: true,
         title: {
             text: 'Account Settings'
-        }
+        },
+        rightButtons: [{
+            id: 'save_account_settings',
+            systemItem: 'done'
+        }]
     }
 })
 

@@ -7,18 +7,17 @@ import {
     Platform,
     Alert,
     Image,
-    StyleSheet
+    StyleSheet,
+    TouchableHighlight
 } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 import { useSelector, useDispatch } from 'react-redux';
-import {AnimatableManager, 
+import { 
     ThemeManager, 
     Colors, 
-    BorderRadiuses, 
-    ListItem, 
     Text,
     Drawer,
     View
@@ -27,6 +26,8 @@ import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { setDeleteItem, removeDeleteItem } from '../../store/actions';
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
+import { selectItem } from '../../store/selecteditem/actions';
+import { ITEM } from '../../screens';
 
 
 const styles = StyleSheet.create({
@@ -54,36 +55,33 @@ const styles = StyleSheet.create({
   })
   
 
-const Items: ItemComponentType = ({
+const Items: ItemsComponentType = ({
     componentId,
 }): JSX.Element => {
+
     const [user, setUser] = useState(null);
     const [data, setData] = useState([]);
-    const [menuVisible, setMenuVisible] = useState(false);
     const [showRightItems, setShowRightItems] = useState(true);
-    const dispatch = useDispatch();
     const deleteItem = useSelector(state => state.itemReducer.deleteItem);
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 
-    const toggleMenu = () => {
-      setMenuVisible(!menuVisible);
-    }
+    // actions
+    const dispatch = useDispatch();
+    // const onSelectedItem = useCallback(
+    //   (row: object) => dispatch(selectItem(row)),
+    //   [dispatch],
+    // );
     
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
 
-    // equivalent to componentDidMount
-    // see - https://stackoverflow.com/questions/53945763/componentdidmount-equivalent-on-a-react-function-hooks-component
-    // and - https://stackoverflow.com/questions/53120972/how-to-call-loading-function-with-react-useeffect-only-once
+
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
             getStatusBarHeight();
         });
 
         getStatusBarHeight();
-
-        // equivalent to componentWillUnmount
-        // return () => {};
     }, [componentId]);
 
     useNavigationButtonPress(({ buttonId, componentId }) => {
@@ -201,12 +199,27 @@ const Items: ItemComponentType = ({
         })
     }
     
+    const onItemPressed = (row: object) => {
+      dispatch(selectItem(row));
+      Navigation.push(componentId, {
+        component: {
+          name: ITEM,
+        }
+      })
+    }
+
     const ITEMS = {
       delete: {icon: require('../../assets/icons/delete.png'), 
               text: 'Delete', 
               background: Colors.red30,
               onPress: () => handleDeleteItem(deleteItem)
-            }
+            },
+      edit: {icon: require('../../assets/icons/25/compose.png'), 
+        text: 'Edit', 
+        background: Colors.blue30,
+        onPress: () => onItemPressed
+      }
+      
     }
 
     const keyExtractor = item => item.id;
@@ -224,28 +237,32 @@ const Items: ItemComponentType = ({
     const renderRow = (row: object, id: number) => {
   
       return (
-        <Drawer key={id}
-        {...drawerProps} 
-        onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}
-        onSwipeableClose={() => dispatch(removeDeleteItem())}>
-          <View 
-            paddingH-20 
-            paddingV-10 
-            row centerV 
-            style={{borderBottomWidth: 1, 
-              borderColor: theme.OpaqueSeparatorColor, 
-              backgroundColor: theme.SystemBackgroundColor}}>
-            <View marginL-20 >
-              <Text text65 style={{color: theme.LabelColor}}>{row.brand + ' ' + row.category}</Text>
-              <Text text80 marginT-2 style={{color: theme.LabelColor}}>
-                Expired by: {new Date(row.expiration_date.seconds*1000).toLocaleDateString()}
-              </Text>
-            </View>
-            <View style={styles.right}>
-              <Image source={require('../../assets/icons/16/cell-chevron.png')} style={styles.more}/>
-            </View>
-          </View> 
-        </Drawer>  
+        <TouchableHighlight
+          onPress={() => onItemPressed(row)}
+        >
+          <Drawer key={id}
+          {...drawerProps} 
+          onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}
+          onSwipeableClose={() => dispatch(removeDeleteItem())}>
+            <View 
+              paddingH-20 
+              paddingV-10 
+              row centerV 
+              style={{borderBottomWidth: 1, 
+                borderColor: theme.OpaqueSeparatorColor, 
+                backgroundColor: theme.SystemBackgroundColor}}>
+              <View marginL-20 >
+                <Text text65 style={{color: theme.LabelColor}}>{row.brand + ' ' + row.category}</Text>
+                <Text text80 marginT-2 style={{color: theme.LabelColor}}>
+                  Expired by: {new Date(row.expiration_date.seconds*1000).toLocaleDateString()}
+                </Text>
+              </View>
+              <View style={styles.right}>
+                <Image source={require('../../assets/icons/16/cell-chevron.png')} style={styles.more}/>
+              </View>
+            </View> 
+          </Drawer>
+        </TouchableHighlight>  
       );
     }
 

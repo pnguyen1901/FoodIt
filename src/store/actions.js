@@ -47,12 +47,6 @@ export function showTimePicker () {
     }
 }
 
-export function setTime (time) {
-    return {
-        type: types.SET_TIME,
-        time
-    }
-}
 
 export function loading () {
     return {

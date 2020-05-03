@@ -72,22 +72,20 @@ const styles = StyleSheet.create({
         fontFamily: 'System',
         fontWeight: '400',
         fontSize: 17,
-        color: '#000000',
         letterSpacing: -0.37,
     },
 
     subtitleText: {
+        fontFamily: 'System',
         fontSize: 12,
-        color: '#000000',
         opacity: 0.75,
         marginRight: 8,
         marginTop: 4,
     },
-
     value: {
+        fontFamily: 'System',
         textAlign: 'right',
         fontSize: 17,
-        color: '#000000',
         // TODO: tune opacity
         opacity: 0.7,
         letterSpacing: -0.37,
@@ -96,7 +94,6 @@ const styles = StyleSheet.create({
     more: {
         marginTop: 2,
         marginLeft: 10,
-        tintColor: '#000000',
         // TODO: tune opacity
         opacity: 0.65,
     },

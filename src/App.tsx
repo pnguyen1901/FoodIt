@@ -18,6 +18,7 @@ import { Navigation } from 'react-native-navigation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import { ITEMS } from './screens';
+import { ITEM } from './screens';
 import { ADDITEM } from './screens';
 import { SETTINGS } from './screens';
 import { ACCOUNT } from './screens';
@@ -26,6 +27,7 @@ import ItemsScreen from './screens/Items/Items';
 import addItem from './screens/AddItem/AddItem';
 import SettingsScreen from './screens/Settings/Settings';
 import AccountScreen from './screens/Account/Account';
+import ItemScreen from './screens/Item/Item';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from './components/Theme/Theme';
 
@@ -36,6 +38,7 @@ const Screens = new Map<string, React.FC<any>>();
 Screens.set(ITEMS, ItemsScreen);
 Screens.set(SETTINGS, SettingsScreen);
 Screens.set(ACCOUNT, AccountScreen);
+Screens.set(ITEM, ItemScreen);
 // Screens.set(ADDITEM, AddItemScreen);
 // Register screens
 Screens.forEach((C, key) => {

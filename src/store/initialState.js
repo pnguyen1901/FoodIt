@@ -8,5 +8,5 @@ export default {
     time: new Date(),
     loggedIn: false,
     theme: 'dark',
-    deleteItem: ''
+    deleteItem: '',
 }

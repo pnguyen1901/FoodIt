@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image } from 'react-native';
 // import { theme } from 'styles';
 // import { observer, Observer } from 'mobx-react';
@@ -6,8 +6,6 @@ import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Imag
 // import { autobind } from 'core-decorators';
 // import UI from 'stores/UI';
 import styles from './CellStyles';
-import { ThemeContext } from '../Theme/Theme';
-import { useSelector } from 'react-redux';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { TextInput } from 'react-native-gesture-handler';
@@ -180,17 +178,21 @@ export default function Cell (props) {
             <View style={styles.center}>
                 {renderTitle()}
                 {renderSubtitle()}
-                {textInput && <TextInput placeholder={placeholder} clearButtonMode='while-editing' value={value}/>}
+                {textInput && <TextInput
+                        style={[styles.titleText, {color: theme.LabelColor}]} 
+                        placeholder={placeholder} 
+                        clearButtonMode='while-editing' 
+                        value={value}/>}
             </View>
             <View style={styles.right}>
                 {renderRight()}
                 {/* <Observer render={renderValue} /> */}
                 {selected && <Image source={require('../../assets/icons/16/cell-check.png')} style={styles.selected} />}
                 {more && <Image source={require('../../assets/icons/16/cell-chevron.png')} 
-                    style={[styles.more, {tintColor: theme.OpaqueSeparatorColor}]} />}
+                    style={[styles.more, {tintColor: theme.SystemFillColor}]} />}
             </View>
             </View>
         </View>
         </TouchableHighlight>
-);
+    );
 }

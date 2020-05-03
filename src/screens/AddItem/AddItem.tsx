@@ -199,19 +199,4 @@ const addItem: addItemComponentType = ({
     )
 }
 
-// addItem.options = () => ({
-//     topBar: {
-//           title: {
-//             text: 'New Item'
-//           },
-//           leftButtons: [
-//             {
-//               id: 'cancel_add_item_button_id',
-//               text: 'Cancel'
-//             }
-//           ]
-//         },
-// })
-
-
 export default addItem;
