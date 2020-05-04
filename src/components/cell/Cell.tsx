@@ -70,7 +70,7 @@ export default function Cell (props) {
 //   }
 
     const renderTitle = () => {
-        const { title, numberOfLines = 1, userProfile } = props;
+        const { title, numberOfLines = 1, userProfile, deleteButton } = props;
 
         if (!title) return null;
 
@@ -79,9 +79,9 @@ export default function Cell (props) {
         }
 
         return (
-        <View >
+        <View style={deleteButton ? {justifyContent: 'center'} : null}>
             <Text style={[styles.titleText, {color: theme.LabelColor},
-            userProfile ? {fontSize: 24 } : null ]} numberOfLines={numberOfLines}>{String(title)}</Text>
+            userProfile ? {fontSize: 24 } : null, deleteButton ? {color: 'red', textAlign: 'center'} : null ]} numberOfLines={numberOfLines}>{String(title)}</Text>
         </View>
         );
     }

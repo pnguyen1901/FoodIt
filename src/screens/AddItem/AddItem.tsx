@@ -193,6 +193,10 @@ const addItem: addItemComponentType = ({
                         textInput={true}
                         placeholder={'Expiration Date'}
                     />
+                    <Cell 
+                        textInput={true}
+                        placeholder={'Remind me'}
+                    />
                 </CellGroup> 
             </TouchableWithoutFeedback>
         </SafeAreaView>

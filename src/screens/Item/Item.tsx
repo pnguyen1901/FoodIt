@@ -21,6 +21,7 @@ import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { RootState } from '../../store/rootReducer';
 import { setExpDate } from '../../store/selecteditem/actions';
+import { REMINDER } from '../../screens';
 
 
 const styles = StyleSheet.create({
@@ -70,6 +71,7 @@ const Item: ItemComponentType = ({
     const { expiration_date, 
             brand,
             category,
+            alert
             } = useSelector((state: RootState) => state.selectedItem );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
@@ -112,8 +114,16 @@ const Item: ItemComponentType = ({
 
     })
 
+    const onAlertPressed = () => {
+        Navigation.push(componentId, {
+            component: {
+                name: REMINDER
+            }
+        })
+    }
+
     return (
-        <SafeAreaView style={[styles.container, {backgroundColor: theme.SystemBackgroundColor}]}>
+        <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <>
                 <CellGroup header={true} footer={true} theme={theme}>
@@ -151,6 +161,21 @@ const Item: ItemComponentType = ({
                     }}
                     onCancel={() => setTimePickerVisible(false)}
                     />
+                    <Cell 
+                        title={'Remind me'} 
+                        right={
+                            <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
+                                {alert}
+                            </Text>}
+                        onPress={onAlertPressed}
+                        more={true}
+                    />
+                </CellGroup>
+                <CellGroup header={true} footer={true} theme={theme}>
+                    <Cell
+                        title={'Delete Item'}
+                        deleteButton={true}
+                    />
                 </CellGroup>
                 </> 
             </TouchableWithoutFeedback>
@@ -166,10 +191,13 @@ Item.options = () => ({
         rightButtons: [
             {
             id: 'edit_item_button',
-            text: 'Done'
+            text: 'Save'
             }
         ]
         },
+    bottomTabs: {
+        visible: false
+    }
 })
 
 

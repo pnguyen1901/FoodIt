@@ -16,6 +16,9 @@ type ItemsComponentType = NavigationComponent<ItemsComponentProps>;
 interface ItemComponentProps { }
 type ItemComponentType = NavigationComponent<ItemComponentProps>;
 
+interface ReminderComponentProps { }
+type ReminderComponentType = NavigationComponent<ReminderComponentProps>;
+
 interface addItemComponentProps { }
 type addItemComponentType = NavigationComponent<addItemComponentProps>;
 

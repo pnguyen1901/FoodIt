@@ -56,7 +56,7 @@ const Account: AccountComponentType = ({
 
     return (
         <SafeAreaView style={[styles.container, {
-            backgroundColor: theme.SystemBackgroundColor
+            backgroundColor: theme.GroupedBackgroundColor
         }]}>
             <CellGroup header={'name'} theme={theme}>
                 <Cell 

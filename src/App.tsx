@@ -22,12 +22,14 @@ import { ITEM } from './screens';
 import { ADDITEM } from './screens';
 import { SETTINGS } from './screens';
 import { ACCOUNT } from './screens';
+import { REMINDER } from './screens';
 
 import ItemsScreen from './screens/Items/Items';
 import addItem from './screens/AddItem/AddItem';
 import SettingsScreen from './screens/Settings/Settings';
 import AccountScreen from './screens/Account/Account';
 import ItemScreen from './screens/Item/Item';
+import ReminderScreen from './screens/Item/Reminder';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from './components/Theme/Theme';
 
@@ -39,6 +41,7 @@ Screens.set(ITEMS, ItemsScreen);
 Screens.set(SETTINGS, SettingsScreen);
 Screens.set(ACCOUNT, AccountScreen);
 Screens.set(ITEM, ItemScreen);
+Screens.set(REMINDER, ReminderScreen);
 // Screens.set(ADDITEM, AddItemScreen);
 // Register screens
 Screens.forEach((C, key) => {
@@ -76,7 +79,6 @@ const App = (): React.ReactFragment => {
                     options: {
                         bottomTabs: {
                             titleDisplayMode: 'alwaysShow',
-                            backgroundColor: '#1c1c1e'
                         },
                     },
                     children: [{

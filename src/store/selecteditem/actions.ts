@@ -3,6 +3,7 @@ import {
     SET_EXPIRATION_DATE,
     FoodItem
 } from './types';
+import { SET_ALERT } from '../types';
 
 export function selectItem (foodItem: FoodItem) {
     return {
@@ -15,5 +16,12 @@ export function setExpDate (expDate: Date) {
     return {
         type: SET_EXPIRATION_DATE,
         expDate
+    }
+}
+
+export function setAlert (alert: string) {
+    return {
+        type: SET_ALERT,
+        alert
     }
 }

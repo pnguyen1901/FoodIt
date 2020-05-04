@@ -1,6 +1,7 @@
 import {
     SELECT_ITEM,
     SET_EXPIRATION_DATE,
+    SET_ALERT,
     FoodItemActionTypes,
     FoodItem
 } from './types';
@@ -9,7 +10,8 @@ const initialState: FoodItem = {
     id: null,
     brand: '',
     category: '',
-    expiration_date: null
+    expiration_date: null,
+    alert: ''
 }
 
 const selectedItem = (
@@ -31,6 +33,13 @@ const selectedItem = (
                 ...state,
                 expiration_date: action.expDate
             }
+
+        case SET_ALERT:
+            return {
+                ...state,
+                alert: action.alert
+            }
+
 
         default:
             return state
