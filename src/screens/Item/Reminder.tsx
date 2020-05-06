@@ -131,6 +131,9 @@ Reminder.options = () => ({
             text: 'Alert'
         },
         },
+    bottomTabs: {
+        visible: false
+    }
 })
 
 

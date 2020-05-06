@@ -2,9 +2,6 @@ export const SET_ALERT = 'SET_ALERT';
 export const SELECT_ITEM = 'SELECT_ITEM';
 export const SET_EXPIRATION_DATE = 'SET_EXPIRATION_DATE';
 
-// =================
-// ACTIONS
-// =================
 
 export interface FoodItem {
     id: number | null,

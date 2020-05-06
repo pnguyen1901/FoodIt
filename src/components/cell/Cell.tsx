@@ -9,6 +9,7 @@ import styles from './CellStyles';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { TextInput } from 'react-native-gesture-handler';
+import { useDispatch } from 'react-redux';
 
 interface Props {
   id?: any;
@@ -43,6 +44,7 @@ export default function Cell (props) {
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
     const [isUnderlay, setUnderlay] = useState(false);
+    const dispatch = useDispatch();
     // const theme = useSelector(state => state.itemReducer.theme);
 //   @autobind
 //   onShowUnderlay() {
@@ -145,7 +147,7 @@ export default function Cell (props) {
 
         const { bordered = true, index, more, 
             selected, disabled, onPress, onPressIn, 
-            onLongPress, testID, textInput, placeholder, value } = props;
+            onLongPress, testID, textInput, placeholder, value, onInputChange } = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
@@ -182,7 +184,12 @@ export default function Cell (props) {
                         style={[styles.titleText, {color: theme.LabelColor}]} 
                         placeholder={placeholder} 
                         clearButtonMode='while-editing' 
-                        value={value}/>}
+                        value={value}
+                        onChangeText={(text) => {
+                            const trimedText = text.trim();
+                            dispatch(onInputChange(trimedText))
+                        }}
+                        />}
             </View>
             <View style={styles.right}>
                 {renderRight()}

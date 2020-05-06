@@ -14,7 +14,7 @@ const initialState: FoodItem = {
     alert: ''
 }
 
-const selectedItem = (
+const selectedItemReducer = (
     state = initialState,
     action: FoodItemActionTypes
 ) => {
@@ -46,4 +46,4 @@ const selectedItem = (
     }
 }
 
-export default selectedItem;
+export default selectedItemReducer;

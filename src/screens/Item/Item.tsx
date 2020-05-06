@@ -91,12 +91,12 @@ const Item: ItemComponentType = ({
 
     useEffect(() => {
         const listener = Navigation.events().registerNavigationButtonPressedListener(
-          () => {
-            // do things
-          }
-        );
-        return () => listener.remove();
-      }, []);
+        () => {
+        // do things
+        }
+    );
+    return () => listener.remove();
+    }, []);
 
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();

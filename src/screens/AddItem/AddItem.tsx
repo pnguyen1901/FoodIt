@@ -6,13 +6,19 @@ import { SafeAreaView,
         Alert,
         Dimensions,
         Platform,
-        StyleSheet
+        StyleSheet,
+        Text
 } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 require('datejs');
 import RNCalendarEvents from 'react-native-calendar-events/index.ios';
-import { setAlert, setBrand, setCategory, setEXP, setTime, hideTimePicker, showTimePicker, resetForm } from '../../store/actions';
+import {
+    setAlert,
+    setBrand,
+    setCategory,
+    setExpDate
+} from '../../store/item/actions';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 import { Navigation } from 'react-native-navigation';
@@ -20,6 +26,8 @@ import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
+import { RootState } from '../../store/rootReducer';
+import { REMINDER } from '../../screens';
 
 
 const styles = StyleSheet.create({
@@ -49,17 +57,17 @@ const styles = StyleSheet.create({
         // marginLeft: 20,
         marginTop: 10,
         marginBottom: 30,
-    }
+    },
+    opaqueText: {
+        fontFamily: 'System',
+        fontWeight: '400',
+        fontSize: 17,
+        letterSpacing: -0.37,
+        opacity: 0.5,
+    },
 
 })
 
-const BackIcon = (style) : React.ReactElement => (
-    <Icon {...style} name='arrow-back'/>
-)
-
-const SaveIcon = (style) : React.ReactElement => (
-    <Icon {...style} name='save-outline'/>
-)
 
 const AlertOptions = [
     { text: '2 days before', value: 2 }, 
@@ -77,10 +85,10 @@ const addItem: addItemComponentType = ({
             alert,
             brand,
             category,
-            isTimePickerVisible,
-            time } = useSelector( state => state.itemReducer );
+            time } = useSelector((state: RootState) => state.addItem );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+    const [isTimePickerVisible, setTimePickerVisible] = useState(false);
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 
@@ -97,12 +105,12 @@ const addItem: addItemComponentType = ({
 
     useEffect(() => {
         const listener = Navigation.events().registerNavigationButtonPressedListener(
-          () => {
+            () => {
             // do things
-          }
+            }
         );
         return () => listener.remove();
-      }, []);
+    }, []);
 
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();
@@ -177,27 +185,71 @@ const addItem: addItemComponentType = ({
             })
     };
 
+    const onAlertPressed = () => {
+        Navigation.push(componentId, {
+            component: {
+                name: REMINDER
+            }
+        })
+    }
+
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme.SystemBackgroundColor}]}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <>
                 <CellGroup header={true} footer={true} theme={theme}>
                     <Cell 
                         textInput={true}
-                        placeholder={'Brand'}
+                        placeholder={'Brand & Category'}
+                        value={brand + ' ' + category}
+                        onInputChange={setBrand}
                     />
                     <Cell 
                         textInput={true}
-                        placeholder={'Category'}
+                        placeholder={'Notes'}
+                        value={''}
+                    />
+                </CellGroup>
+                <CellGroup header={true} footer={true} theme={theme}>
+                    <Cell 
+                        title={'Expires'} 
+                        right={
+                            <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
+                            
+                            {
+                            expiration_date.hasOwnProperty("_seconds") === true
+                            ? new Date(expiration_date.seconds*1000).toLocaleDateString()
+                            : expiration_date.toLocaleDateString()}
+                            </Text>}
+                        onPress={() => setTimePickerVisible(true)}
+                    />
+                    <DateTimePickerModal
+                    isVisible={isTimePickerVisible}
+                    isDarkModeEnabled={colorScheme === 'light' ? false : true}
+                    mode="datetime"
+                    onConfirm={(date) => { 
+                        dispatch(setExpDate(date))
+                        setTimePickerVisible(false)
+                    }}
+                    onCancel={() => setTimePickerVisible(false)}
                     />
                     <Cell 
-                        textInput={true}
-                        placeholder={'Expiration Date'}
+                        title={'Remind me'} 
+                        right={
+                            <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
+                                {alert}
+                            </Text>}
+                        onPress={onAlertPressed}
+                        more={true}
                     />
-                    <Cell 
-                        textInput={true}
-                        placeholder={'Remind me'}
+                </CellGroup>
+                <CellGroup header={true} footer={true} theme={theme}>
+                    <Cell
+                        title={'Delete Item'}
+                        deleteButton={true}
                     />
-                </CellGroup> 
+                </CellGroup>
+                </> 
             </TouchableWithoutFeedback>
         </SafeAreaView>
     )
