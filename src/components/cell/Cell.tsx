@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image } from 'react-native';
+import React, { useState, Component } from 'react';
+import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image, TextInput } from 'react-native';
 // import { theme } from 'styles';
 // import { observer, Observer } from 'mobx-react';
 // import { observable } from 'mobx';
@@ -8,7 +8,6 @@ import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Imag
 import styles from './CellStyles';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
-import { TextInput } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 
 interface Props {
@@ -147,7 +146,8 @@ export default function Cell (props) {
 
         const { bordered = true, index, more, 
             selected, disabled, onPress, onPressIn, 
-            onLongPress, testID, textInput, placeholder, value, onInputChange } = props;
+            onLongPress, testID, textInput, placeholder,
+            value, onInputChange, multiline, height } = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
@@ -181,13 +181,14 @@ export default function Cell (props) {
                 {renderTitle()}
                 {renderSubtitle()}
                 {textInput && <TextInput
-                        style={[styles.titleText, {color: theme.LabelColor}]} 
-                        placeholder={placeholder} 
-                        clearButtonMode='while-editing' 
+                        style={[styles.titleText, {color: theme.LabelColor}, height ? {height: height} : null]} 
+                        placeholder={placeholder}
+                        placeholderTextColor={theme.PlaceholderTextColor} 
+                        clearButtonMode='while-editing'
+                        multiline={multiline}
                         value={value}
                         onChangeText={(text) => {
-                            const trimedText = text.trim();
-                            dispatch(onInputChange(trimedText))
+                            dispatch(onInputChange(text))
                         }}
                         />}
             </View>

@@ -14,7 +14,7 @@ import CellGroup from '../../components/cell/CellGroup';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { RootState } from '../../store/rootReducer';
-import { setAlert } from '../../store/selecteditem/actions';
+import { setAlert } from '../../store/item/actions';
 import { ITEM } from '../../screens';
 
 const styles = StyleSheet.create({
@@ -57,11 +57,11 @@ const styles = StyleSheet.create({
 
 
 const AlertOptions = [
-    { value: '1 day before' },
-    { value: '2 days before' },
-    { value: '3 days before' },
-    { value: '4 days before' },
-    { value: '1 week before' },
+    { text: '1 day before', value: 1 },
+    { text: '2 days before', value: 2  },
+    { text: '3 days before', value: 3  },
+    { text: '4 days before', value: 4  },
+    { text: '1 week before', value: 7  },
 ]
 
 
@@ -111,9 +111,9 @@ const Reminder: ReminderComponentType = ({
                 <CellGroup header={true} footer={true} theme={theme}>
                     {AlertOptions.map((option, index) => (
                         <Cell key={index}
-                            title={option.value}
+                            title={option.text}
                             onPress={() => { 
-                                dispatch(setAlert(option.value))
+                                dispatch(setAlert(option))
                                 Navigation.pop(componentId);
                             }}
                         />                        

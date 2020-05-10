@@ -10,8 +10,9 @@ const initialState: FoodItem = {
     id: null,
     brand: '',
     category: '',
+    notes: '',
     expiration_date: null,
-    alert: ''
+    alert: 'None'
 }
 
 const selectedItemReducer = (
@@ -25,7 +26,9 @@ const selectedItemReducer = (
                 id: action.foodItem.id,
                 brand: action.foodItem.brand,
                 category: action.foodItem.category,
-                expiration_date: action.foodItem.expiration_date
+                notes: action.foodItem.notes,
+                expiration_date: action.foodItem.expiration_date,
+                alert: action.foodItem.alert
             }
 
         case SET_EXPIRATION_DATE:

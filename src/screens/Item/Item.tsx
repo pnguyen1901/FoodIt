@@ -71,7 +71,8 @@ const Item: ItemComponentType = ({
     const { expiration_date, 
             brand,
             category,
-            alert
+            alert,
+            notes
             } = useSelector((state: RootState) => state.selectedItem );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
@@ -135,7 +136,10 @@ const Item: ItemComponentType = ({
                     <Cell 
                         textInput={true}
                         placeholder={'Notes'}
-                        value={''}
+                        multiline={true}
+                        height={150}
+                        value={notes}
+                        //onInputChange={setNotes}
                     />
                 </CellGroup>
                 <CellGroup header={true} footer={true} theme={theme}>
@@ -165,7 +169,7 @@ const Item: ItemComponentType = ({
                         title={'Remind me'} 
                         right={
                             <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
-                                {alert}
+                                {alert.text}
                             </Text>}
                         onPress={onAlertPressed}
                         more={true}

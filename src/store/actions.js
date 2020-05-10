@@ -7,33 +7,6 @@ export function createItem (expiration_date) {
     }
 }
 
-export function setAlert (alert) {
-    return {
-        type: types.SET_ALERT,
-        alert
-    }
-}
-
-export function setBrand (brand) {
-    return {
-        type: types.SET_BRAND,
-        brand
-    }
-}
-
-export function setCategory (category) {
-    return {
-        type: types.SET_CATEGORY,
-        category
-    }
-}
-
-export function setEXP (expiration_date) {
-    return {
-        type: types.SET_EXP,
-        expiration_date
-    }
-}
 
 export function hideTimePicker () {
     return {
@@ -57,12 +30,6 @@ export function loading () {
 export function loadingDone () {
     return {
         type: types.IS_LOADING_DONE
-    }
-}
-
-export function resetForm () {
-    return {
-        type: types.RESET_FORM
     }
 }
 

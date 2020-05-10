@@ -5,14 +5,20 @@ import {
     SET_EXPIRATION_DATE,
     SET_ALERT,
     addItemActionTypes,
-    CANCEL_ADD_ITEM
+    CANCEL_ADD_ITEM,
+    SET_NOTES,
+    RESET_FORM
 } from './types';
 
 const initialState: FoodItem = {
     brand: '',
     category: '',
     expiration_date: new Date(),
-    alert: ''
+    alert: {
+        text: '1 day before',
+        value: 1
+    },
+    notes: ''
 }
 
 const additemReducer = (
@@ -45,8 +51,17 @@ const additemReducer = (
                 alert: action.alert
             }
 
+        case SET_NOTES:
+            return {
+                ...state,
+                notes: action.notes
+            }
+
         case CANCEL_ADD_ITEM:
-            return state
+            return initialState
+
+        case RESET_FORM:
+            return initialState
         
         default: 
             return state

@@ -51,33 +51,29 @@ export const LightTheme = {
 };
 
 export const DarkTheme = {
-    LabelColor: '#ffffff',
-    SecondaryLabelColor: '#ebebf5',
-    TertiaryLabelColor: '#ebebf5',
-    QuaternaryLabelColor: '#ebebf5',
-    PlaceholderTextColor: '#ebebf5',
-    SystemBackgroundColor: '#000000',
-    SecondarySystemBackgroundColor: '#1c1c1e',
-    TertiarySystemBackgroundColor: '#2c2c2e',
-    GroupedBackgroundColor: '#000000',
-    SecondaryGroupedBackgroundColor: '#1c1c1e',
-    TertiaryGroupedBackgroundColor: '#2c2c2e',
-    SystemFillColor: '#787880',
-    SecondarySystemFillColor: '#787880',
-    TertiarySystemFillColor: '#767680',
-    QuaternarySystemFillColor: '#767680',
-    SeparatorColor: '#545458',
-    OpaqueSeparatorColor: '#38383a',
-    LinkColor: '#0984ff',
-    SystemPurpleColor: '#bf5af2',
-    ToolbarColor: '#3c3c43',
+    LabelColor: '#ffffffff',
+    SecondaryLabelColor: '#ebebf599',
+    TertiaryLabelColor: '#ebebf54c',
+    QuaternaryLabelColor: '#ebebf528',
+    PlaceholderTextColor: '#ebebf54c',
+    SystemBackgroundColor: '#000000ff',
+    SecondarySystemBackgroundColor: '#1c1c1eff',
+    TertiarySystemBackgroundColor: '#2c2c2eff',
+    GroupedBackgroundColor: '#000000ff',
+    SecondaryGroupedBackgroundColor: '#1c1c1eff',
+    TertiaryGroupedBackgroundColor: '#2c2c2eff',
+    SystemFillColor: '#7878805b',
+    SecondarySystemFillColor: '#78788051',
+    TertiarySystemFillColor: '#7676803d',
+    QuaternarySystemFillColor: '#7676802d',
+    SeparatorColor: '#54545899',
+    OpaqueSeparatorColor: '#38383aff',
+    LinkColor: '#0984ffff',
+    SystemPurpleColor: '#bf5af2ff',
+    ToolbarColor: '#3c3c43ff',
 };
 
 export const themes = {light: LightTheme, dark: DarkTheme};
-// let theme;
-// const subscription = Appearance.addChangeListener(({colorScheme}) => {
-//     theme = colorScheme;
-// })
 
 export const ThemeContext: React.Context<FoodItTheme> = React.createContext(
     Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light,

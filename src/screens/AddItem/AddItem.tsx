@@ -14,10 +14,12 @@ import firestore from '@react-native-firebase/firestore';
 require('datejs');
 import RNCalendarEvents from 'react-native-calendar-events/index.ios';
 import {
-    setAlert,
     setBrand,
     setCategory,
-    setExpDate
+    setExpDate,
+    cancelAddItem,
+    setNotes,
+    resetForm
 } from '../../store/item/actions';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
@@ -85,6 +87,7 @@ const addItem: addItemComponentType = ({
             alert,
             brand,
             category,
+            notes,
             time } = useSelector((state: RootState) => state.addItem );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
@@ -123,6 +126,7 @@ const addItem: addItemComponentType = ({
 
     useNavigationButtonPress(({ buttonId }) => {
         if (buttonId === 'cancel_add_item_button_id') {
+            dispatch(cancelAddItem());
             Navigation.dismissAllModals();
         }
 
@@ -131,7 +135,7 @@ const addItem: addItemComponentType = ({
         }
     })
 
-    const saveEventCalendar = (expiration_date: string, alert: number): void => {
+    const saveEventCalendar = (expiration_date: string, alert: number, notes: string): void => {
         const endDate = expiration_date;
         const alarm = expiration_date;
         console.log(expiration_date.toString());
@@ -141,7 +145,8 @@ const addItem: addItemComponentType = ({
             title: category + brand,
             alarms: [{
                 date: alarm.addHours(10).add(-alert).day().toISOString()
-            }]
+            }],
+            notes: notes
         }).then((status: string) => { 
             console.log(status)
             dispatch(resetForm());
@@ -158,6 +163,8 @@ const addItem: addItemComponentType = ({
             .add({
                 brand: brand,
                 category: category,
+                notes: notes,
+                alert: alert,
                 expiration_date: expiration_date,
                 ownerId: [ownerId]
             })
@@ -166,11 +173,11 @@ const addItem: addItemComponentType = ({
                 RNCalendarEvents.authorizationStatus()
                     .then((status: string) => {
                         if (status === 'authorized') {
-                            saveEventCalendar(expiration_date, alert);
+                            saveEventCalendar(expiration_date, alert.value, notes);
                         } else {
                             RNCalendarEvents.authorizeEventStore()
                                 .then((status: string) => {
-                                    saveEventCalendar();
+                                    saveEventCalendar(expiration_date, alert.value, notes);
                                 })
                                 .catch((err: string) => {
                                     Alert.alert(err);
@@ -194,20 +201,29 @@ const addItem: addItemComponentType = ({
     }
 
     return (
-        <SafeAreaView style={[styles.container, {backgroundColor: theme.SystemBackgroundColor}]}>
+        <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <>
                 <CellGroup header={true} footer={true} theme={theme}>
                     <Cell 
                         textInput={true}
-                        placeholder={'Brand & Category'}
-                        value={brand + ' ' + category}
+                        placeholder={'Brand'}
+                        value={brand}
                         onInputChange={setBrand}
                     />
                     <Cell 
                         textInput={true}
+                        placeholder={'Category'}
+                        value={category}
+                        onInputChange={setCategory}
+                    />
+                    <Cell 
+                        textInput={true}
                         placeholder={'Notes'}
-                        value={''}
+                        multiline={true}
+                        height={150}
+                        value={notes}
+                        onInputChange={setNotes}
                     />
                 </CellGroup>
                 <CellGroup header={true} footer={true} theme={theme}>
@@ -237,16 +253,10 @@ const addItem: addItemComponentType = ({
                         title={'Remind me'} 
                         right={
                             <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
-                                {alert}
+                                {alert.text}
                             </Text>}
                         onPress={onAlertPressed}
                         more={true}
-                    />
-                </CellGroup>
-                <CellGroup header={true} footer={true} theme={theme}>
-                    <Cell
-                        title={'Delete Item'}
-                        deleteButton={true}
                     />
                 </CellGroup>
                 </> 

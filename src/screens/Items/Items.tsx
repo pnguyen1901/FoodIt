@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     },
   })
   
-
 const Items: ItemsComponentType = ({
     componentId,
 }): JSX.Element => {
@@ -237,13 +236,13 @@ const Items: ItemsComponentType = ({
     const renderRow = (row: object, id: number) => {
   
       return (
-        <TouchableHighlight
-          onPress={() => onItemPressed(row)}
-        >
           <Drawer key={id}
           {...drawerProps} 
           onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}
           onSwipeableClose={() => dispatch(removeDeleteItem())}>
+            <TouchableHighlight
+              onPress={() => onItemPressed(row)}
+              >
             <View 
               paddingH-20 
               paddingV-10 
@@ -260,9 +259,9 @@ const Items: ItemsComponentType = ({
               <View style={styles.right}>
                 <Image source={require('../../assets/icons/16/cell-chevron.png')} style={styles.more}/>
               </View>
-            </View> 
+            </View>
+            </TouchableHighlight>
           </Drawer>
-        </TouchableHighlight>  
       );
     }
 
@@ -290,7 +289,9 @@ const Items: ItemsComponentType = ({
     );
 };
 
+
 Items.options = () => ({
+
     topBar: {
         visible: true,
         title: {
@@ -305,7 +306,7 @@ Items.options = () => ({
         }],
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
-    },
+    }
 });
 
 export default Items;

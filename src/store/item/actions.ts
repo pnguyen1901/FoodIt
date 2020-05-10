@@ -4,12 +4,20 @@ import {
     SET_ALERT,
     SET_EXPIRATION_DATE,
     SET_BRAND,
-    SET_CATEGORY
+    SET_CATEGORY,
+    SET_NOTES,
+    RESET_FORM
 } from './types';
 
 export function cancelAddItem () {
     return {
         type: CANCEL_ADD_ITEM
+    }
+}
+
+export function resetForm () {
+    return {
+        type: RESET_FORM
     }
 }
 
@@ -38,5 +46,12 @@ export function setCategory (category: FoodItem['category']) {
     return {
         type: SET_CATEGORY,
         category
+    }
+}
+
+export function setNotes (notes: FoodItem['notes']) {
+    return {
+        type: SET_NOTES,
+        notes
     }
 }
