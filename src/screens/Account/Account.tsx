@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
+import { LOGIN } from '../../screens';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { 
@@ -8,10 +9,11 @@ import {
     StyleSheet, 
     Platform, 
     Dimensions,
-    Text
+    Text,
+    Alert
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-
+import { firebase } from '@react-native-firebase/auth';
 
 const styles = StyleSheet.create({
     container: {
@@ -32,7 +34,7 @@ const Account: AccountComponentType = ({
 }) => {
     
     const colorScheme = useColorScheme();
-    const theme = themes[colorScheme]
+    const theme = themes[colorScheme];
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
 
     useEffect(() => {
@@ -53,6 +55,19 @@ const Account: AccountComponentType = ({
             setKeyboardVerticalOffset(navConstants.statusBarHeight + navConstants.topBarHeight);
         }
     };
+
+    const SignOut = () : void => {
+        firebase.auth().signOut().then(() => {
+          // dispatch(setLoggedIn(false));
+            Navigation.push(componentId, {
+                component: {
+                    name: LOGIN
+                }
+            });
+        }).catch((err) => {
+            Alert.alert(err);
+        })
+    }
 
     return (
         <SafeAreaView style={[styles.container, {
@@ -75,6 +90,13 @@ const Account: AccountComponentType = ({
                     title={'Free'}
                     subtitle={'Upgrade'}
                     more={true}
+                />
+            </CellGroup>
+            <CellGroup header={true} footer={true} theme={theme}>
+                <Cell
+                    onPress={SignOut} 
+                    title={'Sign Out'}
+                    signOutButton={true}
                 />
             </CellGroup>
         </SafeAreaView>

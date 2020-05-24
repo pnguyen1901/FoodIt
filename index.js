@@ -9,8 +9,8 @@
 // AppRegistry.registerComponent(appName, () => App);
 
 import { Navigation } from 'react-native-navigation';
-import startApp from './src/App';
+import { setMainRoot, setLoginRoot } from './src/App';
 
 Navigation.events().registerAppLaunchedListener(() => {
-    startApp();
+    setLoginRoot();
 });

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     SafeAreaView,
     FlatList,
@@ -22,7 +22,6 @@ import {
     Drawer,
     View
 } from 'react-native-ui-lib';
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { setDeleteItem, removeDeleteItem } from '../../store/actions';
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';

@@ -10,6 +10,9 @@ type NavigationComponent<P> =
 
 // ====================================================================
 // ====================================================================
+interface LogInComponentProps { }
+type LogInComponentType = NavigationComponent<LogInComponentProps>;
+
 interface ItemsComponentProps { }
 type ItemsComponentType = NavigationComponent<ItemsComponentProps>;
 

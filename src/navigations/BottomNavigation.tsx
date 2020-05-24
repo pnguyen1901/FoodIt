@@ -9,7 +9,7 @@ import { AddItem } from '../screens/additem.component';
 import { Icon } from '@ui-kitten/components';
 import { Camera } from '../screens/camera.component';
 import SquareImageCropper from '../screens/cropImage.component';
-import SignIn from '../screens/sign-in';
+import SignIn from '../screens/LogIn/LogIn';
 
 // create an object type with mappings for route name to the params of the route
 export type RootStackParamList = {

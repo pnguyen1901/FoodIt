@@ -1,22 +1,11 @@
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
-// import {
-//   ApplicationProvider,
-//   IconRegistry,
-// } from '@ui-kitten/components';
-// import { EvaIconsPack } from '@ui-kitten/eva-icons';
-// import {
-//   mapping,
-//   dark,
-//   light
-// } from '@eva-design/eva';
-// import { AppNavigator } from './navigations/BottomNavigation';
-// import { Provider } from 'react-redux';
+import React from 'react';
 import { withReduxProvider } from './store';
 import nodejs from 'nodejs-mobile-react-native';
 import { Navigation } from 'react-native-navigation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+import { LOGIN } from './screens';
 import { ITEMS } from './screens';
 import { ITEM } from './screens';
 import { ADDITEM } from './screens';
@@ -24,6 +13,7 @@ import { SETTINGS } from './screens';
 import { ACCOUNT } from './screens';
 import { REMINDER } from './screens';
 
+import LogInScreen from './screens/LogIn/LogIn';
 import ItemsScreen from './screens/Items/Items';
 import addItem from './screens/AddItem/AddItem';
 import SettingsScreen from './screens/Settings/Settings';
@@ -37,6 +27,7 @@ import { themes } from './components/Theme/Theme';
 
 const Screens = new Map<string, React.FC<any>>();
 
+Screens.set(LOGIN, LogInScreen);
 Screens.set(ITEMS, ItemsScreen);
 Screens.set(SETTINGS, SettingsScreen);
 Screens.set(ACCOUNT, AccountScreen);
@@ -54,10 +45,7 @@ Screens.forEach((C, key) => {
 
 Navigation.registerComponent('addItem', () => gestureHandlerRootHOC(withReduxProvider(addItem)));
 
-const App = (): React.ReactFragment => {
-
-    // const colorScheme = useColorScheme();
-    // const theme = themes[colorScheme];
+export const setMainRoot = () => {
 
   // useEffect(() => {
   //   nodejs.start('main.js');
@@ -125,4 +113,19 @@ const App = (): React.ReactFragment => {
 };
 
 
-export default App;
+export const setLoginRoot = () => {
+    
+    Navigation.setRoot({
+        root: {
+            stack: {
+                children: [
+                    {
+                        component: {
+                            name: LOGIN
+                        }
+                    }
+                ]
+            }
+        }
+    })
+}
