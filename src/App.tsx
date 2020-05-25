@@ -20,8 +20,7 @@ import SettingsScreen from './screens/Settings/Settings';
 import AccountScreen from './screens/Account/Account';
 import ItemScreen from './screens/Item/Item';
 import ReminderScreen from './screens/Item/Reminder';
-import { useColorScheme } from 'react-native-appearance';
-import { themes } from './components/Theme/Theme';
+import AsyncStore from '@react-native-community/async-storage';
 
 // const store = configureStore();
 
@@ -44,6 +43,25 @@ Screens.forEach((C, key) => {
 });
 
 Navigation.registerComponent('addItem', () => gestureHandlerRootHOC(withReduxProvider(addItem)));
+
+// Persist user status after logging in
+const setLoggedIn = async () => {
+    try {
+        await AsyncStore.setItem('isLoggedIn', 'true');
+        console.log('Set logged in to true');
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+const setLoggedOut = async () => {
+    try {
+        await AsyncStore.setItem('isLoggedIn', 'false');
+        console.log('Set logged in to false');
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 export const setMainRoot = () => {
 
@@ -109,6 +127,7 @@ export const setMainRoot = () => {
                 },
             },
         });
+        setLoggedIn();
     });
 };
 
@@ -128,4 +147,5 @@ export const setLoginRoot = () => {
             }
         }
     })
+    setLoggedOut();
 }

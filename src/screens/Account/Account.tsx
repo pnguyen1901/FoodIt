@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import { firebase } from '@react-native-firebase/auth';
+import { setLoginRoot } from '../../App';
 
 const styles = StyleSheet.create({
     container: {
@@ -59,11 +60,7 @@ const Account: AccountComponentType = ({
     const SignOut = () : void => {
         firebase.auth().signOut().then(() => {
           // dispatch(setLoggedIn(false));
-            Navigation.push(componentId, {
-                component: {
-                    name: LOGIN
-                }
-            });
+            setLoginRoot();
         }).catch((err) => {
             Alert.alert(err);
         })

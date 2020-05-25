@@ -650,7 +650,7 @@ PODS:
     - React
   - RNAppleAuthentication (0.2.0):
     - React
-  - RNCAsyncStorage (1.9.0):
+  - RNCAsyncStorage (1.11.0):
     - React
   - RNCMaskedView (0.1.7):
     - React
@@ -974,7 +974,7 @@ SPEC CHECKSUMS:
   ReactNativeNavigation: 667586f6924fbd09512e2933fe70497db914b758
   ReactNativeUiLib: 9883f80a22b855d4a866ceee433d1e24b1014a2a
   RNAppleAuthentication: e875711ddda0361c2b7fca28fb6c64cdd94f7968
-  RNCAsyncStorage: b16697280b08bab4b5f2f67f752d93d13a52e9ed
+  RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1
   RNCMaskedView: 90dd32f5b786bd562e876e1421ea77c700cbf71e
   RNDateTimePicker: 0f657a34a0f6465ab7d0255c24954693bc7a8cf6
   RNFBApp: 7d4006751de8bb5cafa2e8d2e7d94ee250df81db

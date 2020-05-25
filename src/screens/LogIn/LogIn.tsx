@@ -5,35 +5,28 @@ import { StyleSheet, View, Alert, Text, TextInput, Button,
   Keyboard, Image, TouchableOpacity
 } from 'react-native';
 import { useColorScheme } from 'react-native-appearance';
-import {
-  EyeIcon,
-  EyeOffIcon,
-  FacebookIcon,
-  GoogleIcon,
-  PersonIcon,
-  AppleIcon
-} from './extra/icons';
 import { firebase } from '@react-native-firebase/auth';
 import { setLoggedIn } from '../../store/actions';
-import {  LoginButton,
+import {  
           LoginManager, 
           AccessToken,
           GraphRequest,
           GraphRequestManager } from 'react-native-fbsdk';
 import {
           GoogleSignin,
-          GoogleSigninButton,
           statusCodes,
           } from '@react-native-community/google-signin';
 import appleAuth, {
             AppleAuthRequestScope,
             AppleAuthRequestOperation,
-            AppleButton
           } from '@invertase/react-native-apple-authentication';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { themes } from '../../components/Theme/Theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Navigation } from 'react-native-navigation';
+import { ITEMS } from '../../screens';
+import { setMainRoot } from '../../App';
 
 //Set up Google sign in usage with for default options: you get user email and basic profile info.
 GoogleSignin.configure();
@@ -103,6 +96,7 @@ const LogIn: LogInComponentType = ({
     return auth().signInWithCredential(appleCredential)
               .then(() => {
                 createNewUser(appleAuthRequestResponse, 'Apple');
+                setMainRoot();
               })
               .catch(err => {
                 console.log(err);
@@ -121,6 +115,7 @@ const LogIn: LogInComponentType = ({
     return auth().signInWithCredential(googleCredential)
                 .then(() =>  {
                   createNewUser(user, 'Google');
+                  setMainRoot();
                 })
                 .catch(err => {
                   console.log(err);
@@ -154,6 +149,7 @@ const LogIn: LogInComponentType = ({
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
+        setMainRoot();
         dispatch(setLoggedIn(true));
         //navigation.navigate('Items');
       })
@@ -209,20 +205,21 @@ const LogIn: LogInComponentType = ({
                     onFacebookButtonPress()
                       .then(() => {
                         //Create response callback.
-                      _responseInfoCallback = (error: Object, result: Object) => {
+                      const responseInfoCallback = (error: Object, result: Object) => {
                         if (error) {
                           console.log('Error fetching data: ' + error.toString());
                         } else {
                           createNewUser(result, 'Facebook').catch((error) => {
                             console.log('Error creating new user: ' + error.toString());
                           })
+                          setMainRoot();
                         }
                       }
                       // Create a graph request asking for user information with a callback to handle the response.
                       const infoRequest = new GraphRequest(
                         '/me?fields=name,email',
                         null,
-                        this._responseInfoCallback,
+                        responseInfoCallback(),
                       );
                       // Start the graph request.
                       new GraphRequestManager().addRequest(infoRequest).start();
@@ -287,13 +284,15 @@ const LogIn: LogInComponentType = ({
               >
                 <Text style={styles.signInText}>Sign In</Text>
               </TouchableOpacity>          
-            </View>            
+            </View>
+            <View style={{marginTop: 20}}>
+              <TouchableOpacity>
+                <Text style={{color: theme.LinkColor, textAlign: 'center', fontSize: 16}}>
+                  Don't Have An Account? Sign Up
+                </Text>
+              </TouchableOpacity>
+            </View>                        
           </View>
-
-          <Button
-            title="Don't have an account? Sign Up"
-            //onPress={onSignUpButtonPress}
-          />
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -421,7 +420,8 @@ const styles = StyleSheet.create({
   socialSignInText: {
     color: '#ffffff', 
     marginLeft: 10, 
-    flexGrow: 1
+    flexGrow: 1,
+    fontSize: 16
   },
   socialAuthHintText: {
     alignSelf: 'center',
