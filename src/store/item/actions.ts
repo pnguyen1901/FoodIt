@@ -1,6 +1,9 @@
 import {
     FoodItem,
+    SELECT_ITEM,
     CANCEL_ADD_ITEM,
+    SET_DELETE_ITEM,
+    REMOVE_DELETE_ITEM,
     SET_ALERT,
     SET_EXPIRATION_DATE,
     SET_BRAND,
@@ -9,9 +12,29 @@ import {
     RESET_FORM
 } from './types';
 
+export function selectItem (foodItem: FoodItem) {
+    return {
+        type: SELECT_ITEM,
+        foodItem
+    }
+}
+
 export function cancelAddItem () {
     return {
         type: CANCEL_ADD_ITEM
+    }
+}
+
+export function setDeleteItem (id: FoodItem['id']) {
+    return {
+        type: SET_DELETE_ITEM,
+        id
+    }
+}
+
+export function removeDeleteItem () {
+    return {
+        type: REMOVE_DELETE_ITEM,
     }
 }
 

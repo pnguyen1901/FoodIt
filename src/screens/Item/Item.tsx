@@ -20,8 +20,8 @@ import CellGroup from '../../components/cell/CellGroup';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { RootState } from '../../store/rootReducer';
-import { setExpDate } from '../../store/selecteditem/actions';
-import { REMINDER } from '../../screens';
+import { setExpDate, setBrand, setCategory, setNotes } from '../../store/item/actions';
+import { REMINDER, ITEMS } from '../../screens';
 
 
 const styles = StyleSheet.create({
@@ -68,12 +68,13 @@ const Item: ItemComponentType = ({
 }): JSX.Element => {
 
     const [isTimePickerVisible, setTimePickerVisible] = useState(false);
-    const { expiration_date, 
+    const { id,
+            expiration_date, 
             brand,
             category,
             alert,
             notes
-            } = useSelector((state: RootState) => state.selectedItem );
+            } = useSelector((state: RootState) => state.item );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
     const colorScheme = useColorScheme();
@@ -108,9 +109,29 @@ const Item: ItemComponentType = ({
         }
     };
 
+    const handleSaveItem = () => {
+        firestore().collection('food_items').doc(id)
+            .update({
+                brand: brand,
+                category: category,
+                expiration_date: expiration_date,
+                notes: notes,
+                alert: alert
+            })
+            .then((res) => {
+                console.log("Document successfully updated!");
+                Navigation.pop(componentId)
+            })
+            .catch((err) => {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", err);
+            })
+    }
+
+
     useNavigationButtonPress(({ buttonId }) => {
-        if (buttonId === 'cancel_add_item_button_id') {
-            Navigation.dismissAllModals();
+        if (buttonId === 'edit_item_button') {
+            handleSaveItem();
         }
 
     })
@@ -130,8 +151,15 @@ const Item: ItemComponentType = ({
                 <CellGroup header={true} footer={true} theme={theme}>
                     <Cell 
                         textInput={true}
-                        placeholder={'Brand & Category'}
-                        value={brand + ' ' + category}
+                        placeholder={'Brand'}
+                        value={brand}
+                        onInputChange={setBrand}
+                    />
+                    <Cell 
+                        textInput={true}
+                        placeholder={'Category'}
+                        value={category}
+                        onInputChange={setCategory}
                     />
                     <Cell 
                         textInput={true}
@@ -139,7 +167,7 @@ const Item: ItemComponentType = ({
                         multiline={true}
                         height={150}
                         value={notes}
-                        //onInputChange={setNotes}
+                        onInputChange={setNotes}
                     />
                 </CellGroup>
                 <CellGroup header={true} footer={true} theme={theme}>

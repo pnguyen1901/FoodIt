@@ -6,7 +6,9 @@ export const SET_BRAND = 'SET_BRAND';
 export const SET_CATEGORY = 'SET_CATEGORY';
 export const RESET_FORM = 'RESET_FORM';
 export const SET_NOTES = 'SET_NOTES';
-
+export const SELECT_ITEM = 'SELECT_ITEM';
+export const SET_DELETE_ITEM = 'SET_DELETE_ITEM';
+export const REMOVE_DELETE_ITEM = 'REMOVE_DELETE_ITEM';
 
 // Describe how the add item slice of the app state should look like.
 export interface alert {
@@ -15,6 +17,7 @@ export interface alert {
 }
 
 export interface FoodItem {
+    id: number | null,
     brand: string,
     category: string,
     expiration_date: Date | null,
@@ -23,6 +26,19 @@ export interface FoodItem {
 }
 
 // Describe how the add item actions should look like.
+interface SelectedFoodItemAction {
+    type: typeof SELECT_ITEM,
+    foodItem: FoodItem
+}
+
+interface SetDeleteItemAction {
+    type: typeof SET_DELETE_ITEM
+}
+
+interface RemoveItemAction {
+    type: typeof REMOVE_DELETE_ITEM
+}
+
 interface CancelAddItemAction {
     type: typeof CANCEL_ADD_ITEM
 }
@@ -56,4 +72,6 @@ interface SetNoteAction {
     notes: FoodItem['notes']
 }
 
-export type addItemActionTypes = CancelAddItemAction | ResetFormAction | SetBrandAction | SetCategoryAction |  SetExpDateAction | SetAlertAction | SetNoteAction;
+export type addItemActionTypes = SelectedFoodItemAction | SetDeleteItemAction | RemoveItemAction |
+CancelAddItemAction | ResetFormAction | SetBrandAction | 
+SetCategoryAction |  SetExpDateAction | SetAlertAction | SetNoteAction;

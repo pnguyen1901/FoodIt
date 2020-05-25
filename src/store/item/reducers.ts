@@ -1,5 +1,8 @@
 import {
     FoodItem,
+    SELECT_ITEM,
+    SET_DELETE_ITEM,
+    REMOVE_DELETE_ITEM,
     SET_CATEGORY,
     SET_BRAND,
     SET_EXPIRATION_DATE,
@@ -11,6 +14,7 @@ import {
 } from './types';
 
 const initialState: FoodItem = {
+    id: null,
     brand: '',
     category: '',
     expiration_date: new Date(),
@@ -26,6 +30,28 @@ const additemReducer = (
     action: addItemActionTypes
 ) => {
     switch(action.type) {
+
+        case SELECT_ITEM:
+            return {
+                id: action.foodItem.id,
+                brand: action.foodItem.brand,
+                category: action.foodItem.category,
+                notes: action.foodItem.notes,
+                expiration_date: action.foodItem.expiration_date,
+                alert: action.foodItem.alert
+            }
+
+        case SET_DELETE_ITEM:
+            return {
+                ...state,
+                deleteItem: action.id
+            }
+
+        case REMOVE_DELETE_ITEM:
+            return {
+                ...state,
+                deleteItem: ''
+            }
 
         case SET_BRAND:
             return {

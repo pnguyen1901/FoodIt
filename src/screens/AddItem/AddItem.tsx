@@ -88,7 +88,7 @@ const addItem: addItemComponentType = ({
             brand,
             category,
             notes,
-            time } = useSelector((state: RootState) => state.addItem );
+            time } = useSelector((state: RootState) => state.item );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
     const [isTimePickerVisible, setTimePickerVisible] = useState(false);

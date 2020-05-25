@@ -54,6 +54,7 @@ const setLoggedIn = async () => {
     }
 }
 
+// Persist user status after logging out
 const setLoggedOut = async () => {
     try {
         await AsyncStore.setItem('isLoggedIn', 'false');

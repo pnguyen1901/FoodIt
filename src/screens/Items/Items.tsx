@@ -25,8 +25,9 @@ import {
 import { setDeleteItem, removeDeleteItem } from '../../store/actions';
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
-import { selectItem } from '../../store/selecteditem/actions';
+import { selectItem } from '../../store/item/actions';
 import { ITEM } from '../../screens';
+import { RootState } from 'src/store/rootReducer';
 
 
 const styles = StyleSheet.create({
@@ -60,7 +61,7 @@ const Items: ItemsComponentType = ({
     const [user, setUser] = useState(null);
     const [data, setData] = useState([]);
     const [showRightItems, setShowRightItems] = useState(true);
-    const deleteItem = useSelector(state => state.itemReducer.deleteItem);
+    const deleteItem = useSelector((state: RootState ) => state.item.deleteItem);
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 

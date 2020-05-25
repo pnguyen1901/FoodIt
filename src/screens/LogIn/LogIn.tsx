@@ -127,14 +127,14 @@ const LogIn: LogInComponentType = ({
     const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
   
     if (result.isCancelled) {
-      throw 'User cancelled the login process';
+      console.log('User cancelled the login process');
     }
   
     // Once signed in, get the users AccesToken
     const data = await AccessToken.getCurrentAccessToken();
   
     if (!data) {
-      throw 'Something went wrong obtaining access token';
+      console.log('Something went wrong obtaining access token');
     }
   
     // Create a Firebase credential with the AccessToken
@@ -151,7 +151,6 @@ const LogIn: LogInComponentType = ({
       .then(() => {
         setMainRoot();
         dispatch(setLoggedIn(true));
-        //navigation.navigate('Items');
       })
       .catch(e => {
         Alert.alert(e);
@@ -205,21 +204,20 @@ const LogIn: LogInComponentType = ({
                     onFacebookButtonPress()
                       .then(() => {
                         //Create response callback.
-                      const responseInfoCallback = (error: Object, result: Object) => {
-                        if (error) {
-                          console.log('Error fetching data: ' + error.toString());
-                        } else {
-                          createNewUser(result, 'Facebook').catch((error) => {
-                            console.log('Error creating new user: ' + error.toString());
-                          })
-                          setMainRoot();
-                        }
-                      }
                       // Create a graph request asking for user information with a callback to handle the response.
                       const infoRequest = new GraphRequest(
                         '/me?fields=name,email',
                         null,
-                        responseInfoCallback(),
+                        (error, result: object | undefined) => {
+                          if (error) {
+                            console.log('Error fetching data: ' + error.toString());
+                          } else {
+                            createNewUser(result, 'Facebook').catch((error: string) => {
+                              console.log('Error creating new user: ' + error.toString());
+                            })
+                            setMainRoot();
+                          }
+                        },
                       );
                       // Start the graph request.
                       new GraphRequestManager().addRequest(infoRequest).start();
