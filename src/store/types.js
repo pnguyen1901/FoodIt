@@ -1,6 +1,4 @@
-export const CREATE_ITEM = 'CREATE_ITEM';
-export const IS_LOADING = 'IS_LOADING';
-export const IS_LOADING_DONE = 'IS_LOADING_DONE';
+
 export const HIDE_TIME_PICKER = 'HIDE_TIME_PICKER';
 export const SHOW_TIME_PICKER = 'SHOW_TIME_PICKER';
 export const SET_LOGGED_IN = 'SET_LOGGED_IN';

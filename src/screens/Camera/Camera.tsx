@@ -1,37 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet,
-         Text,
-         SafeAreaView,
-         View,
-         TouchableOpacity,
-         Alert,
-         Dimensions,
-         Image
+        Text,
+        SafeAreaView,
+        View,
+        TouchableOpacity,
+        Alert,
+        Dimensions,
         } from 'react-native';
-import ImageEditor from "@react-native-community/image-editor";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
-import { createItem, loading, loadingDone } from '../store/actions';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigations/BottomNavigation';
+import { loading, loadingDone } from '../../store/camera/actions';
+import { setExpDate, resetForm } from '../../store/item/actions';
 import nodejs from 'nodejs-mobile-react-native';
 import vision from '@react-native-firebase/ml-vision';
+import { RootState } from '../../store/rootReducer';
+import { Navigation } from 'react-native-navigation';
+require('datejs'); 
+import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 
-type CameraScreenNavigationProp = StackNavigationProp<
-        RootStackParamList,
-        'Camera'
->;
-
-type CameraProps = {
-    navigation: CameraScreenNavigationProp,
-}
-
-
-export const Camera: React.FC<CameraProps> = ({ navigation }) => {
+const Camera: CameraComponentType = ({ 
+    componentId,
+}): JSX.Element => {
 
     const dispatch = useDispatch();
-    const isLoading = useSelector(state => state.itemReducer.isLoading);
+    const isLoading = useSelector((state :RootState) => state.camera.isLoading);
     const [ratio, setRatio] = useState('16:9');
     const [type, setType] = useState('back');
     const [flash, setFlash] = useState('off');
@@ -43,23 +36,68 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
     let { width } = Dimensions.get('window');
     const maskLength = (width * 90)/100;
 
+
+
+    useNavigationButtonPress(({ buttonId, componentId }) => {
+        if (buttonId === 'cancel_camera_button_id') {
+            Navigation.pop(componentId)
+        }
+    });
+
+
     useEffect(() => {
         nodejs.channel.addListener('message', 
             (msg) => {
                 if (msg === null) {
                     dispatch(loadingDone());
                     setTimeout(() => {
-                      Alert.alert('Please try again!');  
+                        Alert.alert('Please try again!');  
                     }, 100);
                 } else {
-                    console.log(msg);
-                    dispatch(loadingDone());
-                    dispatch(createItem(msg));
-                    navigation.navigate('AddItem'); 
+                    console.log('echo message: ' + msg);
+                    dispatch(resetForm())
+                    dispatch(setExpDate(new Date (Date.parse(msg))))
+                    setTimeout(() => {
+                    Navigation.showModal({
+                        stack: {
+                        children: [
+                            {
+                            component: {
+                                name: 'addItem',
+                                id: 'addItem',
+                                passProps: {
+                                    expiration_date: new Date (Date.parse(msg))
+                                },
+                                options: {
+                                topBar: {
+                                    title: {
+                                        text: 'New Item'
+                                    },
+                                    leftButtons: [
+                                    {
+                                        id: 'cancel_add_item_button_id',
+                                        text: 'Cancel'
+                                    }
+                                    ],
+                                    rightButtons: [
+                                    {
+                                        id: 'save_item_button_id',
+                                        text: 'Add'
+                                    }
+                                    ]
+                                },
+                                }
+                            }
+                            }
+                        ]
+                        }
+                    });
+                    }, 1000)
+
                 }
             },
         )
-    })
+    }, [])
 
 
     async function processDocument (localPath: string) {
@@ -69,42 +107,42 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
     }
 
     const takePicture = async function() {
-        if (camera) {
-          const data = await camera.takePictureAsync({fixOrientation: true, forceUpOrientation: true});
-          console.log('takePicture ', data);
-          dispatch(loading());
-          nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
+            if (camera) {
+            const data = await camera.takePictureAsync({fixOrientation: true, forceUpOrientation: true});
+            console.log('takePicture ', data);
+            dispatch(loading());
+            //nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
 
-        //   ImageEditor.cropImage(
-        //       data.uri,
-        //       {
-        //         offset:{},
-        //         size: {} 
-        //       }).then((url:string) => {
-        //         nodejs.channel.send(url.replace(/^file:\/\//g,''));
-        //       })
-        //       .catch((err:string) => {
-        //           console.log(err);
-        //       })
+            //   ImageEditor.cropImage(
+            //       data.uri,
+            //       {
+            //         offset:{},
+            //         size: {} 
+            //       }).then((url:string) => {
+            //         nodejs.channel.send(url.replace(/^file:\/\//g,''));
+            //       })
+            //       .catch((err:string) => {
+            //           console.log(err);
+            //       })
 
-          
-        //   processDocument(data.uri.replace(/^file:\/\//g, ''))
-        //     .then((result) => {
-        //         nodejs.channel.send(result);
-        //     }).catch(err => console.log(err));
-        }
-      };
-    
-    const  textRecognized = (object: {textBlocks: []}): void => {
-    const { textBlocks } = object;
-        setTextBlocks(textBlocks);
-    };
+            
+            processDocument(data.uri.replace(/^file:\/\//g, ''))
+                .then((result) => {
+                    nodejs.channel.send(result);
+                }).catch(err => console.log(err));
+            }
+        };
+        
+        const  textRecognized = (object: {textBlocks: []}): void => {
+        const { textBlocks } = object;
+            setTextBlocks(textBlocks);
+        };
 
-    const toggleFocus = (): void => {
-        setAutoFocus(
-          autoFocus === 'on' ? 'off' : 'on',
-        );
-      };
+        const toggleFocus = (): void => {
+            setAutoFocus(
+            autoFocus === 'on' ? 'off' : 'on',
+            );
+        };
     
     const zoomOut = (): void => {
         setZoom(
@@ -120,10 +158,10 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
 
 
     const renderTextBlocks = (): React.ReactElement => (
-        <View style={styles.facesContainer} pointerEvents="none">
-          {textBlocks.map(renderTextBlock)}
-        </View>
-      );
+            <View style={styles.facesContainer} pointerEvents="none">
+                {textBlocks.map(renderTextBlock)}
+            </View>
+        );
 
     const renderTextBlock = ({ bounds, value }) => {
 
@@ -156,9 +194,6 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
     
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
-            <View style={{height: 200, width:400}}>
-
-            </View>
             <RNCamera
             ref={ref => {
             camera = ref;
@@ -179,7 +214,7 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
             <View style={styles.overlay} />
                 <View style={styles.snapText}>
                     <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
-                        PLACE IMAGE INSIDE THE FRAME
+                        PLACE EXP LABEL INSIDE THE FRAME
                     </Text>
                 </View>
                 <View style={[styles.contentRow, { height: 200 }]}>
@@ -216,32 +251,45 @@ export const Camera: React.FC<CameraProps> = ({ navigation }) => {
             <View style={styles.overlay} />
             {!!canDetectText && renderTextBlocks()}
         </RNCamera>
-      </SafeAreaView>
+    </SafeAreaView>
     )
 }
 
+
+Camera.options = () => ({
+    topBar: {
+        visible: true,
+    },
+    bottomTabs: {
+        visible: true
+    }
+})
+
+export default Camera;
+
+
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      paddingTop: 10,
-      backgroundColor: '#000',
+        flex: 1,
+        paddingTop: 10,
+        backgroundColor: '#000',
     },
     flipButton: {
-      flex: 0.3,
-      height: 60,
-      width: 60,
-      marginHorizontal: 2,
-      marginBottom: 50,
-      marginTop: 10,
-      borderRadius: 30,
-      borderColor: 'white',
-      borderWidth: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 0.3,
+        height: 60,
+        width: 60,
+        marginHorizontal: 2,
+        marginBottom: 50,
+        marginTop: 10,
+        borderRadius: 30,
+        borderColor: 'white',
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     flipText: {
-      color: 'black',
-      fontSize: 15,
+        color: 'black',
+        fontSize: 15,
     },
     snapText: {
         alignItems: "center",
@@ -251,10 +299,10 @@ const styles = StyleSheet.create({
         color: '#FFF'
     },
     zoomText: {
-      position: 'absolute',
-      bottom: 70,
-      zIndex: 2,
-      left: 2,
+        position: 'absolute',
+        bottom: 70,
+        zIndex: 2,
+        left: 2,
     },
     facesContainer: {
         position: 'absolute',
@@ -264,31 +312,32 @@ const styles = StyleSheet.create({
         top: 0,
     },
     picButton: {
-      backgroundColor: 'white',
+        backgroundColor: 'white',
     },
     text: {
-      padding: 10,
-      borderWidth: 2,
-      borderRadius: 2,
-      position: 'absolute',
-      borderColor: '#F00',
-      justifyContent: 'center',
+        padding: 10,
+        borderWidth: 2,
+        borderRadius: 2,
+        position: 'absolute',
+        borderColor: '#F00',
+        justifyContent: 'center',
     },
     textBlock: {
-      color: '#F00',
-      position: 'absolute',
-      textAlign: 'center',
-      backgroundColor: 'transparent',
+        color: '#F00',
+        position: 'absolute',
+        textAlign: 'center',
+        backgroundColor: 'transparent',
     },
     overlay: {
         flex: 1,
-        backgroundColor: "rgba(0,0,0,0.5)"
+        //backgroundColor: "rgba(0,0,0,0.5)"
     },
     content: {
         borderWidth: 3,
         borderColor: "#00FF00"
     },
     contentRow: {
-        flexDirection: "row"
+        flexDirection: "row",
+        marginTop: 16
     },
-  });
+});

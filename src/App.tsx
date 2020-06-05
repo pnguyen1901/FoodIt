@@ -1,7 +1,6 @@
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import { withReduxProvider } from './store';
-import nodejs from 'nodejs-mobile-react-native';
 import { Navigation } from 'react-native-navigation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -9,6 +8,7 @@ import { LOGIN } from './screens';
 import { ITEMS } from './screens';
 import { ITEM } from './screens';
 import { ADDITEM } from './screens';
+import { CAMERA } from './screens';
 import { SETTINGS } from './screens';
 import { ACCOUNT } from './screens';
 import { REMINDER } from './screens';
@@ -16,9 +16,10 @@ import { REMINDER } from './screens';
 import LogInScreen from './screens/LogIn/LogIn';
 import ItemsScreen from './screens/Items/Items';
 import addItem from './screens/AddItem/AddItem';
+import ItemScreen from './screens/Item/Item';
+import CameraScreen from './screens/Camera/Camera';
 import SettingsScreen from './screens/Settings/Settings';
 import AccountScreen from './screens/Account/Account';
-import ItemScreen from './screens/Item/Item';
 import ReminderScreen from './screens/Item/Reminder';
 import AsyncStore from '@react-native-community/async-storage';
 
@@ -28,9 +29,10 @@ const Screens = new Map<string, React.FC<any>>();
 
 Screens.set(LOGIN, LogInScreen);
 Screens.set(ITEMS, ItemsScreen);
+Screens.set(ITEM, ItemScreen);
+Screens.set(CAMERA, CameraScreen);
 Screens.set(SETTINGS, SettingsScreen);
 Screens.set(ACCOUNT, AccountScreen);
-Screens.set(ITEM, ItemScreen);
 Screens.set(REMINDER, ReminderScreen);
 // Screens.set(ADDITEM, AddItemScreen);
 // Register screens
@@ -66,20 +68,11 @@ const setLoggedOut = async () => {
 
 export const setMainRoot = () => {
 
-  // useEffect(() => {
-  //   nodejs.start('main.js');
-  //   // nodejs.channel.addListener(
-  //   //   'message',
-  //   //   (msg) => {
-  //   //     console.log('From node: ' + msg);
-  //   //   },
-  //   //   this 
-  //   // );
-  // }); 
+
         Promise.all([
         FontAwesome5.getImageSource('list-ul', 25),
-        FontAwesome5.getImageSource('react', 25),
-    ]).then(([listIcon, reactIcon]) => {
+        FontAwesome5.getImageSource('camera', 25),
+    ]).then(([listIcon, cameraIcon]) => {
         Navigation.setRoot({
             root: {
                 bottomTabs: {
@@ -106,7 +99,27 @@ export const setMainRoot = () => {
                             },
                         },
                     },
-                    },{
+                    },
+                    {
+                    stack: {
+                        children: [{
+                            component: {
+                                name: CAMERA
+                            }
+                        }],
+                        options: {
+                            bottomTab: {
+                                iconColor: '#A1A1A1',
+                                textColor: '#A1A1A1',
+                                selectedIconColor: '#007aff',
+                                selectedTextColor: '#007aff',
+                                text: 'Camera',
+                                icon: cameraIcon,
+                            }
+                        }
+                    }
+                    },
+                    {
                     stack: {
                         children: [{
                             component: {

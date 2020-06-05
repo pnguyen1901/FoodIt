@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, View, Alert, Text, TextInput, Button,
   KeyboardAvoidingView, TouchableWithoutFeedback, Platform, 
@@ -14,7 +14,6 @@ import {
           GraphRequestManager } from 'react-native-fbsdk';
 import {
           GoogleSignin,
-          statusCodes,
           } from '@react-native-community/google-signin';
 import appleAuth, {
             AppleAuthRequestScope,
@@ -24,9 +23,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { themes } from '../../components/Theme/Theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { Navigation } from 'react-native-navigation';
-import { ITEMS } from '../../screens';
 import { setMainRoot } from '../../App';
+import { RootState } from 'src/store/rootReducer';
 
 //Set up Google sign in usage with for default options: you get user email and basic profile info.
 GoogleSignin.configure();
@@ -40,7 +38,7 @@ const LogIn: LogInComponentType = ({
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
-  const loggedIn = useSelector(state => state.itemReducer.loggedIn);
+  const loggedIn = useSelector((state: RootState ) => state.item.loggedIn);
   const dispatch = useDispatch();
 
 

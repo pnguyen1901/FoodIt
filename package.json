@@ -36,6 +36,7 @@
     "@ui-kitten/components": "4.4.1",
     "@ui-kitten/eva-icons": "4.4.1",
     "acorn": "^7.1.1",
+    "algoliasearch": "^4.2.0",
     "classnames": "^2.2.6",
     "datejs": "^1.0.0-rc3",
     "eslint": "^5.16.0",

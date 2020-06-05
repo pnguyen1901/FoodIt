@@ -22,8 +22,13 @@ type ItemComponentType = NavigationComponent<ItemComponentProps>;
 interface ReminderComponentProps { }
 type ReminderComponentType = NavigationComponent<ReminderComponentProps>;
 
-interface addItemComponentProps { }
-type addItemComponentType = NavigationComponent<addItemComponentProps>;
+interface addItemComponentProps { 
+    expiration_date: Date
+}
+type addItemComponentType = NavigationComponent<addItemComponentProps>; // type can extend
+
+interface CameraComponentProps { }
+type CameraComponentType = NavigationComponent<CameraComponentProps>;
 
 interface SettingsComponentProps { }
 type SettingsComponentType = NavigationComponent<SettingsComponentProps>;

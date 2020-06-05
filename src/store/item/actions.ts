@@ -9,7 +9,10 @@ import {
     SET_BRAND,
     SET_CATEGORY,
     SET_NOTES,
-    RESET_FORM
+    RESET_FORM,
+    TURN_OFF_SEARCH_MODE,
+    TURN_ON_SEARCH_MODE,
+    TOGGLE_ACTION_SHEET
 } from './types';
 
 export function selectItem (foodItem: FoodItem) {
@@ -76,5 +79,23 @@ export function setNotes (notes: FoodItem['notes']) {
     return {
         type: SET_NOTES,
         notes
+    }
+}
+
+export function turnOnSearchMode () {
+    return {
+        type: TURN_ON_SEARCH_MODE
+    }
+}
+
+export function turnOffSearchMode () {
+    return {
+        type: TURN_OFF_SEARCH_MODE
+    }
+}
+
+export function toggleActionSheet () {
+    return {
+        type: TOGGLE_ACTION_SHEET
     }
 }

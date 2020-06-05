@@ -10,7 +10,10 @@ import {
     addItemActionTypes,
     CANCEL_ADD_ITEM,
     SET_NOTES,
-    RESET_FORM
+    RESET_FORM,
+    TURN_ON_SEARCH_MODE,
+    TURN_OFF_SEARCH_MODE,
+    TOGGLE_ACTION_SHEET
 } from './types';
 
 const initialState: FoodItem = {
@@ -22,10 +25,13 @@ const initialState: FoodItem = {
         text: '1 day before',
         value: 1
     },
-    notes: ''
+    notes: '',
+    eventId: '',
+    searchMode: false,
+    showActionSheet: false
 }
 
-const additemReducer = (
+const itemReducer = (
     state = initialState,
     action: addItemActionTypes
 ) => {
@@ -33,12 +39,14 @@ const additemReducer = (
 
         case SELECT_ITEM:
             return {
+                ...state,
                 id: action.foodItem.id,
                 brand: action.foodItem.brand,
                 category: action.foodItem.category,
                 notes: action.foodItem.notes,
                 expiration_date: action.foodItem.expiration_date,
-                alert: action.foodItem.alert
+                alert: action.foodItem.alert,
+                eventId: action.foodItem.eventId
             }
 
         case SET_DELETE_ITEM:
@@ -88,10 +96,28 @@ const additemReducer = (
 
         case RESET_FORM:
             return initialState
+
+        case TURN_ON_SEARCH_MODE:
+            return {
+                ...state,
+                searchMode: true
+            }
+
+        case TURN_OFF_SEARCH_MODE:
+            return {
+                ...state,
+                searchMode: false
+            }
+
+        case TOGGLE_ACTION_SHEET:
+            return {
+                ...state,
+                showActionSheet: !state.showActionSheet
+            }
         
         default: 
             return state
     }
 }
 
-export default additemReducer;
+export default itemReducer;

@@ -9,6 +9,9 @@ export const SET_NOTES = 'SET_NOTES';
 export const SELECT_ITEM = 'SELECT_ITEM';
 export const SET_DELETE_ITEM = 'SET_DELETE_ITEM';
 export const REMOVE_DELETE_ITEM = 'REMOVE_DELETE_ITEM';
+export const TURN_ON_SEARCH_MODE = 'TURN_ON_SEARCH_MODE';
+export const TURN_OFF_SEARCH_MODE = 'TURN_OFF_SEARCH_MODE';
+export const TOGGLE_ACTION_SHEET = 'TOGGLE_ACTION_SHEET';
 
 // Describe how the add item slice of the app state should look like.
 export interface alert {
@@ -22,7 +25,10 @@ export interface FoodItem {
     category: string,
     expiration_date: Date | null,
     alert: alert,
-    notes: string 
+    notes: string,
+    eventId: string,
+    searchMode: boolean,
+    showActionSheet: boolean 
 }
 
 // Describe how the add item actions should look like.
@@ -32,7 +38,8 @@ interface SelectedFoodItemAction {
 }
 
 interface SetDeleteItemAction {
-    type: typeof SET_DELETE_ITEM
+    type: typeof SET_DELETE_ITEM,
+    id: FoodItem['id']
 }
 
 interface RemoveItemAction {
@@ -72,6 +79,20 @@ interface SetNoteAction {
     notes: FoodItem['notes']
 }
 
+interface TurnOnSearchModeAction {
+    type: typeof TURN_ON_SEARCH_MODE,
+}
+
+interface TurnOffSearchModeAction {
+    type: typeof TURN_OFF_SEARCH_MODE,
+}
+
+interface ToggleActionSheetAction {
+    type: typeof TOGGLE_ACTION_SHEET
+}
+
 export type addItemActionTypes = SelectedFoodItemAction | SetDeleteItemAction | RemoveItemAction |
 CancelAddItemAction | ResetFormAction | SetBrandAction | 
-SetCategoryAction |  SetExpDateAction | SetAlertAction | SetNoteAction;
+SetCategoryAction |  SetExpDateAction | SetAlertAction | 
+SetNoteAction | TurnOnSearchModeAction | TurnOffSearchModeAction | 
+ToggleActionSheetAction;

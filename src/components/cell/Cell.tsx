@@ -1,5 +1,5 @@
 import React, { useState, Component } from 'react';
-import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image, TextInput } from 'react-native';
+import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image, TextInput, StyleSheet } from 'react-native';
 // import { theme } from 'styles';
 // import { observer, Observer } from 'mobx-react';
 // import { observable } from 'mobx';
@@ -34,6 +34,7 @@ interface Props {
   testID?: string;
   item?: any;
 }
+
 
 // const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
 

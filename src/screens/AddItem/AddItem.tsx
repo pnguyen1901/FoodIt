@@ -30,7 +30,8 @@ import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { RootState } from '../../store/rootReducer';
 import { REMINDER } from '../../screens';
-
+import { AlertOptionType } from '../Item/Reminder';
+import { View } from 'react-native-ui-lib';
 
 const styles = StyleSheet.create({
     container: {
@@ -71,24 +72,16 @@ const styles = StyleSheet.create({
 })
 
 
-const AlertOptions = [
-    { text: '2 days before', value: 2 }, 
-    { text: '3 days before', value: 3 },
-    { text: '1 week before', value: 7 }
-]
+const addItem: addItemComponentType = (props): JSX.Element => {
 
-
-const addItem: addItemComponentType = ({
-    componentId,
-}): JSX.Element => {
-
-    const [selectedOption, setSelectedOption] = useState(null);
-    const { expiration_date, 
+    const { componentId } = props;
+    const {  
             alert,
             brand,
             category,
             notes,
-            time } = useSelector((state: RootState) => state.item );
+            expiration_date
+    } = useSelector((state: RootState) => state.item );
     const dispatch = useDispatch();
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
     const [isTimePickerVisible, setTimePickerVisible] = useState(false);
@@ -131,53 +124,62 @@ const addItem: addItemComponentType = ({
         }
 
         if (buttonId === 'save_item_button_id') {
-            saveItem();
+            handleSaveItem();
         }
     })
 
-    const saveEventCalendar = (expiration_date: string, alert: number, notes: string): void => {
-        const endDate = expiration_date;
-        const alarm = expiration_date;
+
+    const saveItem = (expiration_date: Date, alert: AlertOptionType, notes: string): void => {
+        expiration_date.setHours(10,0o0,0o0,0o0)
+        const endDate = new Date(expiration_date.getTime());
+        const alarm = new Date(expiration_date.getTime());
         console.log(expiration_date.toString());
-        RNCalendarEvents.saveEvent(category, {
+        RNCalendarEvents.saveEvent(category + ' ' + brand, {
             startDate: expiration_date.toISOString(),
             endDate: endDate.addHours(1).toISOString(),
-            title: category + brand,
             alarms: [{
-                date: alarm.addHours(10).add(-alert).day().toISOString()
+                date: new Date(alarm.setDate(alarm.getDate() - alert.value)).toISOString()
             }],
             notes: notes
-        }).then((status: string) => { 
-            console.log(status)
-            dispatch(resetForm());
-            Navigation.dismissAllModals();
-        })
-        .catch((err: string) => console.log(err));
-        
-    }
-
-    const ownerId = firebase.auth().currentUser.uid;
-
-    const saveItem = () => {
-        firestore().collection('food_items')
+        }).then((eventId: string) => {
+            console.log(`exp date after being manipulated: ${expiration_date}`) 
+            console.log(eventId)
+            firestore().collection('food_items')
             .add({
                 brand: brand,
                 category: category,
                 notes: notes,
                 alert: alert,
                 expiration_date: expiration_date,
-                ownerId: [ownerId]
+                ownerId: [ownerId],
+                eventId: eventId
             })
             .then((docRef) => {
                 console.log("Document written with ID:", docRef.id);
-                RNCalendarEvents.authorizationStatus()
+                dispatch(resetForm());
+                Alert.alert('Item added!')
+                setTimeout(() => { 
+                    Navigation.dismissAllModals();
+                }, 1000)
+            })
+            .catch((error) => {
+                Alert.alert("Error adding document:", error);
+            })
+        })
+        .catch((err: string) => console.log(err));
+    }
+
+    const ownerId = firebase.auth().currentUser.uid;
+
+    const handleSaveItem = () => {
+            RNCalendarEvents.authorizationStatus()
                     .then((status: string) => {
                         if (status === 'authorized') {
-                            saveEventCalendar(expiration_date, alert.value, notes);
+                            saveItem(expiration_date, alert, notes);
                         } else {
                             RNCalendarEvents.authorizeEventStore()
                                 .then((status: string) => {
-                                    saveEventCalendar(expiration_date, alert.value, notes);
+                                    saveItem(expiration_date, alert, notes);
                                 })
                                 .catch((err: string) => {
                                     Alert.alert(err);
@@ -186,10 +188,6 @@ const addItem: addItemComponentType = ({
                 }).catch((err: string) => {
                     Alert.alert(err);
                 })
-            })
-            .catch((error) => {
-                console.log("Error adding document:", error);
-            })
     };
 
     const onAlertPressed = () => {
@@ -202,8 +200,8 @@ const addItem: addItemComponentType = ({
 
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
                 <CellGroup header={true} footer={true} theme={theme}>
                     <Cell 
                         textInput={true}
@@ -231,10 +229,9 @@ const addItem: addItemComponentType = ({
                         title={'Expires'} 
                         right={
                             <Text style={[styles.opaqueText, {color: theme.LabelColor}]}>
-                            
                             {
                             expiration_date.hasOwnProperty("_seconds") === true
-                            ? new Date(expiration_date.seconds*1000).toLocaleDateString()
+                            ? new Date(expiration_date._seconds*1000).toLocaleDateString()
                             : expiration_date.toLocaleDateString()}
                             </Text>}
                         onPress={() => setTimePickerVisible(true)}
@@ -259,7 +256,7 @@ const addItem: addItemComponentType = ({
                         more={true}
                     />
                 </CellGroup>
-                </> 
+                </View> 
             </TouchableWithoutFeedback>
         </SafeAreaView>
     )

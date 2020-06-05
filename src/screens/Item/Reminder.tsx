@@ -55,8 +55,14 @@ const styles = StyleSheet.create({
 
 })
 
+export interface AlertOptionType {
+    text: string,
+    value: number
+}
 
-const AlertOptions = [
+export type AlertOptionsType = Array<AlertOptionType>
+
+const AlertOptions: AlertOptionsType = [
     { text: '1 day before', value: 1 },
     { text: '2 days before', value: 2  },
     { text: '3 days before', value: 3  },

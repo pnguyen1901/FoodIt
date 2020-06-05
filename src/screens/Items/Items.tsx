@@ -13,7 +13,7 @@ import {
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
-import { useNavigationButtonPress } from 'react-native-navigation-hooks';
+import { useNavigationSearchBarUpdate, useNavigationSearchBarCancelPress } from 'react-native-navigation-hooks';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
     ThemeManager, 
@@ -25,9 +25,11 @@ import {
 import { setDeleteItem, removeDeleteItem } from '../../store/actions';
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
-import { selectItem } from '../../store/item/actions';
+import { selectItem, turnOnSearchMode, turnOffSearchMode } from '../../store/item/actions';
 import { ITEM } from '../../screens';
 import { RootState } from 'src/store/rootReducer';
+import nodejs from 'nodejs-mobile-react-native';
+import algoliasearch from 'algoliasearch';
 
 
 const styles = StyleSheet.create({
@@ -62,18 +64,25 @@ const Items: ItemsComponentType = ({
     const [data, setData] = useState([]);
     const [showRightItems, setShowRightItems] = useState(true);
     const deleteItem = useSelector((state: RootState ) => state.item.deleteItem);
+    const searchMode = useSelector((state: RootState) => state.item.searchMode);
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 
     // actions
     const dispatch = useDispatch();
-    // const onSelectedItem = useCallback(
-    //   (row: object) => dispatch(selectItem(row)),
-    //   [dispatch],
-    // );
     
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
 
+    useEffect(() => {
+        nodejs.start('main.js');
+        // nodejs.channel.addListener(
+        //   'message',
+        //   (msg) => {
+        //     console.log('From node: ' + msg);
+        //   },
+        //   this 
+        // );
+    }); 
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
@@ -83,11 +92,11 @@ const Items: ItemsComponentType = ({
         getStatusBarHeight();
     }, [componentId]);
 
-    useNavigationButtonPress(({ buttonId, componentId }) => {
-        if (buttonId === 'add_button_id') {
-          showAddItem();
-        }
-    }, componentId);
+    // useNavigationButtonPress(({ buttonId, componentId }) => {
+    //     if (buttonId === 'add_button_id') {
+    //       showAddItem();
+    //     }
+    // }, componentId);
 
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();
@@ -102,7 +111,8 @@ const Items: ItemsComponentType = ({
     let foodItemsRef = firestore().collection('food_items');
   
     useEffect(() => {
-      const unsubscribe = firebase.auth()
+      if (!searchMode){
+              const unsubscribe = firebase.auth()
                 .onAuthStateChanged((user) => {
                   setUser(user);
                   if (user) {
@@ -120,51 +130,38 @@ const Items: ItemsComponentType = ({
                   })
                 }
             })
-      unsubscribe();
+        unsubscribe();
+        }
       }, [user, data])
-  
-    const SignOut = () : void => {
-      firebase.auth().signOut().then(() => {
-        // dispatch(setLoggedIn(false));
+
+    var client = algoliasearch("9137RQMA6A", "872fee6350a0f2b3009728b5172008b3");
+    var index = client.initIndex('food_items_dev');
+
+    useNavigationSearchBarUpdate((event) => {
+      
+      // only turn on search mode if text is not null and current search mode is false
+      // additional logic to prevent search mode being turn backed on after hitting cancel button.  
+      !searchMode && event.text !== '' ? dispatch(turnOnSearchMode()) : null
+      return index
+      .search(event.text)
+      .then(function(responses) {
         
-      }).catch((err) => {
-        Alert.alert(err);
-      })
-    }
-    
-    const showAddItem = () => {
-        Navigation.showModal({
-            stack: {
-              children: [
-                {
-                  component: {
-                    name: 'addItem',
-                    id: 'addItem',
-                    options: {
-                      topBar: {
-                        title: {
-                          text: 'New Item'
-                        },
-                        leftButtons: [
-                          {
-                            id: 'cancel_add_item_button_id',
-                            text: 'Cancel'
-                          }
-                        ],
-                        rightButtons: [
-                          {
-                            id: 'save_item_button_id',
-                            text: 'Add'
-                          }
-                        ]
-                      },
-                    }
-                  }
-                }
-              ]
-            }
-          });
-    }
+        // Response from Algolia:
+        // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
+        if(responses.hits){
+          responses.hits.forEach((hit) => {
+            return hit.id = hit.objectID
+          })
+          console.log(responses.hits);
+          setData(responses.hits);
+        }
+      });
+      }, componentId)
+
+    useNavigationSearchBarCancelPress((event) => {
+      dispatch(turnOffSearchMode())
+    })
+
 
     const shareItem = (user_id: string) => {
       foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid)
@@ -233,10 +230,17 @@ const Items: ItemsComponentType = ({
     }
 
 
-    const renderRow = (row: object, id: number) => {
+    const renderRow = (row: {
+      id: string,
+      brand: string,
+      category: string,
+      expiration_date: {
+        _seconds: number
+      }
+    }, index: number) => {
   
       return (
-          <Drawer key={id}
+          <Drawer key={index}
           {...drawerProps} 
           onSwipeableRightOpen={() => dispatch(setDeleteItem(row.id))}
           onSwipeableClose={() => dispatch(removeDeleteItem())}>
@@ -245,15 +249,16 @@ const Items: ItemsComponentType = ({
               >
             <View 
               paddingH-20 
-              paddingV-10 
+              paddingV-10
+              marginL-30 
               row centerV 
               style={{borderBottomWidth: 1, 
                 borderColor: theme.OpaqueSeparatorColor, 
                 backgroundColor: theme.SystemBackgroundColor}}>
-              <View marginL-20 >
+              <View >
                 <Text text65 style={{color: theme.LabelColor}}>{row.brand + ' ' + row.category}</Text>
                 <Text text80 marginT-2 style={{color: theme.LabelColor}}>
-                  Expired by: {new Date(row.expiration_date.seconds*1000).toLocaleDateString()}
+                  Expired by: {new Date(row.expiration_date._seconds*1000).toLocaleDateString()}
                 </Text>
               </View>
               <View style={styles.right}>
@@ -300,12 +305,9 @@ Items.options = () => ({
         largeTitle: {
           visible: true
         },
-        rightButtons: [{
-            id: 'add_button_id',
-            systemItem: 'add'
-        }],
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
+        searchBarPlaceholder: 'Search'
     }
 });
 
