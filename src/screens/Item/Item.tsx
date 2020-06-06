@@ -117,12 +117,12 @@ const Item: ItemComponentType = ({
     const saveItem = (eventId: string, expiration_date: Date, alert: AlertOptionType, notes: string, id: string): void => {
         // Remove existing event and create a new event
         //RNCalendarEvents.removeEvent(eventId)
-
+        console.log(expiration_date);
         expiration_date.setHours(10,0o0,0o0,0o0)
         const endDate = new Date(expiration_date.getTime());
         const alarm = new Date(expiration_date.getTime());
-        console.log(expiration_date.toString());
-        RNCalendarEvents.saveEvent(category + ' ' + brand, {
+        console.log(expiration_date);
+        RNCalendarEvents.saveEvent(brand + ' ' + category + ' expires soon!', {
             id: eventId,
             startDate: expiration_date.toISOString(),
             endDate: endDate.addHours(1).toISOString(),
@@ -158,11 +158,21 @@ const Item: ItemComponentType = ({
             RNCalendarEvents.authorizationStatus()
                     .then((status: string) => {
                         if (status === 'authorized') {
-                            saveItem(eventId, new Date(expiration_date.seconds*1000), alert, notes, id);
+                            if (expiration_date.hasOwnProperty("_seconds")) {
+                                saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
+                            }
+                            else {
+                                saveItem(eventId , expiration_date, alert, notes, id);
+                            }
                         } else {
                             RNCalendarEvents.authorizeEventStore()
                                 .then((status: string) => {
-                                    saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
+                                    if (expiration_date.hasOwnProperty("_seconds")) {
+                                        saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
+                                    }
+                                    else {
+                                        saveItem(eventId , expiration_date, alert, notes, id);
+                                    }
                                 })
                                 .catch((err: string) => {
                                     Alert.alert(err);
@@ -248,7 +258,7 @@ const Item: ItemComponentType = ({
                     <DateTimePickerModal
                     isVisible={isTimePickerVisible}
                     isDarkModeEnabled={colorScheme === 'light' ? false : true}
-                    mode="datetime"
+                    mode="date"
                     onConfirm={(date) => { 
                         dispatch(setExpDate(date))
                         setTimePickerVisible(false)

@@ -7,6 +7,7 @@ import { StyleSheet,
         TouchableOpacity,
         Alert,
         Dimensions,
+        Image
         } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
@@ -18,6 +19,8 @@ import { RootState } from '../../store/rootReducer';
 import { Navigation } from 'react-native-navigation';
 require('datejs'); 
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
+import CameraRoll from "@react-native-community/cameraroll";
+import ImageEditor from "@react-native-community/image-editor";
 
 const Camera: CameraComponentType = ({ 
     componentId,
@@ -55,6 +58,7 @@ const Camera: CameraComponentType = ({
                     }, 100);
                 } else {
                     console.log('echo message: ' + msg);
+                    dispatch(loadingDone());
                     dispatch(resetForm())
                     dispatch(setExpDate(new Date (Date.parse(msg))))
                     setTimeout(() => {
@@ -110,26 +114,33 @@ const Camera: CameraComponentType = ({
             if (camera) {
             const data = await camera.takePictureAsync({fixOrientation: true, forceUpOrientation: true});
             console.log('takePicture ', data);
+            //CameraRoll.save(data.uri, {type: 'photo'})
             dispatch(loading());
             //nodejs.channel.send(data.uri.replace(/^file:\/\//g,''));
+            Image.getSize(data.uri, (w, h) => {
+                ImageEditor.cropImage(
+                    data.uri,
+                    {
+                    offset:{      
+                        x: 0,
+                        y: h / 2 - w / 2
+                    },
+                    size: {width: w, height: h/3} 
+                    }).then((uri:string) => {
+                        CameraRoll.save(uri, {type: 'photo'})
+                        processDocument(uri.replace(/^file:\/\//g, ''))
+                        .then((result) => {
+                            console.log(result)
+                            nodejs.channel.send(result);
+                        }).catch(err => console.log(err));
+                    })
+                    .catch((err:string) => {
+                        console.log(err);
+                    })
+            }, error => {
+                console.log(error)
+            })
 
-            //   ImageEditor.cropImage(
-            //       data.uri,
-            //       {
-            //         offset:{},
-            //         size: {} 
-            //       }).then((url:string) => {
-            //         nodejs.channel.send(url.replace(/^file:\/\//g,''));
-            //       })
-            //       .catch((err:string) => {
-            //           console.log(err);
-            //       })
-
-            
-            processDocument(data.uri.replace(/^file:\/\//g, ''))
-                .then((result) => {
-                    nodejs.channel.send(result);
-                }).catch(err => console.log(err));
             }
         };
         

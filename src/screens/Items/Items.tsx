@@ -234,11 +234,18 @@ const Items: ItemsComponentType = ({
       id: string,
       brand: string,
       category: string,
+      alert: {
+        value: number,
+        text: string
+      },
       expiration_date: {
         _seconds: number
       }
     }, index: number) => {
   
+      const expDate = new Date(row.expiration_date._seconds*1000)
+      const cutoffDate = new Date(expDate.setDate(expDate.getDate() - row.alert.value))
+
       return (
           <Drawer key={index}
           {...drawerProps} 
@@ -257,7 +264,10 @@ const Items: ItemsComponentType = ({
                 backgroundColor: theme.SystemBackgroundColor}}>
               <View >
                 <Text text65 style={{color: theme.LabelColor}}>{row.brand + ' ' + row.category}</Text>
-                <Text text80 marginT-2 style={{color: theme.LabelColor}}>
+                <Text 
+                  text80 
+                  marginT-2 
+                  style={[ cutoffDate >= new Date() ? {color: theme.LabelColor} : {color: 'red'}]}>
                   Expired by: {new Date(row.expiration_date._seconds*1000).toLocaleDateString()}
                 </Text>
               </View>

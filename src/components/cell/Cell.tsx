@@ -45,31 +45,7 @@ export default function Cell (props) {
     const theme = themes[colorScheme];
     const [isUnderlay, setUnderlay] = useState(false);
     const dispatch = useDispatch();
-    // const theme = useSelector(state => state.itemReducer.theme);
-//   @autobind
-//   onShowUnderlay() {
-//     this.isUnderlay = true;
-//   }
 
-//   @autobind
-//   onHideUnderlay() {
-//     this.isUnderlay = false;
-//   }
-
-//   @autobind
-//   onPress(e) {
-//     this.props.onPress(e, this.props);
-//   }
-
-//   @autobind
-//   onPressIn(e) {
-//     this.props.onPressIn(e, this.props);
-//   }
-
-//   @autobind
-//   onLongPress(e) {
-//     this.props.onLongPress(e, this.props);
-//   }
 
     const renderTitle = () => {
         const { title, numberOfLines = 1, userProfile, deleteButton, signOutButton } = props;

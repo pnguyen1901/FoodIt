@@ -134,7 +134,7 @@ const addItem: addItemComponentType = (props): JSX.Element => {
         const endDate = new Date(expiration_date.getTime());
         const alarm = new Date(expiration_date.getTime());
         console.log(expiration_date.toString());
-        RNCalendarEvents.saveEvent(category + ' ' + brand, {
+        RNCalendarEvents.saveEvent(brand + ' ' + category + ' expires soon!', {
             startDate: expiration_date.toISOString(),
             endDate: endDate.addHours(1).toISOString(),
             alarms: [{
@@ -175,11 +175,21 @@ const addItem: addItemComponentType = (props): JSX.Element => {
             RNCalendarEvents.authorizationStatus()
                     .then((status: string) => {
                         if (status === 'authorized') {
-                            saveItem(expiration_date, alert, notes);
+                            if (expiration_date.hasOwnProperty("_seconds")) {
+                                saveItem(new Date(expiration_date.seconds*1000), alert, notes);
+                            }
+                            else {
+                                saveItem(expiration_date, alert, notes);
+                            }
                         } else {
                             RNCalendarEvents.authorizeEventStore()
                                 .then((status: string) => {
-                                    saveItem(expiration_date, alert, notes);
+                                    if (expiration_date.hasOwnProperty("_seconds")) {
+                                        saveItem(new Date(expiration_date.seconds*1000), alert, notes);
+                                    }
+                                    else {
+                                        saveItem(expiration_date, alert, notes);
+                                    }
                                 })
                                 .catch((err: string) => {
                                     Alert.alert(err);
@@ -239,7 +249,7 @@ const addItem: addItemComponentType = (props): JSX.Element => {
                     <DateTimePickerModal
                     isVisible={isTimePickerVisible}
                     isDarkModeEnabled={colorScheme === 'light' ? false : true}
-                    mode="datetime"
+                    mode="date"
                     onConfirm={(date) => { 
                         dispatch(setExpDate(date))
                         setTimePickerVisible(false)

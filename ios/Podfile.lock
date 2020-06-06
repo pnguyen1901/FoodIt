@@ -560,6 +560,8 @@ PODS:
     - React
     - react-native-camera/RCT
     - react-native-camera/RN
+  - react-native-cameraroll (1.7.2):
+    - React
   - react-native-fbsdk (1.1.2):
     - React
     - react-native-fbsdk/Core (= 1.1.2)
@@ -722,6 +724,7 @@ DEPENDENCIES:
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-calendar-events (from `../node_modules/react-native-calendar-events`)
   - react-native-camera/TextDetector (from `../node_modules/react-native-camera`)
+  - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -834,6 +837,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-calendar-events"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-cameraroll:
+    :path: "../node_modules/@react-native-community/cameraroll"
   react-native-fbsdk:
     :path: "../node_modules/react-native-fbsdk"
   react-native-image-editor:
@@ -956,6 +961,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
   react-native-camera: a9749fa0c1162cdb2f56b93a5d97a72ebd56694f
+  react-native-cameraroll: a16e626822c6a61ed142de9cfae9d516216beb03
   react-native-fbsdk: c35d42169e64aaf66f01713c1e18d0674f7f6519
   react-native-image-editor: bd67912f38a8e7a895bf6eb8f445acdcefd8fd0c
   react-native-netinfo: 38aefddbacc614a14b412ba653b355db49508e50
