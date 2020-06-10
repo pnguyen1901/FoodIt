@@ -21,6 +21,9 @@ require('datejs');
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 import CameraRoll from "@react-native-community/cameraroll";
 import ImageEditor from "@react-native-community/image-editor";
+import { themes } from '../../components/Theme/Theme';
+import { useColorScheme } from 'react-native-appearance';
+
 
 const Camera: CameraComponentType = ({ 
     componentId,
@@ -28,6 +31,8 @@ const Camera: CameraComponentType = ({
 
     const dispatch = useDispatch();
     const isLoading = useSelector((state :RootState) => state.camera.isLoading);
+    const colorScheme = useColorScheme();
+    const theme = themes[colorScheme];
     const [ratio, setRatio] = useState('16:9');
     const [type, setType] = useState('back');
     const [flash, setFlash] = useState('off');
@@ -47,7 +52,16 @@ const Camera: CameraComponentType = ({
         }
     });
 
+    // use mergeOptions to dynamically set bottomTabs color
+    useEffect(() => {
+        Navigation.mergeOptions(componentId, {
+            bottomTabs: {
+            backgroundColor: theme.SecondarySystemBackgroundColor
+        }
+        });
+    })
 
+    
     useEffect(() => {
         nodejs.channel.addListener('message', 
             (msg) => {

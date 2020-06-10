@@ -60,7 +60,7 @@ export default function Cell (props) {
         <View 
             style={deleteButton | signOutButton ? {justifyContent: 'center'} : null}>
             <Text style={[styles.titleText, {color: theme.LabelColor},
-            userProfile ? {fontSize: 24 } : null, deleteButton | signOutButton ? {color: 'red', textAlign: 'center'} : null ]} numberOfLines={numberOfLines}>{String(title)}</Text>
+            userProfile ? {fontSize: 24 } : null, deleteButton | signOutButton ? {color: theme.RedColor, textAlign: 'center'} : null ]} numberOfLines={numberOfLines}>{String(title)}</Text>
         </View>
         );
     }

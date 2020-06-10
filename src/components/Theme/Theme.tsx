@@ -25,6 +25,7 @@ export type FoodItTheme = {
     LinkColor: ColorValue,
     SystemPurpleColor: ColorValue,
     ToolbarColor: ColorValue,
+    RedColor: ColorValue
 };
 
 export const LightTheme = {
@@ -48,6 +49,7 @@ export const LightTheme = {
     LinkColor: '#007affff',
     SystemPurpleColor: '#af52deff',
     ToolbarColor: '#e9eaedff',
+    RedColor: '#ff3b30'
 };
 
 export const DarkTheme = {
@@ -71,6 +73,7 @@ export const DarkTheme = {
     LinkColor: '#0984ffff',
     SystemPurpleColor: '#bf5af2ff',
     ToolbarColor: '#3c3c43ff',
+    RedColor: '#ff3b30'
 };
 
 export const themes = {light: LightTheme, dark: DarkTheme};

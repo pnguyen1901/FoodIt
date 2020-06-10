@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { Navigation } from 'react-native-navigation';
@@ -25,19 +25,6 @@ const styles = StyleSheet.create({
     }
 })
 
-const settings = [
-    {
-        mediaUrl: require('../../assets/icons/32/paint-palette-filled.png'),
-        title: 'Theme'
-    },
-    {
-        mediaUrl: require('../../assets/icons/32/heart.png'),
-        title: 'Rate'
-    },
-
-]
-
-const userIcon = <FontAwesome5 name={'user-circle'}/>
 
 const Settings: SettingsComponentType = ({
     componentId,
@@ -59,6 +46,15 @@ const Settings: SettingsComponentType = ({
             }
         })
     }
+
+    // use mergeOptions to dynamically set bottomTabs color
+    useEffect(() => {
+        Navigation.mergeOptions(componentId, {
+            bottomTabs: {
+            backgroundColor: theme.SecondarySystemBackgroundColor
+        }
+        });
+    })
 
     return (
         <SafeAreaView style={[styles.container, 

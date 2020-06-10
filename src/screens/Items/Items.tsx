@@ -30,7 +30,7 @@ import { ITEM } from '../../screens';
 import { RootState } from 'src/store/rootReducer';
 import nodejs from 'nodejs-mobile-react-native';
 import algoliasearch from 'algoliasearch';
-
+import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY } from 'react-native-dotenv';
 
 const styles = StyleSheet.create({
     container: {
@@ -107,6 +107,14 @@ const Items: ItemsComponentType = ({
         }
     };
 
+    // use mergeOptions to dynamically set bottomTabs color
+    useEffect(() => {
+      Navigation.mergeOptions(componentId, {
+        bottomTabs: {
+          backgroundColor: theme.SecondarySystemBackgroundColor
+        }
+      });
+    })
 
     let foodItemsRef = firestore().collection('food_items');
   
@@ -134,7 +142,7 @@ const Items: ItemsComponentType = ({
         }
       }, [user, data])
 
-    var client = algoliasearch("9137RQMA6A", "872fee6350a0f2b3009728b5172008b3");
+    var client = algoliasearch(ALGOLIA_SEARCH_KEY, ALGOLIA_SEARCH_KEY);
     var index = client.initIndex('food_items_dev');
 
     useNavigationSearchBarUpdate((event) => {
@@ -267,7 +275,7 @@ const Items: ItemsComponentType = ({
                 <Text 
                   text80 
                   marginT-2 
-                  style={[ cutoffDate >= new Date() ? {color: theme.LabelColor} : {color: 'red'}]}>
+                  style={[ cutoffDate >= new Date() ? {color: theme.LabelColor} : {color: theme.RedColor}]}>
                   Expired by: {new Date(row.expiration_date._seconds*1000).toLocaleDateString()}
                 </Text>
               </View>
@@ -289,11 +297,17 @@ const Items: ItemsComponentType = ({
                 enabled
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
-                <FlatList
+                { data.length !== 0
+                ? <FlatList
                   data={data}
                   renderItem={({item, index}) => renderRow(item, index)}
                   keyExtractor={keyExtractor}
                 />
+                : <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{color: theme.PlaceholderTextColor, fontSize: 20}}>No Items</Text>
+                </View>
+                
+                }
                 {/* <Button
                     status='info' 
                     onPress={() => shareItem('m4MjlNjHMbMj6xOdgVjq8lf80l62')}

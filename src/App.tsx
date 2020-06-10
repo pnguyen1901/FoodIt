@@ -113,7 +113,7 @@ export const setMainRoot = () => {
                                 textColor: '#A1A1A1',
                                 selectedIconColor: '#007aff',
                                 selectedTextColor: '#007aff',
-                                text: 'Camera',
+                                text: 'Scan New Item',
                                 icon: cameraIcon,
                             }
                         }
