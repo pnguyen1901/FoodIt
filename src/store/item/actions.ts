@@ -12,7 +12,8 @@ import {
     RESET_FORM,
     TURN_OFF_SEARCH_MODE,
     TURN_ON_SEARCH_MODE,
-    TOGGLE_ACTION_SHEET
+    TOGGLE_ACTION_SHEET,
+    SAVE_SEARCH_KEY
 } from './types';
 
 export function selectItem (foodItem: FoodItem) {
@@ -97,5 +98,12 @@ export function turnOffSearchMode () {
 export function toggleActionSheet () {
     return {
         type: TOGGLE_ACTION_SHEET
+    }
+}
+
+export function saveAlgoliaSearchKey (key: FoodItem['algoliaSearchKey']) {
+    return {
+        type: SAVE_SEARCH_KEY,
+        key
     }
 }

@@ -13,8 +13,10 @@ import {
     RESET_FORM,
     TURN_ON_SEARCH_MODE,
     TURN_OFF_SEARCH_MODE,
-    TOGGLE_ACTION_SHEET
+    TOGGLE_ACTION_SHEET,
+    SAVE_SEARCH_KEY
 } from './types';
+import { createFilter  } from 'redux-persist-transform-filter';
 
 const initialState: FoodItem = {
     id: null,
@@ -28,8 +30,15 @@ const initialState: FoodItem = {
     notes: '',
     eventId: '',
     searchMode: false,
-    showActionSheet: false
+    showActionSheet: false,
+    algoliaSearchKey: null
 }
+
+
+export const ItemFilter = createFilter(
+    'item',
+    ['algoliaSearchKey']
+)
 
 const itemReducer = (
     state = initialState,
@@ -115,6 +124,12 @@ const itemReducer = (
                 showActionSheet: !state.showActionSheet
             }
         
+        case SAVE_SEARCH_KEY:
+            return {
+                ...state,
+                algoliaSearchKey: action.key
+            }
+
         default: 
             return state
     }

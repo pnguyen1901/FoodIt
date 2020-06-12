@@ -45,6 +45,8 @@ target 'FoodIt' do
   pod 'ReactNativeNavigation', :path => '../node_modules/react-native-navigation'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'FoodItTests' do
     inherit! :search_paths
     # Pods for testing

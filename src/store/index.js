@@ -1,7 +1,5 @@
 import thunk from 'redux-thunk';
-import { rootReducer } from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { ThemeContext, themes } from '../components/Theme/Theme';
 import { AppearanceProvider } from 'react-native-appearance';
 // If RN app is not connecting to Redux Dev server try this
 // On real device: Shake device & Click "Debug Remote JS".
@@ -27,40 +25,49 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
+import { ItemFilter } from '../store/item/reducers';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 // import createSagaMiddleware from 'redux-saga';
 
-import reducer from './rootReducer';
+import { rootReducer } from './rootReducer';
 // import saga from './rootSaga';
 
+// Using merge level 2 to keep properties of the initial state while still overlay the value of initial state with stored value.
 const persistConfig = {
-    key: 'rootKeyPersist',
+    key: 'root',
     storage: AsyncStorage,
+    stateReconciler: autoMergeLevel2,
+    whitelist: ['item'],
+    transforms: [ItemFilter]
 };
-// const persistedReducer = persistReducer(persistConfig, reducer);
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-    // persistedReducer,
-    reducer,
+    persistedReducer,
+    //reducer,
     composeWithDevTools(
         applyMiddleware(
             thunk,
             )
     ),
 );
-// const persistor = persistStore(store);
+const persistor = persistStore(store);
+if (process.env.NODE_ENV !== 'production') {
+    module.hot.accept('./rootReducer', () => store.replaceReducer(persistedReducer))
+}
+//setTimeout(() => persistor.purge(), 200)
 
 // sagaMiddleware.run(saga);
 
-export const withReduxProvider = (C: React.FC) => (props: any) => (
+export const withReduxProvider = (C) => (props) => (
     <Provider store={store}>
-        {/* <PersistGate loading={null} persistor={persistor}> */}
+        <PersistGate loading={null} persistor={persistor}>
         <AppearanceProvider>
-            {/* <ThemeContext.Provider> */}
-                <C {...props}/>            
-            {/* </ThemeContext.Provider>             */}
+            <C {...props}/>            
         </AppearanceProvider>
-        {/* </PersistGate> */}
+        </PersistGate>
     </Provider>
 );

@@ -25,12 +25,13 @@ import {
 import { setDeleteItem, removeDeleteItem } from '../../store/actions';
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
-import { selectItem, turnOnSearchMode, turnOffSearchMode } from '../../store/item/actions';
+import { selectItem, turnOnSearchMode, turnOffSearchMode, saveAlgoliaSearchKey } from '../../store/item/actions';
 import { ITEM } from '../../screens';
 import { RootState } from 'src/store/rootReducer';
 import nodejs from 'nodejs-mobile-react-native';
 import algoliasearch from 'algoliasearch';
-import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY } from 'react-native-dotenv';
+import axios from 'axios';
+import Config from "react-native-config";
 
 const styles = StyleSheet.create({
     container: {
@@ -65,6 +66,7 @@ const Items: ItemsComponentType = ({
     const [showRightItems, setShowRightItems] = useState(true);
     const deleteItem = useSelector((state: RootState ) => state.item.deleteItem);
     const searchMode = useSelector((state: RootState) => state.item.searchMode);
+    const algoliaSearchKey = useSelector((state: RootState) => state.item.algoliaSearchKey)
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 
@@ -114,7 +116,7 @@ const Items: ItemsComponentType = ({
           backgroundColor: theme.SecondarySystemBackgroundColor
         }
       });
-    })
+    }, [])
 
     let foodItemsRef = firestore().collection('food_items');
   
@@ -124,7 +126,7 @@ const Items: ItemsComponentType = ({
                 .onAuthStateChanged((user) => {
                   setUser(user);
                   if (user) {
-                    foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid).orderBy('expiration_date', "asc")
+                    foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser?.uid).orderBy('expiration_date', "asc")
                     .get()
                     .then((querySnapshot) => {
                       const documents = querySnapshot.docs.map(doc => {
@@ -142,16 +144,26 @@ const Items: ItemsComponentType = ({
         }
       }, [user, data])
 
-    var client = algoliasearch(ALGOLIA_SEARCH_KEY, ALGOLIA_SEARCH_KEY);
-    var index = client.initIndex('food_items_dev');
+    async function getSearchKey () {
+      return firebase.auth().currentUser?.getIdToken()
+        .then((token: string) => {
+          return axios.get('https://us-central1-' + Config.GC_PROJECT_ID + '.cloudfunctions.net/getSearchKey/', {
+            headers: { Authorization: 'Bearer ' + token }
+          })
+        })
+        .then((response) => {
+          const key = response.data.key
+          dispatch(saveAlgoliaSearchKey(key))
+          return key
+        })
+    }
 
-    useNavigationSearchBarUpdate((event) => {
-      
-      // only turn on search mode if text is not null and current search mode is false
-      // additional logic to prevent search mode being turn backed on after hitting cancel button.  
-      !searchMode && event.text !== '' ? dispatch(turnOnSearchMode()) : null
-      return index
-      .search(event.text)
+    function getAlgoliaResults (searchText: string, searchKey: string) {
+      const client = algoliasearch(Config.ALGOLIA_APP_ID, searchKey);
+      const index = client.initIndex('food_items_dev');
+
+      index
+      .search(searchText)
       .then(function(responses) {
         
         // Response from Algolia:
@@ -163,7 +175,31 @@ const Items: ItemsComponentType = ({
           console.log(responses.hits);
           setData(responses.hits);
         }
-      });
+      })
+      .catch((err) => {
+        console.log(err)
+      });            
+    }
+
+
+    useNavigationSearchBarUpdate((event) => {
+      
+      // only turn on search mode if text is not null and current search mode is false
+      // additional logic to prevent search mode being turn backed on after hitting cancel button.  
+      !searchMode && event.text !== '' ? dispatch(turnOnSearchMode()) : null
+
+      if (algoliaSearchKey !== null ) {
+        getAlgoliaResults(event.text, algoliaSearchKey)
+        }
+      else {
+        getSearchKey()
+          .then((searchKey) => {
+            getAlgoliaResults(event.text, searchKey)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        }
       }, componentId)
 
     useNavigationSearchBarCancelPress((event) => {

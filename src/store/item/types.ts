@@ -12,6 +12,7 @@ export const REMOVE_DELETE_ITEM = 'REMOVE_DELETE_ITEM';
 export const TURN_ON_SEARCH_MODE = 'TURN_ON_SEARCH_MODE';
 export const TURN_OFF_SEARCH_MODE = 'TURN_OFF_SEARCH_MODE';
 export const TOGGLE_ACTION_SHEET = 'TOGGLE_ACTION_SHEET';
+export const SAVE_SEARCH_KEY = 'SAVE_SEARCH_KEY';
 
 // Describe how the add item slice of the app state should look like.
 export interface alert {
@@ -28,7 +29,8 @@ export interface FoodItem {
     notes: string,
     eventId: string,
     searchMode: boolean,
-    showActionSheet: boolean 
+    showActionSheet: boolean,
+    algoliaSearchKey: string | null 
 }
 
 // Describe how the add item actions should look like.
@@ -91,8 +93,13 @@ interface ToggleActionSheetAction {
     type: typeof TOGGLE_ACTION_SHEET
 }
 
+interface SaveAlgoliaSearchKeyAction {
+    type: typeof SAVE_SEARCH_KEY,
+    key: FoodItem['algoliaSearchKey']
+}
+
 export type addItemActionTypes = SelectedFoodItemAction | SetDeleteItemAction | RemoveItemAction |
 CancelAddItemAction | ResetFormAction | SetBrandAction | 
 SetCategoryAction |  SetExpDateAction | SetAlertAction | 
 SetNoteAction | TurnOnSearchModeAction | TurnOffSearchModeAction | 
-ToggleActionSheetAction;
+ToggleActionSheetAction | SaveAlgoliaSearchKeyAction;

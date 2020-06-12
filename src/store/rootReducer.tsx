@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import cameraReducer from './camera/reducers';
 import itemReducer from './item/reducers';
 
-export default rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     item: itemReducer,
     camera: cameraReducer
 })
