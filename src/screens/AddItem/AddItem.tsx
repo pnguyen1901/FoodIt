@@ -169,7 +169,7 @@ const addItem: addItemComponentType = (props): JSX.Element => {
         .catch((err: string) => console.log(err));
     }
 
-    const ownerId = firebase.auth().currentUser.uid;
+    const ownerId = firebase.auth().currentUser?.uid;
 
     const handleSaveItem = () => {
             RNCalendarEvents.authorizationStatus()

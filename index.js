@@ -1,6 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { Navigation } from 'react-native-navigation';
 import { setMainRoot, setLoginRoot } from './src/App';
+import messaging from '@react-native-firebase/messaging';
+
+// Register background handler
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+});
+
 
 Navigation.events().registerAppLaunchedListener(() => {
     

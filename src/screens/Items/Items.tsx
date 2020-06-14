@@ -32,6 +32,8 @@ import nodejs from 'nodejs-mobile-react-native';
 import algoliasearch from 'algoliasearch';
 import axios from 'axios';
 import Config from "react-native-config";
+import messaging from '@react-native-firebase/messaging';
+import { saveTokenToDatabase } from '../LogIn/LogIn';
 
 const styles = StyleSheet.create({
     container: {
@@ -56,7 +58,8 @@ const styles = StyleSheet.create({
       borderColor: ThemeManager.dividerColor,
     },
   })
-  
+
+
 const Items: ItemsComponentType = ({
     componentId,
 }): JSX.Element => {
@@ -64,7 +67,7 @@ const Items: ItemsComponentType = ({
     const [user, setUser] = useState(null);
     const [data, setData] = useState([]);
     const [showRightItems, setShowRightItems] = useState(true);
-    const deleteItem = useSelector((state: RootState ) => state.item.deleteItem);
+    const deleteItem = useSelector((state: RootState ) => state.item.id);
     const searchMode = useSelector((state: RootState) => state.item.searchMode);
     const algoliaSearchKey = useSelector((state: RootState) => state.item.algoliaSearchKey)
     const colorScheme = useColorScheme();
@@ -84,7 +87,13 @@ const Items: ItemsComponentType = ({
         //   },
         //   this 
         // );
-    }); 
+    });
+
+    useEffect(() => {
+      return messaging().onTokenRefresh((token: string) => {
+        saveTokenToDatabase(token)
+      })
+    }, [])
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
@@ -142,7 +151,7 @@ const Items: ItemsComponentType = ({
             })
         unsubscribe();
         }
-      }, [user, data])
+      }, [user, data, searchMode])
 
     async function getSearchKey () {
       return firebase.auth().currentUser?.getIdToken()
@@ -203,7 +212,7 @@ const Items: ItemsComponentType = ({
       }, componentId)
 
     useNavigationSearchBarCancelPress((event) => {
-      dispatch(turnOffSearchMode())
+      setTimeout(() => dispatch(turnOffSearchMode()), 500)
     })
 
 

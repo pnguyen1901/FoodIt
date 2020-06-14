@@ -25,7 +25,12 @@ export type FoodItTheme = {
     LinkColor: ColorValue,
     SystemPurpleColor: ColorValue,
     ToolbarColor: ColorValue,
-    RedColor: ColorValue
+    RedColor: ColorValue,
+    Grey: ColorValue,
+    Blue: ColorValue,
+    Green: ColorValue,
+    Yellow: ColorValue,
+    Pink: ColorValue
 };
 
 export const LightTheme = {
@@ -49,7 +54,13 @@ export const LightTheme = {
     LinkColor: '#007affff',
     SystemPurpleColor: '#af52deff',
     ToolbarColor: '#e9eaedff',
-    RedColor: '#ff3b30'
+    RedColor: '#ff3b30',
+    Grey: '#8e8e93',
+    Blue: '#157dfa',
+    Green: '#34c759',
+    Yellow: '#ffcc00',
+    Pink: '#fc3259'
+    
 };
 
 export const DarkTheme = {
@@ -73,7 +84,12 @@ export const DarkTheme = {
     LinkColor: '#0984ffff',
     SystemPurpleColor: '#bf5af2ff',
     ToolbarColor: '#3c3c43ff',
-    RedColor: '#ff3b30'
+    RedColor: '#ff3b30',
+    Grey: '#8e8e93',
+    Blue: '#157dfa',
+    Green: '#34c759',
+    Yellow: '#ffcc00',
+    Pink: '#fc3259'
 };
 
 export const themes = {light: LightTheme, dark: DarkTheme};

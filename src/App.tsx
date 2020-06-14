@@ -23,6 +23,7 @@ import AccountScreen from './screens/Account/Account';
 import ReminderScreen from './screens/Item/Reminder';
 import AsyncStore from '@react-native-community/async-storage';
 
+
 // const store = configureStore();
 
 const Screens = new Map<string, React.FC<any>>();
@@ -65,6 +66,7 @@ const setLoggedOut = async () => {
         console.log(e);
     }
 }
+
 
 export const setMainRoot = () => {
 

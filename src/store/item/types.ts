@@ -24,7 +24,7 @@ export interface FoodItem {
     id: number | null,
     brand: string,
     category: string,
-    expiration_date: Date | null,
+    expiration_date: Date,
     alert: alert,
     notes: string,
     eventId: string,

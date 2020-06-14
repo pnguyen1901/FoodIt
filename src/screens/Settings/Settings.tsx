@@ -6,7 +6,7 @@ import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import CellIcon from '../../components/cell/CellIcon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useColorScheme } from 'react-native-appearance';
+import { useColorScheme, ColorSchemeName } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { ACCOUNT } from '../../screens';
 
@@ -35,7 +35,7 @@ const Settings: SettingsComponentType = ({
     const onCheckedChange = (isChecked: boolean): void => {
         setChecked(isChecked);
     }
-    const colorScheme = useColorScheme();
+    const colorScheme: ColorSchemeName = useColorScheme();
     const theme = themes[colorScheme];
 
     const onItemPressed = (name: string) => {
@@ -64,7 +64,7 @@ const Settings: SettingsComponentType = ({
                     left={<CellIcon
                     source={require('../../assets/icons/32/user.png')}
                     size={55}
-                    backgroundColor="#8e8e93"
+                    backgroundColor={theme.Grey}
                     userProfile={true}
                     />}
                     title="Phat Nguyen"
@@ -74,43 +74,23 @@ const Settings: SettingsComponentType = ({
                     more={true}
                 />
             </CellGroup>
-            <CellGroup header={true} footer={true}  theme={theme}>
+            {/* <CellGroup header={true} footer={true}  theme={theme}>
                 <Cell
                     left={<CellIcon
                     source={require('../../assets/icons/32/settings.png')}
                     size={26}
-                    backgroundColor="#8e8e93"
+                    backgroundColor={theme.Green}
                     />}
                     title="General"
                     onPress={'this.onGeneralPress'}
                     more={true}
                 />
-                <Cell
-                    left={<CellIcon
-                    backgroundColor="#157dfa"
-                    source={require('../../assets/icons/32/font-size-filled.png')}
-                    size={19}
-                    />}
-                    title="Appearance"
-                    onPress={'this.onAppearancePress'}
-                    more={true}
-                />
-                <Cell
-                    left={<CellIcon
-                    backgroundColor="#34c759"
-                    source={require('../../assets/icons/32/paint-palette-filled.png')}
-                    size={19}
-                    />}
-                    title="Theme"
-                    onPress={'this.onThemePress'}
-                    more={true}
-                />
-            </CellGroup>
+            </CellGroup> */}
             <CellGroup header={true} theme={theme}>
                 <Cell
                     title="About"
                     left={<CellIcon
-                    backgroundColor="#157dfa"
+                    backgroundColor={theme.Blue}
                     source={require('../../assets/icons/32/help-filled.png')}
                     size={20}
                     />}
@@ -121,7 +101,7 @@ const Settings: SettingsComponentType = ({
                     title="Rate this app"
                     left={<CellIcon
                     source={require('../../assets/icons/32/star.png')}
-                    backgroundColor="#ffcc00"
+                    backgroundColor={theme.Yellow}
                     size={22}
                     />}
                     onPress={'this.onDonatePress'}
@@ -131,7 +111,7 @@ const Settings: SettingsComponentType = ({
                     title="Refer a friend"
                     left={<CellIcon
                     source={require('../../assets/icons/32/heart.png')}
-                    backgroundColor="#fc3259"
+                    backgroundColor={theme.Pink}
                     size={22}
                     />}
                     onPress={'this.onRatePress'}

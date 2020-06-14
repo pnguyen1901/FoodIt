@@ -25,9 +25,59 @@ import { themes } from '../../components/Theme/Theme';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { setMainRoot } from '../../App';
 import { RootState } from 'src/store/rootReducer';
+import messaging from '@react-native-firebase/messaging';
+import AuthorizationStatus from '@react-native-firebase/messaging';
 
 //Set up Google sign in usage with for default options: you get user email and basic profile info.
 GoogleSignin.configure();
+
+
+interface UserType {
+  name?: string,
+  familyName?: string,
+  givenName?: string,
+  fullName?: string,
+  email: string
+}
+
+export async function saveTokenToDatabase(token: string) {
+  // Assume user is already signed in
+  const userId = firebase.auth().currentUser?.uid
+
+  // Add the token to the users datastore
+  await firestore()
+    .collection('users')
+    .doc(userId)
+    .update({
+      tokens: firestore.FieldValue.arrayUnion(token)
+    })
+    .catch((error: string) => {
+      console.log('Error updating device token: ', error)
+    })
+}
+
+async function requestUserPermission() {
+  
+  const authStatus = await messaging().requestPermission();
+  // const enabled =
+  // authStatus === AuthorizationStatus.AUTHORIZED || authStatus === AuthorizationStatus.PROVISIONAL;
+
+  if (authStatus) {
+    // get the device token
+    messaging()
+    .getToken()
+    .then((token: string) => {
+      return saveTokenToDatabase(token)
+    })
+    .catch((error: string) => {
+      console.log('Error writing token to the database: ', error)
+    })
+  }
+  else {
+    console.log(authStatus)
+  }
+}
+
 
 const LogIn: LogInComponentType = ({
   componentId
@@ -46,31 +96,37 @@ const LogIn: LogInComponentType = ({
     setPasswordVisible(!passwordVisible);
   };
 
-  async function createNewUser(user: object, signInMethod: string) {
+  async function createNewUser(user: UserType, signInMethod: string) {
 
-    const user_id = firebase.auth().currentUser.uid;
+    console.log(user)
+    const userId = firebase.auth().currentUser?.uid;
 
-    const doc = await firestore().collection('users')
-      .where('user_id', '==', user_id).get();
+    const doc = await firestore().collection('users').doc(userId).get()
       
-    if (doc.empty) {
+    if (!doc.exists) {
 
-      const docRef = await firestore().collection('users').add({
-        user_id : user_id,
+      firestore().collection('users').doc(userId).set({
+        user_id : userId,
         // getting user name from response object is slightly different between Facebook, Google and Apple.
         user_name : signInMethod === 'Facebook' 
                       ? user.name 
                       : ( signInMethod === 'Google' 
                           ? user.familyName + ' ' + user.givenName 
                           : user.fullName),
-        user_email : user.email
-      });
+        user_email : user.email,
+        tokens: []
+      })
+      .then(() => {
+        console.log("Document successfully written!");
+        requestUserPermission()
+      })
+      .catch((error:string) => {
+        console.log("Error writing document: ", error);
+      })
 
-      if(docRef.id) {
-        console.log("Document written with ID: " + docRef.id);
-      }      
     } else {
         console.log('User already existed.');
+        requestUserPermission()
     }
   }
 
