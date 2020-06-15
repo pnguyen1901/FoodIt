@@ -7,7 +7,8 @@ import { SafeAreaView,
         Dimensions,
         Platform,
         StyleSheet,
-        Text
+        Text,
+        View
 } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -31,12 +32,10 @@ import { themes } from '../../components/Theme/Theme';
 import { RootState } from '../../store/rootReducer';
 import { REMINDER } from '../../screens';
 import { AlertOptionType } from '../Item/Reminder';
-import { View } from 'react-native-ui-lib';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: '#EDF1F7' //dark mode'#101426'
     },
     topNavigation: {
         borderTopLeftRadius: 10,
@@ -99,14 +98,6 @@ const addItem: addItemComponentType = (props): JSX.Element => {
         // return () => {};
     }, [componentId]);
 
-    useEffect(() => {
-        const listener = Navigation.events().registerNavigationButtonPressedListener(
-            () => {
-            // do things
-            }
-        );
-        return () => listener.remove();
-    }, []);
 
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();

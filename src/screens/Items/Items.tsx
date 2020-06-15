@@ -13,7 +13,11 @@ import {
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
-import { useNavigationSearchBarUpdate, useNavigationSearchBarCancelPress } from 'react-native-navigation-hooks';
+import { 
+  useNavigationSearchBarUpdate, 
+  useNavigationSearchBarCancelPress,
+  useNavigationButtonPress 
+} from 'react-native-navigation-hooks';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
     ThemeManager, 
@@ -34,6 +38,7 @@ import axios from 'axios';
 import Config from "react-native-config";
 import messaging from '@react-native-firebase/messaging';
 import { saveTokenToDatabase } from '../LogIn/LogIn';
+import { SHAREITEM } from '../../screens';
 
 const styles = StyleSheet.create({
     container: {
@@ -215,6 +220,22 @@ const Items: ItemsComponentType = ({
       setTimeout(() => dispatch(turnOffSearchMode()), 500)
     })
 
+    useNavigationButtonPress(({ buttonId }) => {
+      if (buttonId === 'share_button') {
+        Navigation.showModal({
+          stack: {
+            children: [
+              {
+                component: {
+                  name: SHAREITEM,
+                  id: 'shareItem',
+                }
+              }
+            ]
+          }
+        })
+      }
+    }, componentId)
 
     const shareItem = (user_id: string) => {
       foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid)
@@ -374,6 +395,12 @@ Items.options = () => ({
         largeTitle: {
           visible: true
         },
+        rightButtons: [
+          {
+            id: 'share_button',
+            systemItem: 'action'
+          }
+        ],
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
         searchBarPlaceholder: 'Search'

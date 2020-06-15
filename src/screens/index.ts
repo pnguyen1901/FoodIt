@@ -6,3 +6,4 @@ export const ACCOUNT = 'FoodIt.Account';
 export const ITEM = 'FoodIt.Item';
 export const REMINDER = 'FoodIt.Reminder';
 export const CAMERA = 'FoodIt.Camera';
+export const SHAREITEM = 'FoodIt.shareItem';
