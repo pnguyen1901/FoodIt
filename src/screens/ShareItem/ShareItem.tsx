@@ -70,6 +70,21 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
         // return () => {};
     }, [componentId]);
 
+    useEffect(() => {
+        Navigation.mergeOptions(componentId, {
+            topBar: {
+                rightButtons: [
+                    {
+                        id: 'cancel_share_item_button',
+                        systemItem: 'stop'
+
+                    }
+                ],
+                rightButtonColor: theme.SecondaryLabelColor
+            }
+        })
+    })
+
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();
 
@@ -93,18 +108,12 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
 shareItem.options = () => ({
     topBar: {
         title: {
-          text: 'Add People'
+            text: 'Add People'
         },
-        rightButtons: [
-          {
-            id: 'cancel_share_item_button',
-            systemItem: 'stop'
-          }
-        ],
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
         searchBarPlaceholder: 'phone number'
-      }
+    }
 })
 
 export default shareItem;
