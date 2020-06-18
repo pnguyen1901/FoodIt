@@ -1,5 +1,5 @@
-import React, { useState, Component } from 'react';
-import { View, Text, Platform, TouchableNativeFeedback, TouchableHighlight, Image, TextInput, StyleSheet } from 'react-native';
+import React, { useState, } from 'react';
+import { View, Text, TouchableHighlight, Image, TextInput} from 'react-native';
 // import { theme } from 'styles';
 // import { observer, Observer } from 'mobx-react';
 // import { observable } from 'mobx';
@@ -9,6 +9,7 @@ import styles from './CellStyles';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { useDispatch } from 'react-redux';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 interface Props {
   id?: any;
@@ -60,13 +61,15 @@ export default function Cell (props) {
         <View 
             style={deleteButton | signOutButton ? {justifyContent: 'center'} : null}>
             <Text style={[styles.titleText, {color: theme.LabelColor},
-            userProfile ? {fontSize: 24 } : null, deleteButton | signOutButton ? {color: theme.RedColor, textAlign: 'center'} : null ]} numberOfLines={numberOfLines}>{String(title)}</Text>
+            userProfile ? {fontSize: 24 } : null, 
+            deleteButton | signOutButton ? {color: theme.RedColor, textAlign: 'center'} : null ]} 
+            numberOfLines={numberOfLines}>{String(title)}</Text>
         </View>
         );
     }
 
     const renderSubtitle = () => {
-        const { subtitle, userProfile } = props;
+        const { subtitle, userProfile, subtitleFontSize } = props;
 
         if (!subtitle) return null;
 
@@ -76,8 +79,7 @@ export default function Cell (props) {
 
         return (
         <View >
-            <Text style={[styles.subtitleText, {color: theme.LabelColor},
-                userProfile ? {fontSize: 15}: null ]}>{String(subtitle)}</Text>
+            <Text style={[styles.subtitleText, {color: theme.LabelColor}]}>{String(subtitle)}</Text>
         </View>
         );
     }
@@ -123,9 +125,9 @@ export default function Cell (props) {
     }
 
         const { bordered = true, index, more, 
-            selected, disabled, onPress, onPressIn, 
+            radioButton, selected, disabled, onPress, onPressIn, 
             onLongPress, testID, textInput, placeholder,
-            value, onInputChange, multiline, height } = props;
+            value, onInputChange, multiline, height, primarySystemBackgroundColor, size } = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
@@ -147,7 +149,9 @@ export default function Cell (props) {
             style={[
             styles.host,
             styles.ios,
-            {backgroundColor: theme.SecondarySystemBackgroundColor},
+            primarySystemBackgroundColor 
+            ? {backgroundColor: theme.SystemBackgroundColor}
+            : {backgroundColor: theme.SecondarySystemBackgroundColor},
             //{ paddingHorizontal },
             isUnderlay && styles.underlay,
             ]}
@@ -173,7 +177,14 @@ export default function Cell (props) {
             <View style={styles.right}>
                 {renderRight()}
                 {/* <Observer render={renderValue} /> */}
-                {selected && <Image source={require('../../assets/icons/16/cell-check.png')} style={styles.selected} />}
+                {radioButton
+                    ? 
+                    (selected
+                    ? <FontAwesome5 color={theme.LabelColor} size={22} name="check-circle"/>
+                    : <FontAwesome5 color={theme.LabelColor} size={22} name="circle"/>
+                    )
+                    : null
+                }
                 {more && <Image source={require('../../assets/icons/16/cell-chevron.png')} 
                     style={[styles.more, {tintColor: theme.SystemFillColor}]} />}
             </View>

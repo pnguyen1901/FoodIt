@@ -92,7 +92,7 @@ const Settings: SettingsComponentType = ({
                     left={<CellIcon
                     backgroundColor={theme.Blue}
                     source={require('../../assets/icons/32/help-filled.png')}
-                    size={20}
+                    size={22}
                     />}
                     more={true}
                     onPress={'this.onAboutPress'}
@@ -110,8 +110,8 @@ const Settings: SettingsComponentType = ({
                 <Cell
                     title="Refer a friend"
                     left={<CellIcon
-                    source={require('../../assets/icons/32/heart.png')}
-                    backgroundColor={theme.Pink}
+                    source={require('../../assets/icons/32/submissions.png')}
+                    backgroundColor={theme.Green}
                     size={22}
                     />}
                     onPress={'this.onRatePress'}

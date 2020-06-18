@@ -8,8 +8,6 @@ import {
     Dimensions,
     Platform,
     StyleSheet,
-    NativeModules,
-    Text
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
@@ -18,7 +16,7 @@ import { themes } from '../../components/Theme/Theme';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import CellIcon from '../../components/cell/CellIcon';
-import { CONTACTS } from '../../screens';
+import { RootState } from '../../store/rootReducer';
 
 const styles = StyleSheet.create({
     container: {
@@ -57,10 +55,11 @@ const styles = StyleSheet.create({
 
 })
 
-const shareItem: ShareItemComponentType  = (props): JSX.Element => {
+const Contacts: ContactsComponentType  = (props): JSX.Element => {
 
     const { componentId } = props;
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+    const contacts = useSelector((state: RootState) => state.user.contacts);
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 
@@ -80,7 +79,7 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
             topBar: {
                 rightButtons: [
                     {
-                        id: 'cancel_share_item_button',
+                        id: 'cancel_contacts_button',
                         systemItem: 'stop'
 
                     }
@@ -99,42 +98,26 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
         }
     };
 
-    const openContacts = () => {
-        Navigation.push(componentId, {
-                component: {
-                    name: CONTACTS,
-                    id: 'contacts'
-                }
-            })
-        }
-
 
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View>
                     <CellGroup footer={true} theme={theme}>
-                        <Cell
-                            left={<CellIcon
-                                source={require('../../assets/icons/32/heart.png')}
-                                size={22}
-                                backgroundColor={theme.Pink}
-                            />}
-                            title="Share the items with your family."
-                            subtitle="They need to download the app and register an account to view the list items."
-                            numberOfLines={3}
-                        />
-                    </CellGroup>
-                    <CellGroup footer={true} theme={theme}>
-                        <Cell
-                            left={<CellIcon
-                                source={require('../../assets/icons/telegram-app-50.png')}
-                                size={22}
-                                
-                            />}
-                            title="Send invitation"
-                            onPress={() => openContacts()}
-                        />
+                        {
+                            contacts.map((contact: any, index: number) => (
+                                <Cell
+                                    key={index}
+                                    title={contact.givenName + ' ' + contact.familyName}
+                                    onPress={''}
+                                    primarySystemBackgroundColor={true}
+                                    radioButton={true}
+                                    selected={true}
+                                    size={22}
+                                />                                
+                            ))
+                        }
+
                     </CellGroup>
                 </View>
             </TouchableWithoutFeedback>
@@ -142,15 +125,18 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
     )
 }
 
-shareItem.options = () => ({
+Contacts.options = () => ({
     topBar: {
         title: {
-            text: 'Add People'
+            text: 'Contacts'
         },
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
-        searchBarPlaceholder: 'phone number'
+        searchBarPlaceholder: ''
+    },
+    bottomTabs: {
+        visible: false
     }
 })
 
-export default shareItem;
+export default Contacts;

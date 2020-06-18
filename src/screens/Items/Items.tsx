@@ -39,6 +39,8 @@ import Config from "react-native-config";
 import messaging from '@react-native-firebase/messaging';
 import { saveTokenToDatabase } from '../LogIn/LogIn';
 import { SHAREITEM } from '../../screens';
+import Contacts from 'react-native-contacts';
+import { getContacts } from '../../store/user/actions';
 
 const styles = StyleSheet.create({
     container: {
@@ -93,6 +95,17 @@ const Items: ItemsComponentType = ({
         //   this 
         // );
     });
+
+    // useEffect(() => {
+    //   Contacts.getAll((err, contacts) => {
+    //     if (err) {
+    //       console.log(err)
+    //     }
+    //     else {
+    //       getContacts(contacts)
+    //     }
+    //   })
+    // }, [])
 
     useEffect(() => {
       return messaging().onTokenRefresh((token: string) => {
@@ -222,6 +235,29 @@ const Items: ItemsComponentType = ({
 
     useNavigationButtonPress(({ buttonId }) => {
       if (buttonId === 'share_button') {
+        Contacts.checkPermission((err, permission) => {
+          if (err) throw err;
+        
+          // Contacts.PERMISSION_AUTHORIZED || Contacts.PERMISSION_UNDEFINED || Contacts.PERMISSION_DENIED
+          if (permission === 'undefined') {
+            Contacts.requestPermission((err, permission) => {
+              console.log(permission)
+            })
+          }
+          if (permission === 'authorized') {
+              Contacts.getAll((err, contacts) => {
+              if (err) {
+                console.log(err)
+              }
+              else {
+                dispatch(getContacts(contacts))
+              }
+            })
+          }
+          if (permission === 'denied') {
+            console.log('permission request denied')
+          }
+        })
         Navigation.showModal({
           stack: {
             children: [

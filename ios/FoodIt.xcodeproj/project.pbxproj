@@ -20,6 +20,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* FoodItTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FoodItTests.m */; };
 		593B0F74BECC59BAC28BD54C /* libPods-FoodIt-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FBA338CC19349CD676C5A9 /* libPods-FoodIt-tvOSTests.a */; };
 		7379C8C012C007349AD2102F /* libPods-FoodItTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A51A9A6768851F15BE03F8 /* libPods-FoodItTests.a */; };
+		DA178BF5249879710073FB15 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA178BF4249879710073FB15 /* Messages.framework */; };
 		DA2F0BE32421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
 		DA2F0BE42421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
 		DA2F0BE52421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
@@ -89,6 +90,8 @@
 		CA509A0B489520CD75E061B8 /* libPods-FoodIt-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FoodIt-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D485FABCED2E42F4BF7332A8 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		D86B6DBB8E60488F8C64232E /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		DA178BF3249879710073FB15 /* iMessage.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iMessage.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA178BF4249879710073FB15 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = System/Library/Frameworks/Messages.framework; sourceTree = SDKROOT; };
 		DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DA2F0BE72427E49D00CDD95C /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		DA47578224494FB500AC5838 /* FoodIt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = FoodIt.entitlements; path = FoodIt/FoodIt.entitlements; sourceTree = "<group>"; };
@@ -137,6 +140,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				593B0F74BECC59BAC28BD54C /* libPods-FoodIt-tvOSTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA178BF0249879710073FB15 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA178BF5249879710073FB15 /* Messages.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +217,7 @@
 				CA509A0B489520CD75E061B8 /* libPods-FoodIt-tvOS.a */,
 				64FBA338CC19349CD676C5A9 /* libPods-FoodIt-tvOSTests.a */,
 				16A51A9A6768851F15BE03F8 /* libPods-FoodItTests.a */,
+				DA178BF4249879710073FB15 /* Messages.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -240,6 +252,7 @@
 				00E356EE1AD99517003FC87E /* FoodItTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* FoodIt-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* FoodIt-tvOSTests.xctest */,
+				DA178BF3249879710073FB15 /* iMessage.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -355,12 +368,30 @@
 			productReference = 2D02E4901E0B4A5D006451C7 /* FoodIt-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		DA178BF2249879710073FB15 /* iMessage */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA178C05249879740073FB15 /* Build configuration list for PBXNativeTarget "iMessage" */;
+			buildPhases = (
+				DA178BEF249879710073FB15 /* Sources */,
+				DA178BF0249879710073FB15 /* Frameworks */,
+				DA178BF1249879710073FB15 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iMessage;
+			productName = iMessage;
+			productReference = DA178BF3249879710073FB15 /* iMessage.appex */;
+			productType = "com.apple.product-type.app-extension.messages";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
@@ -384,6 +415,9 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
+					DA178BF2249879710073FB15 = {
+						CreatedOnToolsVersion = 11.5;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FoodIt" */;
@@ -403,6 +437,7 @@
 				00E356ED1AD99517003FC87E /* FoodItTests */,
 				2D02E47A1E0B4A5D006451C7 /* FoodIt-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* FoodIt-tvOSTests */,
+				DA178BF2249879710073FB15 /* iMessage */,
 			);
 		};
 /* End PBXProject section */
@@ -440,6 +475,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA2F0BE62421D05800CDD95C /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA178BF1249879710073FB15 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,6 +760,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DCD954D1E0B4F2C00145EB5 /* FoodItTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA178BEF249879710073FB15 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1090,6 +1139,72 @@
 			};
 			name = Release;
 		};
+		DA178C03249879740073FB15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = Z8NJR94GM6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iMessage/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.FoodIt.iMessage;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DA178C04249879740073FB15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = Z8NJR94GM6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iMessage/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.FoodIt.iMessage;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1134,6 +1249,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA178C05249879740073FB15 /* Build configuration list for PBXNativeTarget "iMessage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA178C03249879740073FB15 /* Debug */,
+				DA178C04249879740073FB15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

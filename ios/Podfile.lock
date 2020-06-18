@@ -647,6 +647,8 @@ PODS:
     - React
   - react-native-config (1.2.1):
     - React
+  - react-native-contacts (5.2.1):
+    - React
   - react-native-fbsdk (1.1.2):
     - React
     - react-native-fbsdk/Core (= 1.1.2)
@@ -812,6 +814,7 @@ DEPENDENCIES:
   - react-native-camera/TextDetector (from `../node_modules/react-native-camera`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-contacts (from `../node_modules/react-native-contacts`)
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -933,6 +936,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-contacts:
+    :path: "../node_modules/react-native-contacts"
   react-native-fbsdk:
     :path: "../node_modules/react-native-fbsdk"
   react-native-image-editor:
@@ -1063,6 +1068,7 @@ SPEC CHECKSUMS:
   react-native-camera: a9749fa0c1162cdb2f56b93a5d97a72ebd56694f
   react-native-cameraroll: a16e626822c6a61ed142de9cfae9d516216beb03
   react-native-config: ae9ef3bdbf539f2d14ebaf4ebeba508f766e066a
+  react-native-contacts: 5724ae28c660a021bf1028874993fac794f9c07a
   react-native-fbsdk: c35d42169e64aaf66f01713c1e18d0674f7f6519
   react-native-image-editor: bd67912f38a8e7a895bf6eb8f445acdcefd8fd0c
   react-native-netinfo: 38aefddbacc614a14b412ba653b355db49508e50
@@ -1098,6 +1104,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: 9db9ff2025ad21d1ac0a8b3c85d5ac4e7c29d525
 
-PODFILE CHECKSUM: 3df141cdcc8e2a4d521d97fa885900680cb41eda
+PODFILE CHECKSUM: de2649b8f9483311e65b9b038325afa697843fb7
 
 COCOAPODS: 1.9.3

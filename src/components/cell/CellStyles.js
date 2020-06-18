@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 
     subtitleText: {
         fontFamily: 'System',
-        fontSize: 12,
+        fontSize: 15,
         opacity: 0.75,
         marginRight: 8,
         marginTop: 4,
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     },
 
     selected: {
-        marginTop: 2,
-        marginLeft: 10,
+        // marginTop: 2,
+        // marginLeft: 10,
         tintColor: 'white',
     },
 

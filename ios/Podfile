@@ -47,6 +47,8 @@ target 'FoodIt' do
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
+  pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
+
   target 'FoodItTests' do
     inherit! :search_paths
     # Pods for testing
