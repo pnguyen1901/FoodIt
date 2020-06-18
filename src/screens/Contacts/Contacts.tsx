@@ -59,7 +59,9 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
 
     const { componentId } = props;
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+    const [checked, setChecked] = useState([-1]);
     const contacts = useSelector((state: RootState) => state.user.contacts);
+    const dispatch = useDispatch();
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
 
@@ -98,6 +100,21 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
         }
     };
 
+    const handleToggle = (value: number) => {
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
+
+        if (currentIndex === -1) {
+            newChecked.push(value)
+            console.log(newChecked)
+        } else {
+            newChecked.splice(currentIndex, 1)
+            console.log(newChecked)
+        }
+
+        setChecked(newChecked)
+    }
+
 
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
@@ -109,10 +126,10 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
                                 <Cell
                                     key={index}
                                     title={contact.givenName + ' ' + contact.familyName}
-                                    onPress={''}
+                                    onPress={() => handleToggle(index)}
                                     primarySystemBackgroundColor={true}
                                     radioButton={true}
-                                    selected={true}
+                                    selected={checked.indexOf(index) !== -1}
                                     size={22}
                                 />                                
                             ))
