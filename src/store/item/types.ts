@@ -21,7 +21,7 @@ export interface alert {
 }
 
 export interface FoodItem {
-    id: number | null,
+    id: string | undefined,
     brand: string,
     category: string,
     expiration_date: Date,

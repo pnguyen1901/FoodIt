@@ -201,7 +201,7 @@ const Item: ItemComponentType = ({
 
     let foodItemsRef = firestore().collection('food_items');
 
-    const handleDeleteItem = (documentId: string): void => {
+    const handleDeleteItem = (documentId: string | undefined): void => {
         console.log(documentId);
         foodItemsRef
             .doc(documentId)

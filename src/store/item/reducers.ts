@@ -19,7 +19,7 @@ import {
 import { createFilter  } from 'redux-persist-transform-filter';
 
 const initialState: FoodItem = {
-    id: null,
+    id: undefined,
     brand: '',
     category: '',
     expiration_date: new Date(),
