@@ -145,7 +145,7 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
 shareItem.options = () => ({
     topBar: {
         title: {
-            text: 'Add People'
+            text: 'Share Items'
         },
         searchBar: true,
         searchBarHiddenWhenScrolling: false,

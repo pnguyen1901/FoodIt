@@ -241,7 +241,18 @@ const Items: ItemsComponentType = ({
           // Contacts.PERMISSION_AUTHORIZED || Contacts.PERMISSION_UNDEFINED || Contacts.PERMISSION_DENIED
           if (permission === 'undefined') {
             Contacts.requestPermission((err, permission) => {
-              console.log(permission)
+              if (permission === 'authorized') {
+                Contacts.getAll((err, contacts) => {
+                  if (err) {
+                    console.log(err)
+                  }
+                  else {
+                    dispatch(getContacts(contacts))
+                  }
+                })
+              } else {
+                Alert.alert("App doesn't have access to your contacts. You won't be able to send an invitation link to other people.")
+              }
             })
           }
           if (permission === 'authorized') {
@@ -255,7 +266,7 @@ const Items: ItemsComponentType = ({
             })
           }
           if (permission === 'denied') {
-            console.log('permission request denied')
+            Alert.alert("App doesn't have access to your contacts. You won't be able to send an invitation link to other people.")
           }
         })
         Navigation.showModal({

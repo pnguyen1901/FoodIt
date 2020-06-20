@@ -80,7 +80,7 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
 
     const { componentId } = props;
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
-    const [checked, setChecked] = useState([-1]);
+    const [checked, setChecked] = useState([]);
     const contacts = useSelector((state: RootState) => state.user.contacts);
     const showActionSheet = useSelector((state: RootState) => state.item.showActionSheet);
     const dispatch = useDispatch();
@@ -136,16 +136,26 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
         setChecked(newChecked)
     }
 
-    async function sendInvitationLink () {
+    async function sendInvitationLink (checked: Array<number>) {
         return firebase.auth().currentUser?.getIdToken()
             .then((token: string) => {
-                return axios.get('https://us-central1-' + Config.GC_PROJECT_ID + '.cloudfunctions.net/sendTwillioMessages/messages', {
-                    headers: { Authorization: 'Bearer ' + token }
+                const data: Array<string> = []
+                checked.forEach((item: number) => {
+                    contacts[item].phoneNumbers.forEach((number: {label: string, number: string}) => {
+                        data.push(number['number'])
+                    })
                 })
+                const headers = {
+                    withCredentials: true,
+                    headers: { Authorization: 'Bearer ' + token }
+                }
+                console.log(data)
+                return axios.post('https://us-central1-' + Config.GC_PROJECT_ID + '.cloudfunctions.net/sendTwillioMessages/messages', {recipients: data}, headers)
             })
             .then((response: AxiosResponse) => {
                 if (response.data.success === true) {
                     Alert.alert('link sent!')
+                    setChecked([])
                 } else {
                     Alert.alert('encountered error. Please try again.')
                 }
@@ -184,7 +194,7 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
             >
                 <View>
                     <TouchableOpacity 
-                        onPress={() => sendInvitationLink()}
+                        onPress={() => sendInvitationLink(checked)}
                         style={[styles.sendLinkButton, {backgroundColor: theme.SecondarySystemBackgroundColor}]}>
                         <Text style={[styles.sendLinkButtonText, {color: theme.Blue}]}>Send invitation link</Text>
                     </TouchableOpacity>
@@ -197,7 +207,7 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
 Contacts.options = () => ({
     topBar: {
         title: {
-            text: 'Contacts'
+            text: 'Send Invite'
         },
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
