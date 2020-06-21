@@ -8,8 +8,6 @@ import {
     Dimensions,
     Platform,
     StyleSheet,
-    NativeModules,
-    Text
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
@@ -18,7 +16,7 @@ import { themes } from '../../components/Theme/Theme';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import CellIcon from '../../components/cell/CellIcon';
-import { CONTACTS } from '../../screens';
+import { INVITECONTACTS } from '../../screens';
 
 const styles = StyleSheet.create({
     container: {
@@ -102,8 +100,8 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
     const openContacts = () => {
         Navigation.push(componentId, {
                 component: {
-                    name: CONTACTS,
-                    id: 'contacts'
+                    name: INVITECONTACTS,
+                    id: 'invite_contacts'
                 }
             })
         }

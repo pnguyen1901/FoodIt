@@ -39,5 +39,5 @@ type AccountComponentType = NavigationComponent<AccountComponentProps>;
 interface ShareItemComponentProps { }
 type ShareItemComponentType = NavigationComponent<ShareItemComponentProps>;
 
-interface ContactsComponentProps {  }
-type ContactsComponentType = NavigationComponent<ContactsComponentProps>;
+interface InviteContactsComponentProps {  }
+type InviteContactsComponentType = NavigationComponent<InviteContactsComponentProps>;

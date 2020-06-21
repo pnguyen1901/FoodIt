@@ -13,7 +13,6 @@ import {
     TouchableOpacity,
     Alert
 } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
 import { Navigation } from 'react-native-navigation';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
@@ -24,6 +23,9 @@ import { Toast } from 'react-native-ui-lib';
 import { firebase } from '@react-native-firebase/auth';
 import axios, { AxiosResponse } from 'axios';
 import Config from 'react-native-config';
+import Contacts from 'react-native-contacts';
+import { getContacts } from '../../store/user/actions';
+import { useNavigationSearchBarUpdate, useNavigationSearchBarCancelPress } from 'react-native-navigation-hooks';
 
 
 const styles = StyleSheet.create({
@@ -76,13 +78,12 @@ const styles = StyleSheet.create({
 
 })
 
-const Contacts: ContactsComponentType  = (props): JSX.Element => {
+const InviteContacts: InviteContactsComponentType  = (props): JSX.Element => {
 
     const { componentId } = props;
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
     const [checked, setChecked] = useState([]);
     const contacts = useSelector((state: RootState) => state.user.contacts);
-    const showActionSheet = useSelector((state: RootState) => state.item.showActionSheet);
     const dispatch = useDispatch();
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
@@ -135,6 +136,40 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
         }
         setChecked(newChecked)
     }
+
+    const loadContacts = () => {
+        Contacts.getAll((err, contacts) => {
+            if (err === "denied") {
+                Alert.alert('Permission to access contacts was denied')
+            } else {
+                dispatch(getContacts(contacts))
+            }
+        })
+    }
+
+    const handleSearch = (text:string) => {
+        const phoneNumberRegex = /\b[\+]?[(]?[0-9]{2,6}[)]?[-\s\.]?[-\s\/\.0-9]{3,15}\b/m;
+        const emailAddressRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+        if (text === "" || text === null) {
+            loadContacts()
+        } else if (phoneNumberRegex.test(text)) {
+            Contacts.getContactsByPhoneNumber(text, (err, contacts) => {
+                dispatch(getContacts(contacts))
+            })
+        } else if (emailAddressRegex.test(text)) {
+            Contacts.getContactsByEmailAddress(text, (err, contacts) => {
+                dispatch(getContacts(contacts))
+            })
+        } else {
+            Contacts.getContactsMatchingString(text, (err, contacts) => {
+                dispatch(getContacts(contacts))
+            })
+        }
+    }
+
+    useNavigationSearchBarUpdate((e) => {
+        handleSearch(e.text)
+    })
 
     async function sendInvitationLink (checked: Array<number>) {
         return firebase.auth().currentUser?.getIdToken()
@@ -204,18 +239,18 @@ const Contacts: ContactsComponentType  = (props): JSX.Element => {
     )
 }
 
-Contacts.options = () => ({
+InviteContacts.options = () => ({
     topBar: {
         title: {
             text: 'Send Invite'
         },
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
-        searchBarPlaceholder: ''
+        searchBarPlaceholder: 'phone number, email address, name'
     },
     bottomTabs: {
         visible: false
     }
 })
 
-export default Contacts;
+export default InviteContacts;

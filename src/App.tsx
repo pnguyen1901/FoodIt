@@ -13,7 +13,7 @@ import { SETTINGS } from './screens';
 import { ACCOUNT } from './screens';
 import { REMINDER } from './screens';
 import { SHAREITEM } from './screens';
-import { CONTACTS } from './screens';
+import { INVITECONTACTS } from './screens';
 
 import LogInScreen from './screens/LogIn/LogIn';
 import ItemsScreen from './screens/Items/Items';
@@ -24,7 +24,7 @@ import SettingsScreen from './screens/Settings/Settings';
 import AccountScreen from './screens/Account/Account';
 import ReminderScreen from './screens/Item/Reminder';
 import ShareItemScreen from './screens/ShareItem/ShareItem';
-import ContactsScreen from './screens/Contacts/Contacts';
+import InviteContactsScreen from './screens/InviteContacts/InviteContacts';
 import AsyncStore from '@react-native-community/async-storage';
 
 
@@ -40,7 +40,7 @@ Screens.set(SETTINGS, SettingsScreen);
 Screens.set(ACCOUNT, AccountScreen);
 Screens.set(REMINDER, ReminderScreen);
 Screens.set(SHAREITEM, ShareItemScreen);
-Screens.set(CONTACTS, ContactsScreen);
+Screens.set(INVITECONTACTS, InviteContactsScreen);
 // Screens.set(ADDITEM, AddItemScreen);
 // Register screens
 Screens.forEach((C, key) => {
