@@ -22,6 +22,11 @@ import CellIcon from '../../components/cell/CellIcon';
 import { INVITECONTACTS } from '../../screens';
 import { useNavigationButtonPress, useNavigationSearchBarUpdate } from 'react-native-navigation-hooks';
 import { FadeInView } from '../../components/Theme/Theme';
+import { ActionSheet } from 'react-native-ui-lib';
+import { RootState } from '../../store/rootReducer';
+import { toggleActionSheet } from '../../store/item/actions';
+import Avatar from '../../components/Avatar/Avatar';
+
 
 const styles = StyleSheet.create({
     container: {
@@ -60,6 +65,8 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
     const [results, setResults] = useState<Array<object>>([])
+    const showActionSheet = useSelector((state: RootState) => state.item.showActionSheet)
+    const dispatch = useDispatch()
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
@@ -133,19 +140,40 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
         foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser?.uid)
             .get()
             .then((querySnapshot) => {
-            querySnapshot.forEach(doc => {
-                foodItemsRef.doc(doc.id).update({
-                ownerId: firebase.firestore.FieldValue.arrayUnion(user_id)
-                }).then(res => {
-                console.log()
-                }).catch(err => {
-                Alert.alert(err);
-                })
-            })
+                querySnapshot.forEach(doc => {
+                        foodItemsRef.doc(doc.id).update({
+                        ownerId: firebase.firestore.FieldValue.arrayUnion(user_id)
+                        }).then(res => {
+                            console.log('Item has been shared')
+                        }).catch(err => {
+                            console.log(err)
+                        })
+                    })
             })
             .catch(err => {
-            console.log(err);
+                Alert.alert("Couldn't share items. Please try again")
             })
+    }
+
+    const stopSharingItem = (user_id: string) => {
+        foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser?.uid)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach(doc => {
+                    foodItemsRef.doc(doc.id).update({
+                        ownerId: firebase.firestore.FieldValue.arrayRemove(user_id)
+                    }).then(res => {
+                        console.log('Stop sharing this item')
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    }) 
+                })
+            })
+            .catch(err => {
+                Alert.alert("Encounter errors. Please try again")
+            })
+
     }
 
     return (
@@ -187,15 +215,34 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
                                 <CellGroup header="Results" footer={true} theme={theme}>
                                     {results.map((item, index) => (
                                     <Cell
+                                        left={<Avatar 
+                                            width={40}
+                                            height={40}
+                                            roundedPlaceholder={true}
+                                            placeholder={getAvatarInitials(item.user_name)}
+                                        />}
                                         key={index}
                                         title={item.user_name}
-                                        //onPress={() => openContacts()}
+                                        subtitle={item.user_email}
+                                        onPress={() => dispatch(toggleActionSheet())}
                                     />
                                     ))}
                                 </CellGroup>
                             </FadeInView>
                         )
                     }
+                    <ActionSheet
+                        showCancelButton={Platform.OS === 'ios' ? true : false}
+                        cancelButtonIndex={3}
+                        destructiveButtonIndex={0}
+                        options={[
+                            {label: 'Share items', onPress: () => shareItem(results[0].user_id)},
+                            {label: 'Stop sharing items', onPress: () => stopSharingItem(results[0].user_id)},
+                        ]}
+                        visible={showActionSheet}
+                        useNativeIOS
+                        onDismiss={() => dispatch(toggleActionSheet())}
+                    /> 
                 </View>
             </TouchableWithoutFeedback>
         </SafeAreaView>
@@ -212,5 +259,18 @@ shareItem.options = () => ({
         searchBarPlaceholder: 'phone number'
     }
 })
+
+const getAvatarInitials = (textString: string) => {
+    if (!textString) return "";
+
+    const text = textString.trim();
+    const textSplit = text.split(" ");
+
+    if (textSplit.length <= 1 ) return text.charAt(0); // the text string contains only one word
+
+    const initials = textSplit[0].charAt(0).toUpperCase() + textSplit[textSplit.length - 1].charAt(0).toUpperCase() // get the initials from the first name and last name. textString.length -1 to get the last name, because there could be middle name in between.
+
+    return initials;
+}
 
 export default shareItem;

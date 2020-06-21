@@ -153,7 +153,8 @@ const Items: ItemsComponentType = ({
                 .onAuthStateChanged((user) => {
                   setUser(user);
                   if (user) {
-                    foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser?.uid).orderBy('expiration_date', "asc")
+                    foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser?.uid)
+                    .orderBy('expiration_date', "asc")
                     .get()
                     .then((querySnapshot) => {
                       const documents = querySnapshot.docs.map(doc => {
