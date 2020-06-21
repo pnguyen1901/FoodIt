@@ -25,7 +25,7 @@ import axios, { AxiosResponse } from 'axios';
 import Config from 'react-native-config';
 import Contacts from 'react-native-contacts';
 import { getContacts } from '../../store/user/actions';
-import { useNavigationSearchBarUpdate, useNavigationSearchBarCancelPress } from 'react-native-navigation-hooks';
+import { useNavigationSearchBarUpdate } from 'react-native-navigation-hooks';
 
 
 const styles = StyleSheet.create({
@@ -246,7 +246,7 @@ InviteContacts.options = () => ({
         },
         searchBar: true,
         searchBarHiddenWhenScrolling: false,
-        searchBarPlaceholder: 'phone number, email address, name'
+        searchBarPlaceholder: 'name, phone number, email address'
     },
     bottomTabs: {
         visible: false

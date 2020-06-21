@@ -27,7 +27,7 @@ import {
     View
 } from 'react-native-ui-lib';
 import { setDeleteItem, removeDeleteItem } from '../../store/actions';
-import { themes } from '../../components/Theme/Theme';
+import { themes, FadeInView } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
 import { selectItem, turnOnSearchMode, turnOffSearchMode, saveAlgoliaSearchKey } from '../../store/item/actions';
 import { ITEM } from '../../screens';
@@ -284,24 +284,6 @@ const Items: ItemsComponentType = ({
       }
     }, componentId)
 
-    const shareItem = (user_id: string) => {
-      foodItemsRef.where('ownerId', 'array-contains', firebase.auth().currentUser.uid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach(doc => {
-            foodItemsRef.doc(doc.id).update({
-              ownerId: firebase.firestore.FieldValue.arrayUnion(user_id)
-            }).then(res => {
-              console.log()
-            }).catch(err => {
-              Alert.alert(err);
-            })
-          })
-        })
-        .catch(err => {
-          console.log(err);
-        })
-    }
   
     const handleDeleteItem = (documentId: string): void => {
       console.log(documentId);
@@ -410,6 +392,7 @@ const Items: ItemsComponentType = ({
                 enabled
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
+                <FadeInView>
                 { data.length !== 0
                 ? <FlatList
                   data={data}
@@ -421,11 +404,7 @@ const Items: ItemsComponentType = ({
                 </View>
                 
                 }
-                {/* <Button
-                    status='info' 
-                    onPress={() => shareItem('m4MjlNjHMbMj6xOdgVjq8lf80l62')}
-                    // onPress={() => nodejs.channel.send('EXP: 04/01/2020')}
-                    style={styles.button} icon={ShareIcon}/> */}
+                </FadeInView>
             </KeyboardAvoidingView>
       </SafeAreaView>
     );
