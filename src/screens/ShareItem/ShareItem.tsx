@@ -223,7 +223,7 @@ const shareItem: ShareItemComponentType  = (props): JSX.Element => {
                                         />}
                                         key={index}
                                         title={item.user_name}
-                                        subtitle={item.user_email}
+                                        //subtitle={item.user_email}
                                         onPress={() => dispatch(toggleActionSheet())}
                                     />
                                     ))}

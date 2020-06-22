@@ -27,6 +27,9 @@ import { setMainRoot } from '../../App';
 import { RootState } from 'src/store/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import AuthorizationStatus from '@react-native-firebase/messaging';
+import { Navigation } from 'react-native-navigation';
+import { REGISTRATION } from '../../screens';
+import { setEmail, setName } from '../../store/user/actions';
 
 //Set up Google sign in usage with for default options: you get user email and basic profile info.
 GoogleSignin.configure();
@@ -56,7 +59,7 @@ export async function saveTokenToDatabase(token: string) {
     })
 }
 
-async function requestUserPermission() {
+export async function requestUserPermission() {
   
   const authStatus = await messaging().requestPermission();
   // const enabled =
@@ -79,13 +82,21 @@ async function requestUserPermission() {
 }
 
 
+interface userResponseType {
+    fullName?: string,
+    familyName?: string,
+    givenName?: string,
+    name?: string,
+    email: string
+}
+
 const LogIn: LogInComponentType = ({
   componentId
 }): JSX.Element => {
 
   const colorScheme = useColorScheme();
   const theme = themes[colorScheme];
-  const [email, setEmail] = React.useState<string>('');
+  const [email, setUserEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
   const loggedIn = useSelector((state: RootState ) => state.item.loggedIn);
@@ -96,37 +107,83 @@ const LogIn: LogInComponentType = ({
     setPasswordVisible(!passwordVisible);
   };
 
-  async function createNewUser(user: UserType, signInMethod: string) {
+  // const openRegistrationForm = (user: userResponseType, userId: string | undefined, signInMethod: string) => {
+  //   const user_name =  signInMethod === 'Facebook' 
+  //   ? user.name 
+  //   : ( signInMethod === 'Google' 
+  //       ? user.familyName + ' ' + user.givenName 
+  //       : user.fullName);
 
-    console.log(user)
-    const userId = firebase.auth().currentUser?.uid;
+  //   const user_email = user.email;
+    
+  //   dispatch(setName(user_name))
+  //   dispatch(setEmail(user_email))
 
-    const doc = await firestore().collection('users').doc(userId).get()
-      
-    if (!doc.exists) {
+  //   setTimeout(() => { Navigation.showModal({
+  //     stack: {
+  //       children: [
+  //         {
+  //           component: {
+  //             name: REGISTRATION,
+  //             id: 'registration',
+  //             passProps: {
+  //               userId: userId,
+  //             }
+  //           }
+  //         }
+  //       ]
+  //     }
+  //   })
+  //   }, 1000 )
+  // }
 
-      firestore().collection('users').doc(userId).set({
-        user_id : userId,
-        // getting user name from response object is slightly different between Facebook, Google and Apple.
-        user_name : signInMethod === 'Facebook' 
-                      ? user.name 
-                      : ( signInMethod === 'Google' 
-                          ? user.familyName + ' ' + user.givenName 
-                          : user.fullName),
-        user_email : user.email,
-        tokens: []
-      })
-      .then(() => {
-        console.log("Document successfully written!");
-        requestUserPermission()
-      })
-      .catch((error:string) => {
-        console.log("Error writing document: ", error);
-      })
+  function createNewUser(user: UserType, signInMethod: string) {
+    return dispatch => {
+      console.log(user)
+      const userId = firebase.auth().currentUser?.uid;
 
-    } else {
-        console.log('User already existed.');
-        requestUserPermission()
+      return firestore()
+        .collection('users')
+        .doc(userId)
+        .get()
+        .then((doc) => {
+          if (!doc.exists) {
+            const user_name =  signInMethod === 'Facebook' 
+            ? user.name 
+            : ( signInMethod === 'Google' 
+                ? user.familyName + ' ' + user.givenName 
+                : user.fullName);
+        
+            const user_email = user.email;
+            
+            dispatch(setName(user_name))
+            dispatch(setEmail(user_email))
+        
+            setTimeout(() => { Navigation.showModal({
+              stack: {
+                children: [
+                  {
+                    component: {
+                      name: REGISTRATION,
+                      id: 'registration',
+                      passProps: {
+                        userId: userId
+                      },
+                    }
+                  }
+                ]
+              }
+            })
+            }, 50)
+
+          } else {
+              console.log('User already existed.');
+              requestUserPermission()
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 
@@ -150,7 +207,7 @@ const LogIn: LogInComponentType = ({
     return auth().signInWithCredential(appleCredential)
               .then(() => {
                 createNewUser(appleAuthRequestResponse, 'Apple');
-                setMainRoot();
+                //setMainRoot();
               })
               .catch(err => {
                 console.log(err);
@@ -169,7 +226,7 @@ const LogIn: LogInComponentType = ({
     return auth().signInWithCredential(googleCredential)
                 .then(() =>  {
                   createNewUser(user, 'Google');
-                  setMainRoot();
+                  //setMainRoot();
                 })
                 .catch(err => {
                   console.log(err);
@@ -262,14 +319,12 @@ const LogIn: LogInComponentType = ({
                       const infoRequest = new GraphRequest(
                         '/me?fields=name,email',
                         null,
-                        (error, result: object | undefined) => {
+                        (error, result: userResponseType) => {
                           if (error) {
                             console.log('Error fetching data: ' + error.toString());
                           } else {
-                            createNewUser(result, 'Facebook').catch((error: string) => {
-                              console.log('Error creating new user: ' + error.toString());
-                            })
-                            setMainRoot();
+                            dispatch(createNewUser(result, 'Facebook'))
+                            //setMainRoot();
                           }
                         },
                       );
@@ -311,7 +366,7 @@ const LogIn: LogInComponentType = ({
                 }]}
               placeholder='Email'
               value={email}
-              onChangeText={setEmail}
+              onChangeText={setUserEmail}
             />
             <TextInput
               style={[styles.textInput, 

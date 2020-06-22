@@ -17,7 +17,7 @@ export default function CellGroup (props) {
   const { theme } = props;
 
   const renderHeader = () => {
-    const { header } = props;
+    const { header, required, inputValue } = props;
 
     if (!header) return null;
 
@@ -32,8 +32,9 @@ export default function CellGroup (props) {
     const paddingLeft = 16 //Math.max(0, UI.layout.inset) + 16;
 
     return (
-      <View style={[styles.header, { paddingLeft }]}>
-        <Text style={[styles.headerText, {color: theme.SecondaryLabelColor}]}>{String(header).toUpperCase()}</Text>
+      <View style={[styles.header, { paddingLeft, flexDirection: 'row' }]}>
+        <Text style={[styles.headerText, 
+          {color: required && inputValue === '' ? theme.RedColor : theme.SecondaryLabelColor}]}>{String(header).toUpperCase()}</Text>
       </View>
     );
   }

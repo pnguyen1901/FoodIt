@@ -41,3 +41,8 @@ type ShareItemComponentType = NavigationComponent<ShareItemComponentProps>;
 
 interface InviteContactsComponentProps {  }
 type InviteContactsComponentType = NavigationComponent<InviteContactsComponentProps>;
+
+interface RegistrationComponentProps { 
+    userId: string,
+}
+type RegistrationComponentType = NavigationComponent<RegistrationComponentProps>;

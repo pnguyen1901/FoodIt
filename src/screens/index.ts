@@ -8,3 +8,4 @@ export const REMINDER = 'FoodIt.Reminder';
 export const CAMERA = 'FoodIt.Camera';
 export const SHAREITEM = 'FoodIt.shareItem';
 export const INVITECONTACTS = 'FoodIt.inviteContacts';
+export const REGISTRATION = 'FoodIt.Registration';

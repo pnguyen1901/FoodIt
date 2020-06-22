@@ -49,7 +49,7 @@ export default function Cell (props) {
 
 
     const renderTitle = () => {
-        const { title, numberOfLines = 1, userProfile, deleteButton, signOutButton } = props;
+        const { title, numberOfLines = 1, userProfile, deleteButton, signOutButton, required } = props;
 
         if (!title) return null;
 
@@ -127,7 +127,7 @@ export default function Cell (props) {
         const { bordered = true, index, more, 
             radioButton, selected, disabled, onPress, onPressIn, 
             onLongPress, testID, textInput, placeholder,
-            value, onInputChange, multiline, height, primarySystemBackgroundColor, size } = props;
+            value, onInputChange, multiline, height, primarySystemBackgroundColor, size} = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
