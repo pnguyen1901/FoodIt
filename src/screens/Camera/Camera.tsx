@@ -7,22 +7,24 @@ import { StyleSheet,
         TouchableOpacity,
         Alert,
         Dimensions,
-        Image
+        Image,
+        Modal,
         } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
 import { loading, loadingDone } from '../../store/camera/actions';
-import { setExpDate, resetForm } from '../../store/item/actions';
+import { setBrand, setCategory, setExpDate, resetForm } from '../../store/item/actions';
 import nodejs from 'nodejs-mobile-react-native';
 import vision from '@react-native-firebase/ml-vision';
 import { RootState } from '../../store/rootReducer';
 import { Navigation } from 'react-native-navigation';
 require('datejs'); 
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
-import CameraRoll from "@react-native-community/cameraroll";
 import ImageEditor from "@react-native-community/image-editor";
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
+import { Dialog } from 'react-native-ui-lib';
+import Voice from '@react-native-community/voice';
 
 
 const Camera: CameraComponentType = ({ 
@@ -41,6 +43,7 @@ const Camera: CameraComponentType = ({
     const [depth, setDepth] = useState(0);
     const [canDetectText, setCanDetectText] = useState(false);
     const [textBlocks, setTextBlocks] = useState([]);
+    const [speech, setSpeech] = useState([]);
     let { width } = Dimensions.get('window');
     const maskLength = (width * 90)/100;
 
@@ -61,6 +64,43 @@ const Camera: CameraComponentType = ({
         });
     })
 
+    const openAddItemModal = () => {
+        Navigation.showModal({
+            stack: {
+            children: [
+                {
+                component: {
+                    name: 'addItem',
+                    id: 'addItem',
+                    // passProps: {
+                    //     expiration_date: new Date (Date.parse(msg))
+                    // },
+                    options: {
+                    topBar: {
+                        title: {
+                            text: 'New Item'
+                        },
+                        leftButtons: [
+                        {
+                            id: 'cancel_add_item_button_id',
+                            text: 'Cancel'
+                        }
+                        ],
+                        rightButtons: [
+                        {
+                            id: 'save_item_button_id',
+                            text: 'Add'
+                        }
+                        ]
+                    },
+                    }
+                }
+                }
+            ]
+            }
+        });
+    } 
+
     
     useEffect(() => {
         nodejs.channel.addListener('message', 
@@ -68,7 +108,17 @@ const Camera: CameraComponentType = ({
                 if (msg === null) {
                     dispatch(loadingDone());
                     setTimeout(() => {
-                        Alert.alert('Please try again!');  
+                        Alert.alert('Scanning new item', 'Encountered an issue', [
+                            {
+                                text: 'Manual Typing',
+                                style: 'default',
+                                onPress: () => openAddItemModal()
+                            },                            
+                            {
+                                text: 'Try again',
+                                style: "cancel"
+                            }
+                        ]);  
                     }, 100);
                 } else {
                     console.log('echo message: ' + msg);
@@ -76,41 +126,8 @@ const Camera: CameraComponentType = ({
                     dispatch(resetForm())
                     dispatch(setExpDate(new Date (Date.parse(msg))))
                     setTimeout(() => {
-                    Navigation.showModal({
-                        stack: {
-                        children: [
-                            {
-                            component: {
-                                name: 'addItem',
-                                id: 'addItem',
-                                passProps: {
-                                    expiration_date: new Date (Date.parse(msg))
-                                },
-                                options: {
-                                topBar: {
-                                    title: {
-                                        text: 'New Item'
-                                    },
-                                    leftButtons: [
-                                    {
-                                        id: 'cancel_add_item_button_id',
-                                        text: 'Cancel'
-                                    }
-                                    ],
-                                    rightButtons: [
-                                    {
-                                        id: 'save_item_button_id',
-                                        text: 'Add'
-                                    }
-                                    ]
-                                },
-                                }
-                            }
-                            }
-                        ]
-                        }
-                    });
-                    }, 1000)
+                        openAddItemModal()
+                    }, 500)
 
                 }
             },
@@ -141,7 +158,7 @@ const Camera: CameraComponentType = ({
                     },
                     size: {width: w, height: h/3} 
                     }).then((uri:string) => {
-                        CameraRoll.save(uri, {type: 'photo'})
+                        //CameraRoll.save(uri, {type: 'photo'})
                         processDocument(uri.replace(/^file:\/\//g, ''))
                         .then((result) => {
                             console.log(result)
@@ -216,6 +233,29 @@ const Camera: CameraComponentType = ({
                 />
             </React.Fragment>
     )};
+
+    const onStartButtonPress = async () => {
+        setSpeech([])
+        try {
+            await Voice.start('en-US');
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const onStopButtonPress = async () => {
+        try {
+            await Voice.stop()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    Voice.onSpeechResults = (e) => {
+        console.log(e)
+        dispatch(setBrand(e.value[0]))
+    }
+    
     
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
@@ -276,6 +316,66 @@ const Camera: CameraComponentType = ({
             <View style={styles.overlay} />
             {!!canDetectText && renderTextBlocks()}
         </RNCamera>
+        {/* <Dialog
+            migrate
+            useSafeArea
+            //key={this.getDialogKey(height)}
+            height={400}
+            panDirection={"up"}
+            containerStyle={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
+            visible={true}
+            //onDismiss={this.hideDialog}
+            //renderPannableHeader={renderPannableHeader}
+            //pannableHeaderProps={this.pannableTitle}
+            //supportedOrientations={this.supportedOrientations}
+        >
+            <View style={{alignItems: "center", justifyContent: 'center'}}>
+                <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the brand of this item?</Text>
+                <TouchableOpacity
+                    onPress={() => onStartButtonPress()}
+                >
+                    <Text style={{color: theme.LabelColor, fontSize: 20}}>Recording Start</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => onStopButtonPress()}
+                >
+                    <Text style={{color: theme.LabelColor, fontSize: 20}}>Recording End</Text>
+                </TouchableOpacity>
+                <Text></Text>
+            </View>
+        </Dialog> */}
+        <Modal
+            animationType="fade"
+            transparent={true}
+            //presentationStyle="formSheet"
+            visible={true}
+            onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            }}
+        >
+            <View style={[styles.centeredView, {backgroundColor: theme.SecondSystemBackgroundColor}]}>
+            <View style={[styles.modalView, {backgroundColor: theme.SecondSystemBackgroundColor}]}>
+                <Text style={[styles.modalText, {color: theme.LabelColor}]}>What is the brand of the item?</Text>
+
+                <TouchableOpacity
+                style={{ ...styles.openButton, backgroundColor: theme.Blue }}
+                onPress={() => {
+                    onStartButtonPress()
+                }}
+                >
+                <Text style={[styles.textStyle, {color: theme.LabelColor}]}>Start Speaking</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                style={{ ...styles.openButton, backgroundColor: theme.Blue }}
+                onPress={() => {
+                    onStopButtonPress()
+                }}
+                >
+                <Text style={[styles.textStyle, {color: theme.LabelColor}]}>Stop Speaking</Text>
+                </TouchableOpacity>
+            </View>
+            </View>
+        </Modal>
     </SafeAreaView>
     )
 }
@@ -364,5 +464,42 @@ const styles = StyleSheet.create({
     contentRow: {
         flexDirection: "row",
         marginTop: 16
+    },
+    roundedDialog: {
+        marginBottom: 20,
+        borderRadius: 12
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+    margin: 20,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    },
+    textStyle: {
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    openButton: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
     },
 });
