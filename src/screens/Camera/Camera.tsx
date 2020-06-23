@@ -238,13 +238,21 @@ const Camera: CameraComponentType = ({
             </React.Fragment>
     )};
 
-    const onStartButtonPress = async () => {
+    // const onStartButtonPress = async () => {
+    //     try {
+    //         await Voice.start('en-US');
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
+    useEffect(() => {
         try {
-            await Voice.start('en-US');
+            Voice.start('en-US').then().catch((err) => console.log(err));
         } catch (e) {
             console.log(e)
         }
-    }
+    }, [])
 
     const onStopButtonPress = async () => {
         try {
@@ -382,7 +390,6 @@ const Camera: CameraComponentType = ({
                 ? <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the brand of this item?</Text>
                 : <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text>
                 }
-
                 {/* <TouchableOpacity
                     onPress={() => rippleStart()}
                 >
@@ -396,6 +403,7 @@ const Camera: CameraComponentType = ({
                 </TouchableOpacity> */}
                 </View>
                 {renderVoiceAnimation()}
+                <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 14, textAlign: "center"}}>Press button to start speaking</Text>
             </View>
 
         </Dialog>
