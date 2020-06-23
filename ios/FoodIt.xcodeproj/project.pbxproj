@@ -21,6 +21,7 @@
 		593B0F74BECC59BAC28BD54C /* libPods-FoodIt-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FBA338CC19349CD676C5A9 /* libPods-FoodIt-tvOSTests.a */; };
 		7379C8C012C007349AD2102F /* libPods-FoodItTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A51A9A6768851F15BE03F8 /* libPods-FoodItTests.a */; };
 		DA178BF5249879710073FB15 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA178BF4249879710073FB15 /* Messages.framework */; };
+		DA26B37924A1B52700DD2B55 /* fixLottie.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA26B37824A1B52700DD2B55 /* fixLottie.swift */; };
 		DA2F0BE32421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
 		DA2F0BE42421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
 		DA2F0BE52421D05800CDD95C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */; };
@@ -92,6 +93,8 @@
 		D86B6DBB8E60488F8C64232E /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		DA178BF3249879710073FB15 /* iMessage.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iMessage.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA178BF4249879710073FB15 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = System/Library/Frameworks/Messages.framework; sourceTree = SDKROOT; };
+		DA26B37724A1B52700DD2B55 /* FoodIt-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FoodIt-Bridging-Header.h"; sourceTree = "<group>"; };
+		DA26B37824A1B52700DD2B55 /* fixLottie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fixLottie.swift; sourceTree = "<group>"; };
 		DA2F0BE22421D05800CDD95C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DA2F0BE72427E49D00CDD95C /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		DA47578224494FB500AC5838 /* FoodIt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = FoodIt.entitlements; path = FoodIt/FoodIt.entitlements; sourceTree = "<group>"; };
@@ -232,6 +235,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				DA26B37824A1B52700DD2B55 /* fixLottie.swift */,
 				13B07FAE1A68108700A75B9A /* FoodIt */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* FoodItTests */,
@@ -239,6 +243,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				2C9385988D00EC4A7F0BD638 /* Pods */,
 				DB65F4A8976D4A59ACA24258 /* Resources */,
+				DA26B37724A1B52700DD2B55 /* FoodIt-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -403,6 +408,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = Z8NJR94GM6;
+						LastSwiftMigration = 1150;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -743,6 +749,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				DA26B37924A1B52700DD2B55 /* fixLottie.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,6 +809,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72A3C1CE20BA78682FD0C4A2 /* Pods-FoodItTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -835,6 +843,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3A2C00165537E15097AFAC86 /* Pods-FoodItTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -866,6 +875,7 @@
 			baseConfigurationReference = B98C7DAEDFE2711F212C3037 /* Pods-FoodIt.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = FoodIt/FoodIt.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -882,6 +892,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = FoodIt;
+				SWIFT_OBJC_BRIDGING_HEADER = "FoodIt-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -891,6 +904,7 @@
 			baseConfigurationReference = B78606EE2600C13E61766C9B /* Pods-FoodIt.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = FoodIt/FoodIt.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z8NJR94GM6;
@@ -906,6 +920,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = FoodIt;
+				SWIFT_OBJC_BRIDGING_HEADER = "FoodIt-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

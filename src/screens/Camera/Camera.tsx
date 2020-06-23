@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet,
         Text,
@@ -8,7 +8,8 @@ import { StyleSheet,
         Alert,
         Dimensions,
         Image,
-        Modal,
+        Animated,
+        TouchableOpacityBase
         } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
@@ -25,12 +26,15 @@ import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
 import { Dialog } from 'react-native-ui-lib';
 import Voice from '@react-native-community/voice';
+import LottieView from "lottie-react-native";
 
 
 const Camera: CameraComponentType = ({ 
     componentId,
 }): JSX.Element => {
 
+    const animation = useRef(new Animated.Value(0)).current;
+    const { brand, category } = useSelector((state: RootState) => state.item);
     const dispatch = useDispatch();
     const isLoading = useSelector((state :RootState) => state.camera.isLoading);
     const colorScheme = useColorScheme();
@@ -235,7 +239,6 @@ const Camera: CameraComponentType = ({
     )};
 
     const onStartButtonPress = async () => {
-        setSpeech([])
         try {
             await Voice.start('en-US');
         } catch (e) {
@@ -251,9 +254,54 @@ const Camera: CameraComponentType = ({
         }
     }
 
-    Voice.onSpeechResults = (e) => {
+    const previousResults = useRef('');
+
+    Voice.onSpeechResults = async (e) => {
         console.log(e)
-        dispatch(setBrand(e.value[0]))
+        // Stop the voice recognizer if user stopped speaking
+        if (previousResults.current === e.value[0]) {
+            try {
+                setTimeout(async () => await Voice.stop(), 1000)
+                console.log('speech recognizer stopped')
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            previousResults.current = e.value[0]
+            dispatch(setBrand(e.value[0]))
+        }
+    }
+
+    const rippleStart = () => {
+        Animated.timing(animation, {
+            toValue: 1,
+            duration: 10000,
+            useNativeDriver: true,
+        }).start()
+        //setAutoPlay(true)
+    }
+
+    const rippleStop = () => {
+        Animated.timing(animation, {
+            toValue: 0,
+            useNativeDriver: true
+        }).start()
+    }
+
+    const renderVoiceAnimation = () => {
+        return (
+        <TouchableOpacity
+            onPress={() => onStartButtonPress()}
+        >
+            <LottieView 
+            source={require('../../assets/animation/voice-lottie.json')}
+            //progress={animation}
+            loop={true}
+            autoPlay={true}
+            style={{width: 100, height: 100}}
+            />
+        </TouchableOpacity>
+        )
     }
     
     
@@ -316,11 +364,10 @@ const Camera: CameraComponentType = ({
             <View style={styles.overlay} />
             {!!canDetectText && renderTextBlocks()}
         </RNCamera>
-        {/* <Dialog
+        <Dialog
             migrate
             useSafeArea
             //key={this.getDialogKey(height)}
-            height={400}
             panDirection={"up"}
             containerStyle={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
             visible={true}
@@ -330,31 +377,38 @@ const Camera: CameraComponentType = ({
             //supportedOrientations={this.supportedOrientations}
         >
             <View style={{alignItems: "center", justifyContent: 'center'}}>
-                <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the brand of this item?</Text>
-                <TouchableOpacity
-                    onPress={() => onStartButtonPress()}
+                <View style={{marginBottom: 10, marginTop: 10}}>
+                { brand === ''
+                ? <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the brand of this item?</Text>
+                : <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text>
+                }
+
+                {/* <TouchableOpacity
+                    onPress={() => rippleStart()}
                 >
                     <Text style={{color: theme.LabelColor, fontSize: 20}}>Recording Start</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </TouchableOpacity> */}
+                {/* <TouchableOpacity
                     onPress={() => onStopButtonPress()}
                 >
+                    
                     <Text style={{color: theme.LabelColor, fontSize: 20}}>Recording End</Text>
-                </TouchableOpacity>
-                <Text></Text>
+                </TouchableOpacity> */}
+                </View>
+                {renderVoiceAnimation()}
             </View>
-        </Dialog> */}
-        <Modal
+
+        </Dialog>
+        {/* <Modal
             animationType="fade"
             transparent={true}
-            //presentationStyle="formSheet"
             visible={true}
             onRequestClose={() => {
             Alert.alert("Modal has been closed.");
             }}
         >
-            <View style={[styles.centeredView, {backgroundColor: theme.SecondSystemBackgroundColor}]}>
-            <View style={[styles.modalView, {backgroundColor: theme.SecondSystemBackgroundColor}]}>
+            <View style={[styles.centeredView, {backgroundColor: theme.SystemBackgroundColor} ]}>
+            <View style={[styles.modalView, {backgroundColor: theme.SecondarySystemBackgroundColor}]}>
                 <Text style={[styles.modalText, {color: theme.LabelColor}]}>What is the brand of the item?</Text>
 
                 <TouchableOpacity
@@ -375,7 +429,7 @@ const Camera: CameraComponentType = ({
                 </TouchableOpacity>
             </View>
             </View>
-        </Modal>
+        </Modal> */}
     </SafeAreaView>
     )
 }
@@ -466,28 +520,19 @@ const styles = StyleSheet.create({
         marginTop: 16
     },
     roundedDialog: {
-        marginBottom: 20,
-        borderRadius: 12
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
+        marginBottom: 30,
+        borderRadius: 20,
+        padding: 20,
+        shadowColor: "#000",
         alignItems: "center",
-        marginTop: 22
-    },
-    modalView: {
-    margin: 20,
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
+        justifyContent: "center",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
     },
     modalText: {
         marginBottom: 15,
