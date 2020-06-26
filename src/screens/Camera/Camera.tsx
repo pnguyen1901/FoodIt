@@ -262,17 +262,30 @@ const Camera: CameraComponentType = ({
             rippleStop()
             Voice.stop()
                 .then((res) => {
+                    if (step === 'step1' ) {
+                        setStep('step2')
+                    }
                     setRecording(false)
-                    
+                    Voice.destroy()
                 })
                 .catch ((e) => {
                     console.log(e)
                 })
     }
 
-    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
-        dispatch(setBrand(e.value[0]))
-    }
+    useEffect(() => {
+        if (step === 'step1') {
+            Voice.onSpeechResults = (e: SpeechResultsEvent) => {
+                    dispatch(setBrand(e.value[0]))
+                }
+        }
+        else {
+            Voice.onSpeechResults = (e: SpeechResultsEvent) => {
+                dispatch(setCategory(e.value[0]))
+            }
+        }
+    }, [recording])
+
 
     // const previousResults = useRef('');
 
@@ -306,7 +319,7 @@ const Camera: CameraComponentType = ({
         Animated.loop(
             Animated.sequence([
                 Animated.timing(animation, {
-                    toValue: 1,
+                    toValue: .75,
                     duration: 3500,
                     useNativeDriver: true,
                 }),
@@ -341,7 +354,7 @@ const Camera: CameraComponentType = ({
             progress={animation}
             loop={true}
             //autoPlay={false}
-            style={{width: 100, height: 100}}
+            style={{width: 200, height: 200}}
             />
         </TouchableOpacity>
         )
@@ -358,13 +371,13 @@ const Camera: CameraComponentType = ({
                 containerStyle={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
                 visible={true}
             >
-                <View style={{alignItems: "center", justifyContent: 'center'}}>
+                <View style={{alignItems: "center", justifyContent: 'center', paddingTop: 20, paddingBottom: 20}}>
                     <View style={{marginBottom: 10, marginTop: 10}}>
                         <Text style={{color: theme.LabelColor, fontSize: 20}}>{title}</Text>
                         {/* <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text> */}
                     </View>
                     {renderVoiceAnimation()}
-                    <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 14, textAlign: "center"}}>
+                    <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 15, textAlign: "center"}}>
                         {!recording ? 'Press button to start speaking' : 'Press again to stop'}
                     </Text>
                 </View>
