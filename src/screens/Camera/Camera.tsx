@@ -25,7 +25,7 @@ import ImageEditor from "@react-native-community/image-editor";
 import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
 import { Dialog } from 'react-native-ui-lib';
-import Voice from '@react-native-community/voice';
+import Voice, { SpeechResultsEvent } from '@react-native-community/voice';
 import LottieView from "lottie-react-native";
 
 
@@ -34,6 +34,8 @@ const Camera: CameraComponentType = ({
 }): JSX.Element => {
 
     const animation = useRef(new Animated.Value(0)).current;
+    const [step, setStep] = useState('step1');
+    const [recording, setRecording] = useState(false);
     const { brand, category } = useSelector((state: RootState) => state.item);
     const dispatch = useDispatch();
     const isLoading = useSelector((state :RootState) => state.camera.isLoading);
@@ -238,60 +240,89 @@ const Camera: CameraComponentType = ({
             </React.Fragment>
     )};
 
-    // const onStartButtonPress = async () => {
+    const onStartPress = async () => {
+        try {
+            rippleStart()
+            setRecording(true)
+            await Voice.start('en-US');
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    // useEffect(() => {
     //     try {
-    //         await Voice.start('en-US');
+    //         Voice.start('en-US').then().catch((err) => console.log(err));
     //     } catch (e) {
     //         console.log(e)
     //     }
+    // }, [])
+
+    const onStopPress = () => {
+            rippleStop()
+            Voice.stop()
+                .then((res) => {
+                    setRecording(false)
+                    
+                })
+                .catch ((e) => {
+                    console.log(e)
+                })
+    }
+
+    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
+        dispatch(setBrand(e.value[0]))
+    }
+
+    // const previousResults = useRef('');
+
+    // Voice.onSpeechResults = (e) => {
+    // console.log(e)
+    // // Stop the voice recognizer if user stopped speaking
+    // if (previousResults.current === e.value[0]) {
+    //     Voice.stop().then((res) => {
+    //         if (step === 'step1') {
+    //             setStep('step2');
+    //         }
+    //         console.log('speech recognizer stopped')
+    //     }).catch((err) => {
+    //         console.log(err)
+    //     })
+    // } else {
+    //     previousResults.current = e.value[0]
+    //         if (step === 'step1') {
+    //             dispatch(setBrand(e.value[0]))
+    //         }
+    //         else {
+    //             console.log('set category')
+    //             dispatch(setCategory(e.value[0]))
+    //         }
+            
+    //     }
     // }
 
-    useEffect(() => {
-        try {
-            Voice.start('en-US').then().catch((err) => console.log(err));
-        } catch (e) {
-            console.log(e)
-        }
-    }, [])
-
-    const onStopButtonPress = async () => {
-        try {
-            await Voice.stop()
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
-    const previousResults = useRef('');
-
-    Voice.onSpeechResults = async (e) => {
-        console.log(e)
-        // Stop the voice recognizer if user stopped speaking
-        if (previousResults.current === e.value[0]) {
-            try {
-                setTimeout(async () => await Voice.stop(), 1000)
-                console.log('speech recognizer stopped')
-            } catch (e) {
-                console.log(e)
-            }
-        } else {
-            previousResults.current = e.value[0]
-            dispatch(setBrand(e.value[0]))
-        }
-    }
 
     const rippleStart = () => {
-        Animated.timing(animation, {
-            toValue: 1,
-            duration: 10000,
-            useNativeDriver: true,
-        }).start()
-        //setAutoPlay(true)
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(animation, {
+                    toValue: 1,
+                    duration: 3500,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(animation, {
+                    toValue: 0,
+                    duration: 3500,
+                    useNativeDriver: true
+                })
+            ])
+        ).start()
     }
 
     const rippleStop = () => {
         Animated.timing(animation, {
             toValue: 0,
+            duration: 0,
             useNativeDriver: true
         }).start()
     }
@@ -299,16 +330,45 @@ const Camera: CameraComponentType = ({
     const renderVoiceAnimation = () => {
         return (
         <TouchableOpacity
-            onPress={() => onStartButtonPress()}
+            onPress={() => { 
+                !recording
+                ? onStartPress()
+                : onStopPress()
+            }}
         >
             <LottieView 
             source={require('../../assets/animation/voice-lottie.json')}
-            //progress={animation}
+            progress={animation}
             loop={true}
-            autoPlay={true}
+            //autoPlay={false}
             style={{width: 100, height: 100}}
             />
         </TouchableOpacity>
+        )
+    }
+
+    const renderDialog = (title: string, ) => {
+
+        return (
+            <Dialog
+                migrate
+                useSafeArea
+                //key={this.getDialogKey(height)}
+                panDirection={null}
+                containerStyle={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
+                visible={true}
+            >
+                <View style={{alignItems: "center", justifyContent: 'center'}}>
+                    <View style={{marginBottom: 10, marginTop: 10}}>
+                        <Text style={{color: theme.LabelColor, fontSize: 20}}>{title}</Text>
+                        {/* <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text> */}
+                    </View>
+                    {renderVoiceAnimation()}
+                    <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 14, textAlign: "center"}}>
+                        {!recording ? 'Press button to start speaking' : 'Press again to stop'}
+                    </Text>
+                </View>
+            </Dialog>
         )
     }
     
@@ -372,72 +432,10 @@ const Camera: CameraComponentType = ({
             <View style={styles.overlay} />
             {!!canDetectText && renderTextBlocks()}
         </RNCamera>
-        <Dialog
-            migrate
-            useSafeArea
-            //key={this.getDialogKey(height)}
-            panDirection={"up"}
-            containerStyle={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
-            visible={true}
-            //onDismiss={this.hideDialog}
-            //renderPannableHeader={renderPannableHeader}
-            //pannableHeaderProps={this.pannableTitle}
-            //supportedOrientations={this.supportedOrientations}
-        >
-            <View style={{alignItems: "center", justifyContent: 'center'}}>
-                <View style={{marginBottom: 10, marginTop: 10}}>
-                { brand === ''
-                ? <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the brand of this item?</Text>
-                : <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text>
-                }
-                {/* <TouchableOpacity
-                    onPress={() => rippleStart()}
-                >
-                    <Text style={{color: theme.LabelColor, fontSize: 20}}>Recording Start</Text>
-                </TouchableOpacity> */}
-                {/* <TouchableOpacity
-                    onPress={() => onStopButtonPress()}
-                >
-                    
-                    <Text style={{color: theme.LabelColor, fontSize: 20}}>Recording End</Text>
-                </TouchableOpacity> */}
-                </View>
-                {renderVoiceAnimation()}
-                <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 14, textAlign: "center"}}>Press button to start speaking</Text>
-            </View>
-
-        </Dialog>
-        {/* <Modal
-            animationType="fade"
-            transparent={true}
-            visible={true}
-            onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            }}
-        >
-            <View style={[styles.centeredView, {backgroundColor: theme.SystemBackgroundColor} ]}>
-            <View style={[styles.modalView, {backgroundColor: theme.SecondarySystemBackgroundColor}]}>
-                <Text style={[styles.modalText, {color: theme.LabelColor}]}>What is the brand of the item?</Text>
-
-                <TouchableOpacity
-                style={{ ...styles.openButton, backgroundColor: theme.Blue }}
-                onPress={() => {
-                    onStartButtonPress()
-                }}
-                >
-                <Text style={[styles.textStyle, {color: theme.LabelColor}]}>Start Speaking</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                style={{ ...styles.openButton, backgroundColor: theme.Blue }}
-                onPress={() => {
-                    onStopButtonPress()
-                }}
-                >
-                <Text style={[styles.textStyle, {color: theme.LabelColor}]}>Stop Speaking</Text>
-                </TouchableOpacity>
-            </View>
-            </View>
-        </Modal> */}
+        {step === 'step1'
+        ? renderDialog('What is the brand of this item?')
+        : renderDialog('What is the category of this item?')
+        }
     </SafeAreaView>
     )
 }
