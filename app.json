@@ -1,4 +1,24 @@
 {
   "name": "FoodIt",
-  "displayName": "FoodIt"
+  "displayName": "FoodIt",
+  "slug": "YOUR_SLUG_HERE",
+  "privacy": "unlisted",
+  "sdkVersion": "32.0.0",
+  "platforms": [
+      "ios",
+      "android"
+  ],
+  "version": "1.0.0",
+  "orientation": "portrait",
+  "icon": "./assets/app-icon/icon-1024.png",
+  "updates": {
+    "fallbackToCacheTimeout": 0
+  },
+  "assetBundlePatterns": [
+    "**/*"
+  ],
+  "ios": {
+    "supportsTablet": false,
+    "bundleIdentifier": "org.reactjs.native.example.FoodIt"
+  }
 }

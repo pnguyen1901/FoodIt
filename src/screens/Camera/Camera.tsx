@@ -9,7 +9,7 @@ import { StyleSheet,
         Dimensions,
         Image,
         Animated,
-        TouchableOpacityBase
+        Modal
         } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
@@ -20,11 +20,10 @@ import vision from '@react-native-firebase/ml-vision';
 import { RootState } from '../../store/rootReducer';
 import { Navigation } from 'react-native-navigation';
 require('datejs'); 
-import { useNavigationButtonPress } from 'react-native-navigation-hooks';
+import { useNavigationButtonPress, useNavigationBottomTabSelect } from 'react-native-navigation-hooks';
 import ImageEditor from "@react-native-community/image-editor";
-import { themes } from '../../components/Theme/Theme';
+import { themes, FadeInView } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
-import { Dialog } from 'react-native-ui-lib';
 import Voice, { SpeechResultsEvent } from '@react-native-community/voice';
 import LottieView from "lottie-react-native";
 
@@ -36,7 +35,7 @@ const Camera: CameraComponentType = ({
     const animation = useRef(new Animated.Value(0)).current;
     const [step, setStep] = useState('step1');
     const [recording, setRecording] = useState(false);
-    const { brand, category } = useSelector((state: RootState) => state.item);
+    const [showDialog, setShowDialog] = useState(true);
     const dispatch = useDispatch();
     const isLoading = useSelector((state :RootState) => state.camera.isLoading);
     const colorScheme = useColorScheme();
@@ -49,7 +48,6 @@ const Camera: CameraComponentType = ({
     const [depth, setDepth] = useState(0);
     const [canDetectText, setCanDetectText] = useState(false);
     const [textBlocks, setTextBlocks] = useState([]);
-    const [speech, setSpeech] = useState([]);
     let { width } = Dimensions.get('window');
     const maskLength = (width * 90)/100;
 
@@ -107,6 +105,11 @@ const Camera: CameraComponentType = ({
         });
     } 
 
+    useNavigationBottomTabSelect((componentId) => {
+        if (componentId.selectedTabIndex === 1) {
+            setShowDialog(true)
+        }
+    })
     
     useEffect(() => {
         nodejs.channel.addListener('message', 
@@ -134,7 +137,6 @@ const Camera: CameraComponentType = ({
                     setTimeout(() => {
                         openAddItemModal()
                     }, 500)
-
                 }
             },
         )
@@ -250,15 +252,12 @@ const Camera: CameraComponentType = ({
         }
     }
 
-    // useEffect(() => {
-    //     try {
-    //         Voice.start('en-US').then().catch((err) => console.log(err));
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }, [])
 
-    const onStopPress = () => {
+    const onContinuePress = () => {
+            if (step === 'step2') {
+                setShowDialog(false)
+            }
+        
             rippleStop()
             Voice.stop()
                 .then((res) => {
@@ -274,7 +273,9 @@ const Camera: CameraComponentType = ({
     }
 
     useEffect(() => {
+
         if (step === 'step1') {
+
             Voice.onSpeechResults = (e: SpeechResultsEvent) => {
                     dispatch(setBrand(e.value[0]))
                 }
@@ -344,9 +345,7 @@ const Camera: CameraComponentType = ({
         return (
         <TouchableOpacity
             onPress={() => { 
-                !recording
-                ? onStartPress()
-                : onStopPress()
+                onStartPress()
             }}
         >
             <LottieView 
@@ -363,25 +362,42 @@ const Camera: CameraComponentType = ({
     const renderDialog = (title: string, ) => {
 
         return (
-            <Dialog
-                migrate
-                useSafeArea
-                //key={this.getDialogKey(height)}
-                panDirection={null}
-                containerStyle={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
-                visible={true}
-            >
-                <View style={{alignItems: "center", justifyContent: 'center', paddingTop: 20, paddingBottom: 20}}>
-                    <View style={{marginBottom: 10, marginTop: 10}}>
-                        <Text style={{color: theme.LabelColor, fontSize: 20}}>{title}</Text>
-                        {/* <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text> */}
+            <Modal
+                transparent={true}
+                visible={showDialog}
+                animationType="fade"
+                >
+                <View
+                    style={styles.centeredView}
+                >
+                    <View
+                        style={[styles.roundedDialog, {backgroundColor: theme.SecondarySystemBackgroundColor}]}
+                    >
+                        <View style={{alignItems: "center", justifyContent: 'center', paddingTop: 20, paddingBottom: 5}}>
+                            <View style={{marginBottom: 10, marginTop: 10}}>
+                                <Text style={{color: theme.LabelColor, fontSize: 20}}>{title}</Text>
+                                {/* <Text style={{color: theme.LabelColor, fontSize: 20}}>What is the category of this item?</Text> */}
+                            </View>
+                            {renderVoiceAnimation()}
+                            
+                            {!recording 
+                            ? <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 15, textAlign: "center"}}>Press button to start speaking</Text>
+                            :   <TouchableOpacity
+                                    onPress={() => onContinuePress()}
+                                > 
+                                    <Text style={{marginTop: 10, color: theme.Blue, fontSize: 18, textAlign: "center"}}>
+                                        Continue
+                                    </Text>
+                                </TouchableOpacity>   
+                            }
+                            <TouchableOpacity onPress={() => setShowDialog(false)}>
+                                <Text style={{marginTop: 20, color: theme.RedColor, fontSize: 18, textAlign: "center"}}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    {renderVoiceAnimation()}
-                    <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 15, textAlign: "center"}}>
-                        {!recording ? 'Press button to start speaking' : 'Press again to stop'}
-                    </Text>
                 </View>
-            </Dialog>
+            </Modal>
+            // </Dialog>
         )
     }
     
@@ -537,6 +553,12 @@ const styles = StyleSheet.create({
     contentRow: {
         flexDirection: "row",
         marginTop: 16
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
     },
     roundedDialog: {
         marginBottom: 30,

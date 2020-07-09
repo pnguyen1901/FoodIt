@@ -15,6 +15,8 @@ import {
 import { Navigation } from 'react-native-navigation';
 import { firebase } from '@react-native-firebase/auth';
 import { setLoginRoot } from '../../App';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/rootReducer';
 
 const styles = StyleSheet.create({
     container: {
@@ -37,6 +39,7 @@ const Account: AccountComponentType = ({
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+    const { name, email } = useSelector((state: RootState) => state.user); 
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
@@ -73,13 +76,13 @@ const Account: AccountComponentType = ({
             <CellGroup header={'name'} theme={theme}>
                 <Cell 
                     textInput={true}
-                    value={'Phat Nguyen'}
+                    value={name}
                 />
             </CellGroup>
             <CellGroup header={'email'} theme={theme}>
                 <Cell 
                     textInput={true}
-                    value={'phatnguyen1901@gmail.com'}
+                    value={email}
                 />
             </CellGroup>
             <CellGroup header={'subcription'} theme={theme}>

@@ -189,6 +189,7 @@
 			);
 			name = FoodIt;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		2C9385988D00EC4A7F0BD638 /* Pods */ = {
 			isa = PBXGroup;

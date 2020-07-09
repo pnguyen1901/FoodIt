@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import CellIcon from '../../components/cell/CellIcon';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useColorScheme, ColorSchemeName } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { ACCOUNT } from '../../screens';
+import { firebase } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { setName, setEmail } from '../../store/user/actions';
+import { RootState } from '../../store/rootReducer';
 
 const styles = StyleSheet.create({
     container: {
@@ -37,6 +40,8 @@ const Settings: SettingsComponentType = ({
     }
     const colorScheme: ColorSchemeName = useColorScheme();
     const theme = themes[colorScheme];
+    const dispatch = useDispatch()
+    const { name } = useSelector((state: RootState) => state.user);
 
     const onItemPressed = (name: string) => {
 
@@ -56,6 +61,17 @@ const Settings: SettingsComponentType = ({
         });
     })
 
+    useEffect(() => {
+        firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser?.uid)
+        .get()
+        .then((doc) => {
+            dispatch(setName(doc.data().user_name))
+            dispatch(setEmail(doc.data().user_email))
+        }) 
+    }, [])
+
     return (
         <SafeAreaView style={[styles.container, 
                             { backgroundColor: theme.GroupedBackgroundColor }]}>
@@ -67,7 +83,7 @@ const Settings: SettingsComponentType = ({
                     backgroundColor={theme.Grey}
                     userProfile={true}
                     />}
-                    title="Phat Nguyen"
+                    title={name ? name : 'User Name'}
                     subtitle="Profile, Membership"
                     onPress={() => onItemPressed(ACCOUNT)}
                     userProfile={true}

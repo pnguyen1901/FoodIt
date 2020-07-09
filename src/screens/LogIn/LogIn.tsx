@@ -107,35 +107,6 @@ const LogIn: LogInComponentType = ({
     setPasswordVisible(!passwordVisible);
   };
 
-  // const openRegistrationForm = (user: userResponseType, userId: string | undefined, signInMethod: string) => {
-  //   const user_name =  signInMethod === 'Facebook' 
-  //   ? user.name 
-  //   : ( signInMethod === 'Google' 
-  //       ? user.familyName + ' ' + user.givenName 
-  //       : user.fullName);
-
-  //   const user_email = user.email;
-    
-  //   dispatch(setName(user_name))
-  //   dispatch(setEmail(user_email))
-
-  //   setTimeout(() => { Navigation.showModal({
-  //     stack: {
-  //       children: [
-  //         {
-  //           component: {
-  //             name: REGISTRATION,
-  //             id: 'registration',
-  //             passProps: {
-  //               userId: userId,
-  //             }
-  //           }
-  //         }
-  //       ]
-  //     }
-  //   })
-  //   }, 1000 )
-  // }
 
   function createNewUser(user: UserType, signInMethod: string) {
     return dispatch => {
@@ -179,6 +150,7 @@ const LogIn: LogInComponentType = ({
           } else {
               console.log('User already existed.');
               requestUserPermission()
+              setMainRoot();
           }
         })
         .catch(err => {
@@ -192,7 +164,7 @@ const LogIn: LogInComponentType = ({
     const appleAuthRequestResponse = await appleAuth.performRequest({
       requestedOperation: AppleAuthRequestOperation.LOGIN,
       requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
-    });
+    })
   
     // Ensure Apple returned a user identityToken
     if (!appleAuthRequestResponse.identityToken) {
