@@ -197,7 +197,8 @@ const LogIn: LogInComponentType = ({
     // Sign-in the user with the credential
     return auth().signInWithCredential(googleCredential)
                 .then(() =>  {
-                  createNewUser(user, 'Google');
+                  console.log('signing user');
+                  dispatch(createNewUser(user, 'Google'));
                   //setMainRoot();
                 })
                 .catch(err => {

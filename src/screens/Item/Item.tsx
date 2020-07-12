@@ -22,7 +22,7 @@ import { themes } from '../../components/Theme/Theme';
 import { RootState } from '../../store/rootReducer';
 import { setExpDate, setBrand, setCategory, setNotes, toggleActionSheet } from '../../store/item/actions';
 import { REMINDER } from '../../screens';
-import RNCalendarEvents from 'react-native-calendar-events/index.ios';
+//mport RNCalendarEvents from 'react-native-calendar-events/index.ios';
 import { AlertOptionType } from '../Item/Reminder';
 
 
@@ -114,25 +114,25 @@ const Item: ItemComponentType = ({
     };
 
 
-    const saveItem = (eventId: string, expiration_date: Date, alert: AlertOptionType, notes: string, id: string): void => {
+    const saveItem = (eventId: string, expiration_date: Date, alert: AlertOptionType, notes: string, id: string | undefined): void => {
         // Remove existing event and create a new event
         //RNCalendarEvents.removeEvent(eventId)
-        console.log(expiration_date);
-        expiration_date.setHours(10,0o0,0o0,0o0)
-        const endDate = new Date(expiration_date.getTime());
-        const alarm = new Date(expiration_date.getTime());
-        console.log(expiration_date);
-        RNCalendarEvents.saveEvent(brand + ' ' + category + ' expires soon!', {
-            id: eventId,
-            startDate: expiration_date.toISOString(),
-            endDate: endDate.addHours(1).toISOString(),
-            alarms: [{
-                date: new Date(alarm.setDate(alarm.getDate() - alert.value)).toISOString()
-            }],
-            notes: notes
-        }).then((eventId: string) => {
-            console.log(`exp date after being manipulated: ${expiration_date}`) 
-            console.log(eventId)
+        // console.log(expiration_date);
+        // expiration_date.setHours(10,0o0,0o0,0o0)
+        // const endDate = new Date(expiration_date.getTime());
+        // const alarm = new Date(expiration_date.getTime());
+        // console.log(expiration_date);
+        // RNCalendarEvents.saveEvent(brand + ' ' + category + ' expires soon!', {
+        //     id: eventId,
+        //     startDate: expiration_date.toISOString(),
+        //     endDate: endDate.addHours(1).toISOString(),
+        //     alarms: [{
+        //         date: new Date(alarm.setDate(alarm.getDate() - alert.value)).toISOString()
+        //     }],
+        //     notes: notes
+        // }).then((eventId: string) => {
+        //     console.log(`exp date after being manipulated: ${expiration_date}`) 
+        //     console.log(eventId)
             firestore().collection('food_items').doc(id)
                 .update({
                     brand: brand,
@@ -140,7 +140,7 @@ const Item: ItemComponentType = ({
                     expiration_date: expiration_date,
                     notes: notes,
                     alert: alert,
-                    eventId: eventId
+                    //eventId: eventId
                 })
                 .then((res) => {
                     console.log("Document successfully updated!");
@@ -150,37 +150,37 @@ const Item: ItemComponentType = ({
                     // The document probably doesn't exist.
                     console.error("Error updating document: ", err);
                 })
-        })
-        .catch((err: string) => console.log(err));
+        // })
+        // .catch((err: string) => console.log(err));
     }
 
     const handleSaveItem = () => {
-            RNCalendarEvents.authorizationStatus()
-                    .then((status: string) => {
-                        if (status === 'authorized') {
+            // RNCalendarEvents.authorizationStatus()
+            //         .then((status: string) => {
+            //             if (status === 'authorized') {
                             if (expiration_date.hasOwnProperty("_seconds")) {
                                 saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
                             }
                             else {
                                 saveItem(eventId , expiration_date, alert, notes, id);
                             }
-                        } else {
-                            RNCalendarEvents.authorizeEventStore()
-                                .then((status: string) => {
-                                    if (expiration_date.hasOwnProperty("_seconds")) {
-                                        saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
-                                    }
-                                    else {
-                                        saveItem(eventId , expiration_date, alert, notes, id);
-                                    }
-                                })
-                                .catch((err: string) => {
-                                    Alert.alert(err);
-                                })
-                        }
-                }).catch((err: string) => {
-                    Alert.alert(err);
-                })
+                //         } else {
+                //             RNCalendarEvents.authorizeEventStore()
+                //                 .then((status: string) => {
+                //                     if (expiration_date.hasOwnProperty("_seconds")) {
+                //                         saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
+                //                     }
+                //                     else {
+                //                         saveItem(eventId , expiration_date, alert, notes, id);
+                //                     }
+                //                 })
+                //                 .catch((err: string) => {
+                //                     Alert.alert(err);
+                //                 })
+                //         }
+                // }).catch((err: string) => {
+                //     Alert.alert(err);
+                // })
     };
 
 

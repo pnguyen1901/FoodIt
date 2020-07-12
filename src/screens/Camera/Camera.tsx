@@ -116,6 +116,7 @@ const Camera: CameraComponentType = ({
             (msg) => {
                 if (msg === null) {
                     dispatch(loadingDone());
+                    dispatch(resetForm()) // reset the form
                     setTimeout(() => {
                         Alert.alert('Scanning new item', 'Encountered an issue', [
                             {
@@ -132,7 +133,7 @@ const Camera: CameraComponentType = ({
                 } else {
                     console.log('echo message: ' + msg);
                     dispatch(loadingDone());
-                    dispatch(resetForm())
+                    dispatch(resetForm()) // reset the form
                     dispatch(setExpDate(new Date (Date.parse(msg))))
                     setTimeout(() => {
                         openAddItemModal()
@@ -286,34 +287,6 @@ const Camera: CameraComponentType = ({
             }
         }
     }, [recording])
-
-
-    // const previousResults = useRef('');
-
-    // Voice.onSpeechResults = (e) => {
-    // console.log(e)
-    // // Stop the voice recognizer if user stopped speaking
-    // if (previousResults.current === e.value[0]) {
-    //     Voice.stop().then((res) => {
-    //         if (step === 'step1') {
-    //             setStep('step2');
-    //         }
-    //         console.log('speech recognizer stopped')
-    //     }).catch((err) => {
-    //         console.log(err)
-    //     })
-    // } else {
-    //     previousResults.current = e.value[0]
-    //         if (step === 'step1') {
-    //             dispatch(setBrand(e.value[0]))
-    //         }
-    //         else {
-    //             console.log('set category')
-    //             dispatch(setCategory(e.value[0]))
-    //         }
-            
-    //     }
-    // }
 
 
     const rippleStart = () => {
