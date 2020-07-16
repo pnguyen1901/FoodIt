@@ -166,6 +166,7 @@ const LogIn: LogInComponentType = ({
       requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
     })
   
+    console.log(appleAuthRequestResponse)
     // Ensure Apple returned a user identityToken
     if (!appleAuthRequestResponse.identityToken) {
       throw 'Apple Sign-In failed - no identify token returned';
@@ -174,11 +175,12 @@ const LogIn: LogInComponentType = ({
     // Create a Firebase credential from the response
     const { identityToken, nonce } = appleAuthRequestResponse;
     const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+    console.log('Apple Credentials: ', appleCredential);
   
     // Sign the user in with the credential
     return auth().signInWithCredential(appleCredential)
               .then(() => {
-                createNewUser(appleAuthRequestResponse, 'Apple');
+                dispatch(createNewUser(appleAuthRequestResponse, 'Apple'));
                 //setMainRoot();
               })
               .catch(err => {
@@ -239,6 +241,24 @@ const LogIn: LogInComponentType = ({
       .catch(e => {
         Alert.alert(e);
       })
+  }
+
+  const onSignUpButtonPress = () => {
+    Navigation.showModal({
+      stack: {
+        children: [
+          {
+            component: {
+              name: REGISTRATION,
+              id: 'registration',
+              passProps: {
+                signUpWithEmail: true
+              }
+            }
+          }
+        ]
+      }
+    })
   }
 
   useEffect(() => {
@@ -366,7 +386,9 @@ const LogIn: LogInComponentType = ({
               </TouchableOpacity>          
             </View>
             <View style={{marginTop: 20}}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onSignUpButtonPress()}
+              >
                 <Text style={{color: theme.LinkColor, textAlign: 'center', fontSize: 16}}>
                   Don't Have An Account? Sign Up
                 </Text>

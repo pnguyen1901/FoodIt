@@ -10,6 +10,7 @@ import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { useDispatch } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { setPasswordVisibilty } from '../../store/user/actions';
 
 interface Props {
   id?: any;
@@ -127,7 +128,8 @@ export default function Cell (props) {
         const { bordered = true, index, more, 
             radioButton, selected, disabled, onPress, onPressIn, 
             onLongPress, testID, textInput, placeholder,
-            value, onInputChange, multiline, height, primarySystemBackgroundColor, size} = props;
+            value, secureTextEntry, onInputChange, multiline, showPassword,
+            height, primarySystemBackgroundColor, size, textContentType, autoCompleteType, password } = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
@@ -169,6 +171,9 @@ export default function Cell (props) {
                         clearButtonMode='while-editing'
                         multiline={multiline}
                         value={value}
+                        secureTextEntry={secureTextEntry}
+                        textContentType={textContentType}
+                        autoCompleteType={autoCompleteType}
                         onChangeText={(text) => {
                             dispatch(onInputChange(text))
                         }}
@@ -187,6 +192,12 @@ export default function Cell (props) {
                 }
                 {more && <Image source={require('../../assets/icons/16/cell-chevron.png')} 
                     style={[styles.more, {tintColor: theme.SystemFillColor}]} />}
+                {password ? 
+                    secureTextEntry 
+                    ? <FontAwesome5 onPress={() => dispatch(setPasswordVisibilty())} color={theme.LabelColor} size={16} name="eye"/>
+                    : <FontAwesome5 onPress={() => dispatch(setPasswordVisibilty())} color={theme.LabelColor} size={16} name="eye-slash"/>
+                    : null
+                }
             </View>
             </View>
         </View>

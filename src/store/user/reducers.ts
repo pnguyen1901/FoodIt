@@ -3,6 +3,8 @@ import {
     SET_NAME,
     SET_EMAIL,
     SET_PHONE_NUMBER,
+    SET_PASSWORD,
+    PASSWORD_VISIBLE,
     User,
     UserActionTypes
 } from './types';
@@ -11,7 +13,9 @@ const initialState: User = {
     contacts: [],
     name: '',
     email: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    password: '',
+    showPassword: false
 }
 
 const userReducer = (
@@ -38,10 +42,22 @@ const userReducer = (
                 email: action.payload
             }
 
+        case PASSWORD_VISIBLE:
+            return {
+                ...state,
+                showPassword: !state.showPassword
+            }
+
         case SET_PHONE_NUMBER:
             return {
                 ...state,
                 phoneNumber: action.payload
+            }
+
+        case SET_PASSWORD:
+            return {
+                ...state,
+                password: action.payload
             }
 
         default:

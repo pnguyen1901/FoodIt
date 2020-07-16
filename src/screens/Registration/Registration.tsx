@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, 
     TouchableOpacity,
     TouchableWithoutFeedback, View, Keyboard, StyleSheet, Text } from 'react-native';
@@ -7,39 +7,66 @@ import CellGroup from '../../components/cell/CellGroup';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import firestore from '@react-native-firebase/firestore';
+import { firebase } from '@react-native-firebase/auth';
 import { requestUserPermission } from '../LogIn/LogIn';
-import { setEmail, setName, setPhoneNumber } from '../../store/user/actions';
+import { setEmail, setPassword, setName, setPhoneNumber } from '../../store/user/actions';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
 import { Toast } from 'react-native-ui-lib';
 import { setMainRoot } from '../../App';
+import { useDispatch } from 'react-redux';
 
 const Registration: RegistrationComponentType = (
     props
 ) => {
 
-    const { userId } = props
+    var userId = props.userId;
+    const signUpWithEmail = props.signUpWithEmail;
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
-    const { name, email, phoneNumber } = useSelector((state: RootState) => state.user);
+    const { name, email, phoneNumber, password, showPassword } = useSelector((state: RootState) => state.user);
+    const dispatch = useDispatch();
 
-    const registerUser = () => {
-        firestore().collection('users').doc(userId).set({
-            user_id : userId,
-            // getting user name from response object is slightly different between Facebook, Google and Apple.
-            user_name : name,
-            user_email : email,
-            user_phonenumber: phoneNumber,
-            tokens: []
-        })
-        .then(() => {
-            console.log("Document successfully written!");
-            requestUserPermission()
-            setMainRoot()
-        })
-        .catch((error:string) => {
-            console.log("Error writing document: ", error);
-        })
+    const onHandleUserWithEmail = () => {
+        return dispatch => {
+            return firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(() => {
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .then(() => {
+                        console.log('User signed in')
+                        userId = firebase.auth().currentUser?.uid;
+                        dispatch(registerUser(userId))
+                    })
+                    .catch((err) => console.log(err))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        }
+    }
+
+    const registerUser = (userId) => {
+        
+        return dispatch => {
+            return firestore().collection('users').doc(userId).set({
+                user_id : userId,
+                // getting user name from response object is slightly different between Facebook, Google and Apple.
+                user_name : name,
+                user_email : email,
+                user_phonenumber: phoneNumber,
+                tokens: []
+            })
+            .then(() => {
+                console.log("Document successfully written!");
+                requestUserPermission()
+                setMainRoot()
+            })
+            .catch((error:string) => {
+                console.log("Error writing document: ", error);
+            })
+        }
+        
+
     }
 
     return (
@@ -47,24 +74,44 @@ const Registration: RegistrationComponentType = (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.layout}>
                     <View>
-                        <CellGroup header="Name" inputValue={name} required={true} footer={true} theme={theme}>
-                            <Cell 
-                                textInput={true}
-                                value={name}
-                                onInputChange={setName}
-                            />
-                        </CellGroup>
                         <CellGroup header="Email" inputValue={email} required={true} footer={true} theme={theme}>
                             <Cell 
                                 textInput={true}
                                 value={email}
                                 onInputChange={setEmail}
+                                textContentType={'emailAddress'}
+                                autoCompleteType={'email'}
+                            />
+                        </CellGroup>
+                        { signUpWithEmail ?
+                        <CellGroup header="Password" inputValue={password} required={true} footer={true} theme={theme}>
+                            <Cell 
+                                textInput={true}
+                                secureTextEntry={!showPassword}
+                                password={true}
+                                value={password}
+                                textContentType={'newPassword'}
+                                autoCompleteType={'password'}
+                                onInputChange={setPassword}
+                            />
+                        </CellGroup>
+                        : null
+                        }
+                        <CellGroup header="Name" inputValue={name} required={true} footer={true} theme={theme}>
+                            <Cell 
+                                textInput={true}
+                                value={name}
+                                onInputChange={setName}
+                                textContentType={'name'}
+                                autoCompleteType={'name'}
                             />
                         </CellGroup>
                         <CellGroup header="Phone Number" inputValue={phoneNumber} required={true} footer={true} theme={theme}>
                             <Cell 
                                 textInput={true}
                                 value={phoneNumber}
+                                textContentType={'telephoneNumber'}
+                                autoCompleteType={'tel'}
                                 onInputChange={setPhoneNumber}
                             />
                         </CellGroup>
@@ -77,7 +124,9 @@ const Registration: RegistrationComponentType = (
                     >
                         <View>
                             <TouchableOpacity 
-                                onPress={() => registerUser()}
+                                onPress={() => { 
+                                    signUpWithEmail ? dispatch(onHandleUserWithEmail()) : dispatch(registerUser(userId))
+                                }}
                                 style={[styles.continueButton, {backgroundColor: theme.SecondarySystemBackgroundColor}]}>
                                 <Text style={[styles.continueButtonText, {color: theme.Blue}]}>Continue</Text>
                             </TouchableOpacity>

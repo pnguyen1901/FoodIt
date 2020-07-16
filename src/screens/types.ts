@@ -44,5 +44,6 @@ type InviteContactsComponentType = NavigationComponent<InviteContactsComponentPr
 
 interface RegistrationComponentProps { 
     userId: string,
+    signUpWithEmail: boolean
 }
 type RegistrationComponentType = NavigationComponent<RegistrationComponentProps>;
