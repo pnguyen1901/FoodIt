@@ -36,6 +36,9 @@ type SettingsComponentType = NavigationComponent<SettingsComponentProps>;
 interface AccountComponentProps { }
 type AccountComponentType = NavigationComponent<AccountComponentProps>;
 
+interface AboutComponentProps { }
+type AboutComponentType = NavigationComponent<AboutComponentProps>;
+
 interface ShareItemComponentProps { }
 type ShareItemComponentType = NavigationComponent<ShareItemComponentProps>;
 

@@ -8,7 +8,9 @@ import {
     Alert,
     Image,
     StyleSheet,
-    TouchableHighlight
+    TouchableHighlight,
+    View as RNView,
+    Text as RNText
 } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -393,19 +395,19 @@ const Items: ItemsComponentType = ({
                 enabled
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
-                <FadeInView>
-                { data.length !== 0
-                ? <FlatList
-                  data={data}
-                  renderItem={({item, index}) => renderRow(item, index)}
-                  keyExtractor={keyExtractor}
-                />
-                : <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{color: theme.PlaceholderTextColor, fontSize: 20}}>No Items</Text>
-                </View>
-                
-                }
-                </FadeInView>
+              { data.length !== 0
+                ? <FadeInView>
+                    <FlatList
+                      data={data}
+                      renderItem={({item, index}) => renderRow(item, index)}
+                      keyExtractor={keyExtractor}
+                    />
+                  </FadeInView>
+                : <RNView style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <RNText style={{color: theme.PlaceholderTextColor, fontSize: 20}}>No Items.</RNText>
+                    <RNText style={{color: theme.PlaceholderTextColor, fontSize: 18}}>Maybe it's time for grocery shopping.</RNText>
+                </RNView>
+              }
             </KeyboardAvoidingView>
       </SafeAreaView>
     );

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, Linking, Alert } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import CellIcon from '../../components/cell/CellIcon';
 import { useColorScheme, ColorSchemeName } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
-import { ACCOUNT } from '../../screens';
+import { ACCOUNT, ABOUT } from '../../screens';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { setName, setEmail } from '../../store/user/actions';
@@ -28,6 +28,17 @@ const styles = StyleSheet.create({
     }
 })
 
+    const openURL = async (url: string) => {
+        // Checking if the link is supported for links with custom URL scheme.
+        const supported = await Linking.canOpenURL(url)
+
+        if (supported) {
+            await Linking.openURL(url);
+        } else {
+            Alert.alert("Can't open this link. Pleas try again.")
+        }
+
+    }
 
 const Settings: SettingsComponentType = ({
     componentId,
@@ -43,11 +54,19 @@ const Settings: SettingsComponentType = ({
     const dispatch = useDispatch()
     const { name } = useSelector((state: RootState) => state.user);
 
-    const onItemPressed = (name: string) => {
+    const onProfilePressed = (name: string) => {
 
         Navigation.push(componentId, {
             component: {
                 name: name
+            }
+        })
+    }
+
+    const onAboutPressed = () => {
+        Navigation.push(componentId, {
+            component: {
+                name: ABOUT
             }
         })
     }
@@ -85,7 +104,7 @@ const Settings: SettingsComponentType = ({
                     />}
                     title={name ? name : 'User Name'}
                     subtitle="Profile, Membership"
-                    onPress={() => onItemPressed(ACCOUNT)}
+                    onPress={() => onProfilePressed(ACCOUNT)}
                     userProfile={true}
                     more={true}
                 />
@@ -111,7 +130,7 @@ const Settings: SettingsComponentType = ({
                     size={22}
                     />}
                     more={true}
-                    onPress={'this.onAboutPress'}
+                    onPress={onAboutPressed}
                 />
                 <Cell
                     title="Rate this app"
@@ -124,13 +143,13 @@ const Settings: SettingsComponentType = ({
                     more={true}
                 />
                 <Cell
-                    title="Refer a friend"
+                    title="Privacy Policy"
                     left={<CellIcon
-                    source={require('../../assets/icons/32/submissions.png')}
+                    source={require('../../assets/icons/32/privacy-filled.png')}
                     backgroundColor={theme.Green}
                     size={22}
                     />}
-                    onPress={'this.onRatePress'}
+                    onPress={() => openURL('https://www.iubenda.com/privacy-policy/79904545')}
                     more={true}
                 />
             </CellGroup>
