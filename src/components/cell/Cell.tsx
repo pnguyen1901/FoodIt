@@ -1,40 +1,36 @@
 import React, { useState, } from 'react';
 import { View, Text, TouchableHighlight, Image, TextInput} from 'react-native';
-// import { theme } from 'styles';
-// import { observer, Observer } from 'mobx-react';
-// import { observable } from 'mobx';
-// import { autobind } from 'core-decorators';
-// import UI from 'stores/UI';
 import styles from './CellStyles';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { useDispatch } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { setPasswordVisibilty } from '../../store/user/actions';
+import { GestureHandlerGestureEvent, GestureHandlerProperties } from 'react-native-gesture-handler';
 
 interface Props {
-  id?: any;
-  key?: string;
-  index?: number;
+    id?: any;
+    key?: string;
+    index?: number;
 
-  title?: React.ReactNode;
-  subtitle?: React.ReactNode;
-  value?: React.ReactNode;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
+    title?: React.ReactNode;
+    subtitle?: React.ReactNode;
+    value?: React.ReactNode;
+    left?: React.ReactNode;
+    right?: React.ReactNode;
 
-  bordered?: boolean;
-  more?: boolean;
-  selected?: boolean;
+    bordered?: boolean;
+    more?: boolean;
+    selected?: boolean;
 
-  onPress?: (GestureResponderEvent, Props) => void;
-  onPressIn?: (GestureResponderEvent, Props) => void;
-  onLongPress?: (GestureResponderEvent, Props) => void;
-  disabled?: boolean;
-  numberOfLines?: number;
+    onPress?: (GestureResponderEvent: GestureHandlerGestureEvent, Props: GestureHandlerProperties) => void;
+    onPressIn?: (GestureResponderEvent: GestureHandlerGestureEvent, Props: GestureHandlerProperties) => void;
+    onLongPress?: (GestureResponderEvent: GestureHandlerGestureEvent, Props: GestureHandlerProperties) => void;
+    disabled?: boolean;
+    numberOfLines?: number;
 
-  testID?: string;
-  item?: any;
+    testID?: string;
+    item?: any;
 }
 
 
@@ -129,7 +125,8 @@ export default function Cell (props) {
             radioButton, selected, disabled, onPress, onPressIn, 
             onLongPress, testID, textInput, placeholder,
             value, secureTextEntry, onInputChange, multiline, showPassword,
-            height, primarySystemBackgroundColor, size, textContentType, autoCompleteType, password } = props;
+            height, primarySystemBackgroundColor, size, textContentType, 
+            autoCompleteType, password, autoCapitalize } = props;
         const border = bordered && (typeof index === 'undefined' || index > 0);
         const isRight = selected || more || props.value || props.right;
 
@@ -137,7 +134,7 @@ export default function Cell (props) {
 
     return (
         <TouchableHighlight
-        onPress={onPress && onPress}
+        onPress={onPress && onPress }
         onPressIn={onPressIn && onPressIn}
         onLongPress={onLongPress && onLongPress}
         underlayColor="transparent"
@@ -177,6 +174,8 @@ export default function Cell (props) {
                         onChangeText={(text) => {
                             dispatch(onInputChange(text))
                         }}
+                        autoCapitalize={autoCapitalize}
+                        onKeyPress={onPress}
                         />}
             </View>
             <View style={styles.right}>

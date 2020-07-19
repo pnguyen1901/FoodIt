@@ -81,6 +81,7 @@ const Registration: RegistrationComponentType = (
                                 onInputChange={setEmail}
                                 textContentType={'emailAddress'}
                                 autoCompleteType={'email'}
+                                autoCapitalize={'none'}
                             />
                         </CellGroup>
                         { signUpWithEmail ?
@@ -93,6 +94,7 @@ const Registration: RegistrationComponentType = (
                                 textContentType={'newPassword'}
                                 autoCompleteType={'password'}
                                 onInputChange={setPassword}
+                                autoCapitalize={'none'}
                             />
                         </CellGroup>
                         : null
@@ -104,6 +106,7 @@ const Registration: RegistrationComponentType = (
                                 onInputChange={setName}
                                 textContentType={'name'}
                                 autoCompleteType={'name'}
+                                autoCapitalize={'words'}
                             />
                         </CellGroup>
                         <CellGroup header="Phone Number" inputValue={phoneNumber} required={true} footer={true} theme={theme}>

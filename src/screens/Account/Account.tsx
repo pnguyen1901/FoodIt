@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
-import { LOGIN } from '../../screens';
 import { useColorScheme } from 'react-native-appearance';
 import { themes } from '../../components/Theme/Theme';
 import { 
@@ -14,9 +13,12 @@ import {
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import { firebase } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { setLoginRoot } from '../../App';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
+import { setName, setEmail } from '../../store/user/actions';
+import { useNavigationButtonPress } from 'react-native-navigation-hooks';
 
 const styles = StyleSheet.create({
     container: {
@@ -28,9 +30,6 @@ const styles = StyleSheet.create({
     }
 })
 
-const DoneButton = () => (
-    <Text style={styles.doneButton}>Done</Text>
-)
 
 const Account: AccountComponentType = ({
     componentId
@@ -40,6 +39,7 @@ const Account: AccountComponentType = ({
     const theme = themes[colorScheme];
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
     const { name, email } = useSelector((state: RootState) => state.user); 
+    const dispatch = useDispatch();
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {
@@ -62,12 +62,58 @@ const Account: AccountComponentType = ({
 
     const SignOut = () : void => {
         firebase.auth().signOut().then(() => {
-          // dispatch(setLoggedIn(false));
+            dispatch(setEmail(''));
+            dispatch(setName(''));
             setLoginRoot();
         }).catch((err) => {
             Alert.alert(err);
         })
     }
+
+    const handleSave = () => {
+        const userId = firebase.auth().currentUser?.uid;
+        
+        firestore()
+            .collection('users')
+            .doc(userId)
+            .update({
+                user_name: name,
+                user_email: email
+            })
+    }
+
+    const onEditingMode = () => {
+        console.log('editing')
+        Navigation.mergeOptions(componentId, {
+            topBar: {
+                leftButtons: [
+                    { 
+                        id: 'cancel',
+                        text: 'Cancel'
+                    }
+                ],
+                rightButtons: [{
+                    id: 'save',
+                    text: 'Save'
+                }]
+            }
+        })
+    }
+
+
+    if (name === '' || email === '') {
+        Navigation.mergeOptions(componentId, {
+            topBar: {
+                rightButtons: []
+            }
+        })
+    }
+
+    useNavigationButtonPress(({ buttonId }) => {
+        if (buttonId === 'save') {
+            handleSave()
+        }
+    })
 
     return (
         <SafeAreaView style={[styles.container, {
@@ -77,12 +123,16 @@ const Account: AccountComponentType = ({
                 <Cell 
                     textInput={true}
                     value={name}
+                    onInputChange={setName}
+                    onPress={onEditingMode}
                 />
             </CellGroup>
             <CellGroup header={'email'} theme={theme}>
                 <Cell 
                     textInput={true}
                     value={email}
+                    onInputChange={setEmail}
+                    onPress={onEditingMode}
                 />
             </CellGroup>
             <CellGroup header={'subcription'} theme={theme}>
@@ -109,10 +159,6 @@ Account.options = () => ({
         title: {
             text: 'Account Settings'
         },
-        rightButtons: [{
-            id: 'save_account_settings',
-            systemItem: 'done'
-        }]
     }
 })
 

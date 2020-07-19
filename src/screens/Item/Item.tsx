@@ -158,12 +158,8 @@ const Item: ItemComponentType = ({
             // RNCalendarEvents.authorizationStatus()
             //         .then((status: string) => {
             //             if (status === 'authorized') {
-                            if (expiration_date.hasOwnProperty("_seconds")) {
-                                saveItem(eventId ,new Date(expiration_date.seconds*1000), alert, notes, id);
-                            }
-                            else {
-                                saveItem(eventId , expiration_date, alert, notes, id);
-                            }
+                            const expDate = expiration_date.hasOwnProperty("_seconds") ? new Date(expiration_date.seconds*1000) : expiration_date
+                            saveItem(eventId , expDate, alert, notes, id);
                 //         } else {
                 //             RNCalendarEvents.authorizeEventStore()
                 //                 .then((status: string) => {

@@ -98,17 +98,6 @@ const Items: ItemsComponentType = ({
         // );
     });
 
-    // useEffect(() => {
-    //   Contacts.getAll((err, contacts) => {
-    //     if (err) {
-    //       console.log(err)
-    //     }
-    //     else {
-    //       getContacts(contacts)
-    //     }
-    //   })
-    // }, [])
-
     useEffect(() => {
       return messaging().onTokenRefresh((token: string) => {
         saveTokenToDatabase(token)

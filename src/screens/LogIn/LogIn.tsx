@@ -239,7 +239,7 @@ const LogIn: LogInComponentType = ({
         dispatch(setLoggedIn(true));
       })
       .catch(e => {
-        Alert.alert(e);
+        Alert.alert('Incorrect email or password');
       })
   }
 
@@ -360,6 +360,7 @@ const LogIn: LogInComponentType = ({
               placeholder='Email'
               value={email}
               onChangeText={setUserEmail}
+              autoCapitalize='none'
             />
             <TextInput
               style={[styles.textInput, 
@@ -371,6 +372,7 @@ const LogIn: LogInComponentType = ({
               value={password}
               secureTextEntry={!passwordVisible}
               onChangeText={setPassword}
+              autoCapitalize='none'
             />
             <View style={styles.forgotPasswordContainer}>
               <TouchableOpacity>
