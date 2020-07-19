@@ -94,7 +94,8 @@ const Account: AccountComponentType = ({
                 ],
                 rightButtons: [{
                     id: 'save',
-                    text: 'Save'
+                    text: 'Save',
+                    enabled: name !== '' && email !== ''
                 }]
             }
         })
@@ -104,7 +105,11 @@ const Account: AccountComponentType = ({
     if (name === '' || email === '') {
         Navigation.mergeOptions(componentId, {
             topBar: {
-                rightButtons: []
+                rightButtons: [{
+                    id: 'save',
+                    text: 'Save',
+                    enabled: false
+                }]
             }
         })
     }
