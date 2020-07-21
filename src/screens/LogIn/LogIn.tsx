@@ -28,7 +28,7 @@ import { RootState } from 'src/store/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import AuthorizationStatus from '@react-native-firebase/messaging';
 import { Navigation } from 'react-native-navigation';
-import { REGISTRATION } from '../../screens';
+import { REGISTRATION, FORGOTPASSWORD } from '../../screens';
 import { setEmail, setName } from '../../store/user/actions';
 
 //Set up Google sign in usage with for default options: you get user email and basic profile info.
@@ -261,6 +261,21 @@ const LogIn: LogInComponentType = ({
     })
   }
 
+  const onForgotPasswordPress = () => {
+    Navigation.showModal({
+      stack: {
+        children: [
+          {
+            component: {
+              name: FORGOTPASSWORD,
+              id: 'forgotpassword'
+            }
+          }
+        ]
+      }
+    })
+  }
+
   useEffect(() => {
     firebase
       .auth().onAuthStateChanged((user) => {
@@ -375,7 +390,9 @@ const LogIn: LogInComponentType = ({
               autoCapitalize='none'
             />
             <View style={styles.forgotPasswordContainer}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onForgotPasswordPress()}
+              >
                 <Text style={[styles.forgotPasswordText, {color: theme.LabelColor}]}>Forgot password?</Text>
               </TouchableOpacity>
             </View>
@@ -391,7 +408,7 @@ const LogIn: LogInComponentType = ({
               <TouchableOpacity
                 onPress={() => onSignUpButtonPress()}
               >
-                <Text style={{color: theme.LinkColor, textAlign: 'center', fontSize: 16}}>
+                <Text style={[styles.signUpText, {color: theme.LinkColor}]}>
                   Don't Have An Account? Sign Up
                 </Text>
               </TouchableOpacity>
@@ -464,6 +481,10 @@ const styles = StyleSheet.create({
   signInText: {
     color: '#ffffff',
     fontSize: 17
+  },
+  signUpText: {
+    textAlign: 'center', 
+    fontSize: 16
   },
   forgotPasswordContainer: {
     flexDirection: 'row',

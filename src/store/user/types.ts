@@ -1,3 +1,5 @@
+import { types } from "@babel/core";
+
 // Describe the available actions
 export const GET_CONTACTS = 'GET_CONTACTS';
 export const SET_NAME = 'SET_NAME';
@@ -5,6 +7,7 @@ export const SET_EMAIL = 'SET_EMAIL';
 export const SET_PHONE_NUMBER = 'SET_PHONE_NUMBER';
 export const SET_PASSWORD = 'SET_PASSWORD';
 export const PASSWORD_VISIBLE = 'PASSWORD_VISIBLE';
+export const RESET_SIGNUP_FORM = 'RESET_SIGNUP_FORM';
 
 export interface User {
     contacts: Array<object>,
@@ -45,4 +48,11 @@ interface SetPhoneNumberAction {
     payload: User['phoneNumber']
 }
 
-export type UserActionTypes = GetContactsAction | SetPasswordAction | SetPasswordVisibleAction | SetNameAction | SetEmailAction | SetPhoneNumberAction;
+interface ResetFormAction {
+    type: typeof RESET_SIGNUP_FORM,
+    payload: null
+}
+
+export type UserActionTypes = GetContactsAction | SetPasswordAction | 
+SetPasswordVisibleAction | SetNameAction | SetEmailAction | SetPhoneNumberAction
+| ResetFormAction;

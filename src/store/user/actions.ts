@@ -6,7 +6,8 @@ import {
     SET_EMAIL,
     SET_NAME,
     SET_PASSWORD,
-    PASSWORD_VISIBLE
+    PASSWORD_VISIBLE,
+    RESET_SIGNUP_FORM
 } from './types';
 
 export function getContacts (payload: UserActionTypes['payload']) {
@@ -47,5 +48,11 @@ export function setPassword (payload: UserActionTypes['payload']) {
 export function setPasswordVisibilty () {
     return {
         type: PASSWORD_VISIBLE,
+    }
+}
+
+export function resetSignUpForm () {
+    return {
+        type: RESET_SIGNUP_FORM
     }
 }

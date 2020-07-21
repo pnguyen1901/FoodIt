@@ -22,7 +22,7 @@ import { Navigation } from 'react-native-navigation';
 require('datejs'); 
 import { useNavigationButtonPress, useNavigationBottomTabSelect } from 'react-native-navigation-hooks';
 import ImageEditor from "@react-native-community/image-editor";
-import { themes, FadeInView } from '../../components/Theme/Theme';
+import { themes } from '../../components/Theme/Theme';
 import { useColorScheme } from 'react-native-appearance';
 import Voice, { SpeechResultsEvent } from '@react-native-community/voice';
 import LottieView from "lottie-react-native";
@@ -38,6 +38,7 @@ const Camera: CameraComponentType = ({
     const [showDialog, setShowDialog] = useState(true);
     const dispatch = useDispatch();
     const isLoading = useSelector((state :RootState) => state.camera.isLoading);
+    const { brand, category } = useSelector((state: RootState) => state.item);
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
     const [ratio, setRatio] = useState('16:9');
@@ -108,6 +109,7 @@ const Camera: CameraComponentType = ({
     useNavigationBottomTabSelect((componentId) => {
         if (componentId.selectedTabIndex === 1) {
             setShowDialog(true)
+            dispatch(resetForm()) // reset the form
         }
     })
     
@@ -116,7 +118,6 @@ const Camera: CameraComponentType = ({
             (msg) => {
                 if (msg === null) {
                     dispatch(loadingDone());
-                    dispatch(resetForm()) // reset the form
                     setTimeout(() => {
                         Alert.alert('Scanning new item', 'Encountered an issue', [
                             {
@@ -133,7 +134,6 @@ const Camera: CameraComponentType = ({
                 } else {
                     console.log('echo message: ' + msg);
                     dispatch(loadingDone());
-                    dispatch(resetForm()) // reset the form
                     dispatch(setExpDate(new Date (Date.parse(msg))))
                     setTimeout(() => {
                         openAddItemModal()
@@ -278,11 +278,13 @@ const Camera: CameraComponentType = ({
         if (step === 'step1') {
 
             Voice.onSpeechResults = (e: SpeechResultsEvent) => {
+                    console.log(e.value[0])
                     dispatch(setBrand(e.value[0]))
                 }
         }
         else {
             Voice.onSpeechResults = (e: SpeechResultsEvent) => {
+                console.log(e.value[0])
                 dispatch(setCategory(e.value[0]))
             }
         }
@@ -355,13 +357,17 @@ const Camera: CameraComponentType = ({
                             
                             {!recording 
                             ? <Text style={{marginTop: 10, color: theme.LabelColor, fontSize: 15, textAlign: "center"}}>Press button to start speaking</Text>
-                            :   <TouchableOpacity
-                                    onPress={() => onContinuePress()}
-                                > 
-                                    <Text style={{marginTop: 10, color: theme.Blue, fontSize: 18, textAlign: "center"}}>
-                                        Continue
-                                    </Text>
-                                </TouchableOpacity>   
+                            :   
+                                (
+                                    step === 'step1' && brand === '' || step === 'step2' && category === '' ? null : 
+                                    <TouchableOpacity
+                                        onPress={() => onContinuePress()}
+                                    > 
+                                        <Text style={{marginTop: 10, color: theme.Blue, fontSize: 18, textAlign: "center"}}>
+                                            Continue
+                                        </Text>
+                                    </TouchableOpacity>                                     
+                                )
                             }
                             <TouchableOpacity onPress={() => setShowDialog(false)}>
                                 <Text style={{marginTop: 20, color: theme.RedColor, fontSize: 18, textAlign: "center"}}>Cancel</Text>

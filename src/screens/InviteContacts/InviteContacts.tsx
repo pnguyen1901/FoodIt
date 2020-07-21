@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import { useColorScheme } from 'react-native-appearance';
-import { themes } from '../../components/Theme/Theme';
+import { themes, FadeInView } from '../../components/Theme/Theme';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import { RootState } from '../../store/rootReducer';
@@ -83,7 +83,7 @@ const InviteContacts: InviteContactsComponentType  = (props): JSX.Element => {
     const { componentId } = props;
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
     const [checked, setChecked] = useState([]);
-    const contacts = useSelector((state: RootState) => state.user.contacts);
+    const contacts = useSelector((state: RootState) => state.user.present.contacts);
     const dispatch = useDispatch();
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
@@ -98,21 +98,6 @@ const InviteContacts: InviteContactsComponentType  = (props): JSX.Element => {
         // equivalent to componentWillUnmount
         // return () => {};
     }, [componentId]);
-
-    useEffect(() => {
-        Navigation.mergeOptions(componentId, {
-            topBar: {
-                rightButtons: [
-                    {
-                        id: 'cancel_contacts_button',
-                        systemItem: 'stop'
-
-                    }
-                ],
-                rightButtonColor: theme.SecondaryLabelColor
-            }
-        })
-    })
 
     const getStatusBarHeight = async () => {
         const navConstants = await Navigation.constants();
@@ -202,7 +187,7 @@ const InviteContacts: InviteContactsComponentType  = (props): JSX.Element => {
         <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
             <ScrollView>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <FadeInView>
                         <CellGroup footer={true} theme={theme}>
                             {
                                 contacts.map((contact: any, index: number) => (
@@ -218,12 +203,12 @@ const InviteContacts: InviteContactsComponentType  = (props): JSX.Element => {
                                 ))
                             }
                         </CellGroup>
-                    </View>
+                    </FadeInView>
                 </TouchableWithoutFeedback>
             </ScrollView>
             <Toast
                 //renderAttachment={this.renderAboveToast}
-                visible={checked.length > 1 ? true: false}
+                visible={checked.length > 0 ? true: false}
                 position={'bottom'}
                 backgroundColor={theme.SystemBackgroundColor}
             >

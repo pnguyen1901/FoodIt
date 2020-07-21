@@ -5,9 +5,12 @@ import {
     SET_PHONE_NUMBER,
     SET_PASSWORD,
     PASSWORD_VISIBLE,
+    RESET_SIGNUP_FORM,
     User,
     UserActionTypes
 } from './types';
+import undoable from 'redux-undo';
+
 
 const initialState: User = {
     contacts: [],
@@ -59,10 +62,21 @@ const userReducer = (
                 ...state,
                 password: action.payload
             }
+        
+        case RESET_SIGNUP_FORM:
+            return {
+                ...state,
+                name: '',
+                email: '',
+                password: '',
+                phoneNumber: ''
+            }
 
         default:
             return state
     }
 }
 
-export default userReducer;
+const undoableUser = undoable(userReducer)
+
+export default undoableUser;

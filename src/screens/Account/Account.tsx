@@ -19,6 +19,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
 import { setName, setEmail } from '../../store/user/actions';
 import { useNavigationButtonPress } from 'react-native-navigation-hooks';
+import { ActionCreators } from 'redux-undo'
 
 const styles = StyleSheet.create({
     container: {
@@ -38,7 +39,7 @@ const Account: AccountComponentType = ({
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
     const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
-    const { name, email } = useSelector((state: RootState) => state.user); 
+    const { name, email } = useSelector((state: RootState) => state.user.present);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -117,6 +118,19 @@ const Account: AccountComponentType = ({
     useNavigationButtonPress(({ buttonId }) => {
         if (buttonId === 'save') {
             handleSave()
+        }
+        if (buttonId === 'cancel') {
+            // Undo all modifications on user state.
+            dispatch(ActionCreators.jumpToPast(2))
+            Navigation.mergeOptions(componentId, {
+                topBar: {
+                    backButton: {
+                        title: 'Settings'
+                    },
+                    rightButtons: [],
+                    leftButtons: []
+                }
+            })
         }
     })
 

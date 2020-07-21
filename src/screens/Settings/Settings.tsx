@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     }
 })
 
-    const openURL = async (url: string) => {
+export  const openURL = async (url: string) => {
         // Checking if the link is supported for links with custom URL scheme.
         const supported = await Linking.canOpenURL(url)
 
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
             Alert.alert("Can't open this link. Pleas try again.")
         }
 
-    }
+}
 
 const Settings: SettingsComponentType = ({
     componentId,
@@ -52,7 +52,7 @@ const Settings: SettingsComponentType = ({
     const colorScheme: ColorSchemeName = useColorScheme();
     const theme = themes[colorScheme];
     const dispatch = useDispatch()
-    const { name } = useSelector((state: RootState) => state.user);
+    const { name } = useSelector((state: RootState) => state.user.present);
 
     const onProfilePressed = (name: string) => {
 
@@ -132,7 +132,7 @@ const Settings: SettingsComponentType = ({
                     more={true}
                     onPress={onAboutPressed}
                 />
-                <Cell
+                {/* <Cell
                     title="Rate this app"
                     left={<CellIcon
                     source={require('../../assets/icons/32/star.png')}
@@ -141,7 +141,7 @@ const Settings: SettingsComponentType = ({
                     />}
                     onPress={'this.onDonatePress'}
                     more={true}
-                />
+                /> */}
                 <Cell
                     title="Privacy Policy"
                     left={<CellIcon

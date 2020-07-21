@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, 
     TouchableOpacity,
-    TouchableWithoutFeedback, View, Keyboard, StyleSheet, Text } from 'react-native';
+    TouchableWithoutFeedback, View, Keyboard, StyleSheet, Text, TextInput } from 'react-native';
 import Cell from '../../components/cell/Cell';
 import CellGroup from '../../components/cell/CellGroup';
 import { useColorScheme } from 'react-native-appearance';
@@ -9,12 +9,18 @@ import { themes } from '../../components/Theme/Theme';
 import firestore from '@react-native-firebase/firestore';
 import { firebase } from '@react-native-firebase/auth';
 import { requestUserPermission } from '../LogIn/LogIn';
-import { setEmail, setPassword, setName, setPhoneNumber } from '../../store/user/actions';
+import { setEmail, setPassword, setName, setPhoneNumber, resetSignUpForm } from '../../store/user/actions';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
 import { Toast } from 'react-native-ui-lib';
 import { setMainRoot } from '../../App';
 import { useDispatch } from 'react-redux';
+import { Navigation } from 'react-native-navigation';
+import { useNavigationButtonPress } from 'react-native-navigation-hooks';
+import { openURL } from '../../screens/Settings/Settings';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { setPasswordVisibilty } from '../../store/user/actions';
+
 
 const Registration: RegistrationComponentType = (
     props
@@ -24,7 +30,7 @@ const Registration: RegistrationComponentType = (
     const signUpWithEmail = props.signUpWithEmail;
     const colorScheme = useColorScheme();
     const theme = themes[colorScheme];
-    const { name, email, phoneNumber, password, showPassword } = useSelector((state: RootState) => state.user);
+    const { name, email, phoneNumber, password, showPassword } = useSelector((state: RootState) => state.user.present);
     const dispatch = useDispatch();
 
     const onHandleUserWithEmail = () => {
@@ -69,12 +75,90 @@ const Registration: RegistrationComponentType = (
 
     }
 
+    useNavigationButtonPress(({ buttonId }) => {
+        if (buttonId === 'cancel') {
+            Navigation.dismissModal(props.componentId)
+            // Reset sign up form
+            dispatch(resetSignUpForm())
+        }
+    })
+
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme.GroupedBackgroundColor}]}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.layout}>
-                    <View>
-                        <CellGroup header="Email" inputValue={email} required={true} footer={true} theme={theme}>
+                    <View style={styles.formContainer}>
+                        <TextInput
+                            style={[styles.textInput, 
+                                { color: theme.SecondaryLabelColor, 
+                                backgroundColor: theme.SecondarySystemBackgroundColor,
+                                borderColor: theme.OpaqueSeparatorColor  
+                                }]}
+                            placeholder='Email: name@domain.com'
+                            value={email}
+                            textContentType='emailAddress'
+                            autoCompleteType='email'
+                            onChangeText={(text) => dispatch(setEmail(text))}
+                            autoCapitalize='none'
+                        />
+                        <View style={[styles.textInput, 
+                                {
+                                display: 'flex',
+                                flexDirection: 'row',  
+                                backgroundColor: theme.SecondarySystemBackgroundColor,
+                                borderColor: theme.OpaqueSeparatorColor  
+                                }]}>
+                            <TextInput
+                            style={{color: theme.SecondaryLabelColor, flex: 1, fontSize: 17, fontWeight: '500'}}
+                            placeholder='Password: Minimum 8 characters'
+                            value={password}
+                            textContentType='newPassword'
+                            autoCompleteType='password'
+                            secureTextEntry={!showPassword}
+                            onChangeText={(text) => dispatch(setPassword(text))}
+                            autoCapitalize='none'
+                            />
+                            {!showPassword 
+                            ? <FontAwesome5 onPress={() => dispatch(setPasswordVisibilty())} color={theme.LabelColor} size={16} name="eye"/>
+                            : <FontAwesome5 onPress={() => dispatch(setPasswordVisibilty())} color={theme.LabelColor} size={16} name="eye-slash"/>
+                            }
+                        </View>
+                        <TextInput
+                            style={[styles.textInput, 
+                                { color: theme.SecondaryLabelColor, 
+                                backgroundColor: theme.SecondarySystemBackgroundColor,
+                                borderColor: theme.OpaqueSeparatorColor  
+                                }]}
+                            placeholder='Name'
+                            value={name}
+                            textContentType={'name'}
+                            autoCompleteType={'name'}
+                            autoCapitalize={'words'}
+                            onChangeText={(text) => dispatch(setName(text))}
+                        />
+                        <TextInput
+                            style={[styles.textInput, 
+                                { color: theme.SecondaryLabelColor, 
+                                backgroundColor: theme.SecondarySystemBackgroundColor,
+                                borderColor: theme.OpaqueSeparatorColor  
+                                }]}
+                            placeholder='Phone Number'
+                            textContentType={'telephoneNumber'}
+                            autoCompleteType={'tel'}
+                            value={phoneNumber}
+                            onChangeText={(text) => dispatch(setPhoneNumber(text))}
+                            autoCapitalize='none'
+                        />
+                        <View style={{ marginTop: 20 }}>
+                            <TouchableOpacity
+                                onPress={() => openURL('https://www.iubenda.com/privacy-policy/79904545')}
+                            >
+                                <Text style={[styles.privacyPolicyText, {color: theme.LinkColor}]}>
+                                    View Privacy Policy
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        {/* <CellGroup header="Email" inputValue={email} required={true} footer={true} theme={theme}>
                             <Cell 
                                 textInput={true}
                                 value={email}
@@ -117,7 +201,7 @@ const Registration: RegistrationComponentType = (
                                 autoCompleteType={'tel'}
                                 onInputChange={setPhoneNumber}
                             />
-                        </CellGroup>
+                        </CellGroup> */}
                     </View>
                     <Toast
                         //renderAttachment={this.renderAboveToast}
@@ -144,8 +228,14 @@ const Registration: RegistrationComponentType = (
 Registration.options = () => ({
     topBar: {
         title: {
-            text: 'Registration'
-        }
+            text: 'Sign Up'
+        },
+        leftButtons: [
+            {
+                id: 'cancel',
+                text: 'Cancel'
+            }
+        ]
     }
 })
 
@@ -193,6 +283,27 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         textAlign: 'center',
         fontSize: 20
+    },
+    formContainer: {
+        flex: 1,
+        paddingHorizontal: 16,
+        paddingTop: 20
+    },
+    textInput: {
+        fontSize: 17,
+        fontWeight: "500",
+        borderWidth: .7,
+        borderStyle: "solid",
+        borderRadius: 3,
+        marginBottom: 16,
+        paddingTop: 10,
+        paddingRight: 15,
+        paddingBottom: 10,
+        paddingLeft: 15,
+    },
+    privacyPolicyText: {
+        textAlign: 'center',
+        fontSize: 16
     }
 
 })

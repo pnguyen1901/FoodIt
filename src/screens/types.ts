@@ -49,4 +49,8 @@ interface RegistrationComponentProps {
     userId: string,
     signUpWithEmail: boolean
 }
+
 type RegistrationComponentType = NavigationComponent<RegistrationComponentProps>;
+
+interface ForgotPasswordComponentProps { }
+type ForgotPasswordComponentType = NavigationComponent<ForgotPasswordComponentProps>;

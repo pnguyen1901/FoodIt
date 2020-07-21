@@ -16,6 +16,7 @@ import { REMINDER } from './screens';
 import { SHAREITEM } from './screens';
 import { INVITECONTACTS } from './screens';
 import { REGISTRATION } from './screens';
+import { FORGOTPASSWORD } from './screens';
 
 import LogInScreen from './screens/LogIn/LogIn';
 import ItemsScreen from './screens/Items/Items';
@@ -29,6 +30,7 @@ import ReminderScreen from './screens/Item/Reminder';
 import ShareItemScreen from './screens/ShareItem/ShareItem';
 import InviteContactsScreen from './screens/InviteContacts/InviteContacts';
 import RegistrationScreen from './screens/Registration/Registration';
+import ForgotPasswordScreen from './screens/ForgotPassword/ForgotPassword';
 import AsyncStore from '@react-native-community/async-storage';
 
 
@@ -47,6 +49,7 @@ Screens.set(REMINDER, ReminderScreen);
 Screens.set(SHAREITEM, ShareItemScreen);
 Screens.set(INVITECONTACTS, InviteContactsScreen);
 Screens.set(REGISTRATION, RegistrationScreen);
+Screens.set(FORGOTPASSWORD, ForgotPasswordScreen);
 // Screens.set(ADDITEM, AddItemScreen);
 // Register screens
 Screens.forEach((C, key) => {
