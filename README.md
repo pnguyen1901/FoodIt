@@ -1,6 +1,6 @@
 <h2><img src="./assets/app-icon/Icon-1024.png" height="30"/> FoodIt</h2>
 
-[<img src="./assets/images/testflight-1200.png" height="80">](https://testflight.apple.com/join/FRovVnNm)
+[<img src="./assets/screenshots/login.png" height="80">](https://testflight.apple.com/join/FRovVnNm)
 
 iOS app for keeping tracking of your grocery so that you can indulge in the goodness of your tasty Chobani yogurt before it expires.
 
