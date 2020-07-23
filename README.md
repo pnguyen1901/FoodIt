@@ -15,6 +15,7 @@ iOS app for keeping tracking of your grocery so that you can indulge in the good
  - Supports Dark mode
 
 ##### Beta Screenshots
+[<img src="./src/assets/screenshots/login.png" height="500">](https://testflight.apple.com/join/FRovVnNm)
 <h2><img src="./src/assets/screenshots/login.png" height="500">
 <img src="./src/assets/screenshots/home.png" height="500" />
 <img src="./src/assets/screenshots/scan.png" height="500" />
