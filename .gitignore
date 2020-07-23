@@ -65,7 +65,10 @@ buck-out/
 
 
 # Ignore secret json file
-foodit-e5ede-231116db6ea6.json
+foodit-e5ede-firebase-adminsdk-9je5o-51cd7b2a68.json
 
 # env file
 *.env
+
+# old backup file
+backup.js
