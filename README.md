@@ -1,8 +1,9 @@
-<h2>FoodIt <i>Fighting food waste </i></h2>
+<h2><img src="./assets/app-icon/Icon-1024.png" height="30"/> FoodIt</h2>
 
-[<img src="https://devimages-cdn.apple.com/app-store/marketing/guidelines/images/badge-example-alternate_2x.png" height="48">](https://itunes.apple.com/us/app/hekla/id1405096983?mt=8)
+[<img src="./assets/images/testflight-1200.png" height="80">](https://testflight.apple.com/join/FRovVnNm)
 
-iOS and Android client for Hacker News. Inspired by the Apollo client for Reddit.
+iOS app for keeping tracking of your grocery so that you can indulge in the goodness of your tasty Chobani yogurt before it expires.
+
 
 ##### App features:
 
@@ -17,43 +18,4 @@ iOS and Android client for Hacker News. Inspired by the Apollo client for Reddit
 <img src="./src/assets/screenshots/login.png" height="500" /> 
 <img src="./src/assets/screenshots/home.png" height="500" />
 <img src="./src/assets/screenshots/scan.png" height="500" />
-
-
-## Development features
- - TypeScript
- - Gradle 4
- - Cocoapods
- - CodePush
- - mobx and mobx-state-tree
- - react-native-navigation v2
- - react-native-config
- - JavaScriptCore on Android
- - Keychain to store sensitive data
- - CSS Modules with Stylus
- - patch-package for custom native code
-
-## Getting Started
-
-You will need to grab your own `google-services.json` and `GoogleService-Info.plist`. Head over to firebase.com and create a new application.
-
-You will then need to modify your configuration files to match the Hacker News API:
-
-`./android/app/google-services.json`:
-```js
-    "firebase_url": "https://hacker-news.firebaseio.com"
-```
-
-`./ios/Hekla/GoogleService-Info.plist`
-```xml
-	<key>DATABASE_URL</key>
-	<string>https://hacker-news.firebaseio.com</string>
-```
-
-## Contributing
-
-If you are interested in helping out, feel free to submit issues, pull-requests or even [contact me](mailto:birkir.gudjonsson@gmail.com). I am open to all kind of contributions.
-
-## License
-
-This project is [MIT licensed](/LICENSE.md)
 
